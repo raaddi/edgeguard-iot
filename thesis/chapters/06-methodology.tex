@@ -1,0 +1,16 @@
+\chapter{Dane i metodyka badań}
+\label{chap:methodology}
+\section{Źródła danych i ich zgodność}
+\writingnote{Opisz dane publiczne, syntetyczne i fizyczne: pochodzenie, licencje, jednostki, cechy, etykiety i ograniczenia. Zbiory mogą służyć odrębnym eksperymentom, jeżeli ich semantyka jest niezgodna.}
+\section{Przygotowanie danych i cech}
+\writingnote{Zdefiniuj okna czasowe, brakujące pomiary, skalowanie i relacje sensor--aktuator. Osobno traktuj ruch obserwowany przez bramę i wartości raportowane przez urządzenie.}
+\section{Podział danych i zapobieganie wyciekowi informacji}
+\writingnote{Rozdziel niezależne przebiegi lub okresy. Dopasuj preprocessing wyłącznie do treningu; strojenie wykonuj na walidacji. Końcowych danych fizycznych do testu nie używaj do strojenia.}
+\section{Metody porównawcze i hipotezy}
+\writingnote{Wybierz reguły odniesienia i 2--3 algorytmy. Zapisz hipotezy przed interpretacją wyników, zakres strojenia oraz wspólny budżet eksperymentalny.}
+\section{Metryki skuteczności i wydajności}
+\writingnote{Zdefiniuj precision, recall, F1, FPR, fałszywe alarmy na godzinę i czas wykrycia. Ustal jednostkę oceny: próbka lub zdarzenie, grupowanie alarmów i traktowanie niewykrytych zdarzeń.}
+\writingnote{Dla opóźnienia inferencji, CPU i RAM podaj sposób pomiaru, rozgrzewkę, liczbę powtórzeń oraz charakterystykę sprzętu. Rozdziel opóźnienie samego modelu od całego przetwarzania.}
+\section{Plan eksperymentów i odtwarzalność}
+\input{tables/experiment-plan}
+\writingnote{Dla każdego przebiegu zachowaj identyfikator, konfigurację, seed, commit kodu, wersję danych i modelu. Dobierz liczby węzłów i powtórzenia po pomiarach możliwości sprzętu.}

@@ -1,0 +1,18 @@
+\chapter{Odtworzenie środowiska i eksperymentów}
+\label{app:reproduction}
+\section{Źródła i wersje}
+Repozytorium projektu: \href{\ThesisRepository}{\texttt{github.com/raaddi/edgeguard-iot}}.
+\writingnote{Przed oddaniem pracy wskaż konkretny tag lub commit, wersje zależności i instrukcję odtworzenia eksperymentów.}
+\section{Budowanie dokumentu}
+Aktualne polecenia kompilacji znajdują się w pliku \texttt{thesis/README.md}. Praca offline wymaga wcześniejszego przygotowania kompilatora i używanych pakietów.
+\section{Manifest przebiegu}
+Poniższy plik pokazuje strukturę planowanych metadanych. Wartości \texttt{null} oznaczają brak wykonanych pomiarów.
+\par\noindent\begin{minipage}{\linewidth}
+\IfFileExists{../experiments/templates/run-manifest.example.json}{%
+  \lstinputlisting[caption={Szablon manifestu, nie wynik eksperymentu.},label={lst:manifest}]{../experiments/templates/run-manifest.example.json}
+}{%
+  \lstinputlisting[caption={Szablon manifestu, nie wynik eksperymentu.},label={lst:manifest}]{assets/run-manifest.example.json}
+}
+\end{minipage}\par
+\section{Dostęp do danych}
+\writingnote{Podaj źródła, licencje i sumy kontrolne danych oraz sposób ich przygotowania. Dużych zbiorów i plików modeli nie umieszczaj bezpośrednio w Git.}

@@ -1,0 +1,19 @@
+\chapter{Eksperymenty i wyniki}
+\label{chap:results}
+\section{Warunki wykonania eksperymentów}
+\writingnote{Wpisz rzeczywiste konfiguracje, wersje, okresy danych, liczbę przebiegów i charakterystykę sprzętu. Wyniki z laptopa i Raspberry Pi raportuj oddzielnie.}
+\section{Skuteczność metod i fałszywe alarmy}
+\IfFileExists{generated/model-comparison.tex}{%
+  \input{generated/model-comparison}
+}{%
+  \statusnote{Brak zatwierdzonych wyników. Tabela pojawi się po wyeksportowaniu rzeczywistych pomiarów do generated/model-comparison.tex.}
+}
+\writingnote{Przedstaw rozrzut wyników pomiędzy przebiegami i analizę błędów. Nie zastępuj brakujących pomiarów przykładowymi liczbami.}
+\section{Transfer na dane fizyczne}
+\writingnote{Omów wyniki testów fizycznego prototypu oraz różnice wobec danych treningowych.}
+\section{Wpływ liczby węzłów}
+\writingnote{Porównaj skuteczność i obciążenie przy różnych topologiach oraz natężeniu telemetrii. Zaznacz utratę danych, jeśli wystąpiła.}
+\section{Pomiary na Raspberry Pi}
+\writingnote{Przedstaw opóźnienia, CPU, RAM i rozmiary modeli ze wskazaniem procedury pomiaru.}
+\section{Przykłady błędnych i poprawnych detekcji}
+\writingnote{Pokaż wybrane przebiegi czasowe z etykietami, wynikiem detektora i momentem alertu. Uzasadnij wybór przykładów.}

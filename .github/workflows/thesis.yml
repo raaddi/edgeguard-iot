@@ -1,0 +1,69 @@
+name: Build thesis
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'thesis/**'
+      - 'experiments/templates/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'tests/test_thesis_export.py'
+      - '.github/workflows/thesis.yml'
+  pull_request:
+    paths:
+      - 'thesis/**'
+      - 'experiments/templates/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - 'tests/test_thesis_export.py'
+      - '.github/workflows/thesis.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Test CSV export
+        run: python3 -m unittest discover -s tests -p 'test_thesis_*.py' -v
+      - name: Install pinned Tectonic
+        shell: bash
+        run: |
+          mkdir -p .tools thesis/build
+          curl --fail --location --retry 3 \
+            'https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.17.0/tectonic-0.17.0-x86_64-unknown-linux-gnu.tar.gz' \
+            --output .tools/tectonic.tar.gz
+          echo '1a715688baf591e650c8aeb160ae934e181685eecbb38b317de30b269ac5d606  .tools/tectonic.tar.gz' | sha256sum --check
+          tar -xzf .tools/tectonic.tar.gz -C .tools
+          .tools/tectonic --version
+      - name: Build PDF
+        working-directory: thesis
+        run: ../.tools/tectonic --untrusted --keep-logs --outdir build main.tex
+      - name: Check references and layout warnings
+        run: |
+          if grep -E 'Overfull|There were undefined references|Citation .* undefined' thesis/build/main.log; then
+            echo 'Fix references or overflowing content before merging.'
+            exit 1
+          fi
+      - name: Confirm cached build
+        working-directory: thesis
+        run: ../.tools/tectonic --only-cached --untrusted --keep-logs --outdir build main.tex
+      - name: Upload PDF
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: edgeguard-thesis-pdf
+          path: thesis/build/main.pdf
+          if-no-files-found: error
+          retention-days: 30
+      - name: Package Overleaf sources
+        shell: pwsh
+        run: ./scripts/export-overleaf.ps1
+      - name: Upload Overleaf ZIP
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: edgeguard-overleaf
+          path: output/EdgeGuard_Magisterka_Overleaf.zip
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,17 @@
+\begin{tikzpicture}[
+  box/.style={draw=draftblue,rounded corners=2pt,align=center,
+    text width=4.9cm,minimum height=1.05cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,draw=draftblue},
+  node distance=0.6cm and 0.7cm]
+\node[box] (sim) {Symulator na laptopie\\konfigurowalne węzły};
+\node[box,right=of sim] (esp) {Fizyczne węzły ESP32\\dołączane później};
+\node[box,below=of sim] (mqtt) {Broker MQTT};
+\node[box,below=of mqtt] (edge) {Kolektor i walidacja\\SQLite oraz FastAPI};
+\node[box,right=of edge] (model) {Trening na laptopie\\eksport modelu};
+\node[box,below=of edge] (infer) {Późniejsza inferencja na bramie\\anomalie i alerty};
+\draw[arrow] (sim) -- (mqtt);
+\draw[arrow] (esp.south) |- (mqtt.east);
+\draw[arrow] (mqtt) -- (edge);
+\draw[arrow] (edge) -- (infer);
+\draw[arrow] (model.south) |- (infer.east);
+\end{tikzpicture}

@@ -1,0 +1,17 @@
+\chapter{Założenia i wymagania}
+\label{chap:requirements}
+\section{Punkt wyjścia: prototyp inżynierski}
+\writingnote{Udokumentuj makietę, czujniki, napędy i poprzednią komunikację. Potwierdź model Raspberry Pi użyty wcześniej i odróżnij go od docelowej bramy badawczej.}
+
+\section{Wymagania funkcjonalne}
+\writingnote{Nadaj identyfikatory wymaganiom: obsługa niezależnych węzłów, zbieranie danych, status urządzeń, zapis historii, odczyt przez API, późniejsza detekcja i alerty. Powiąż wymagania z testami.}
+
+\section{Wymagania niefunkcjonalne}
+\writingnote{Określ mierzalne cele dotyczące opóźnienia, wykorzystania RAM, zachowania po awarii, odtwarzalności i pracy lokalnej. Nie wpisuj arbitralnych wartości jako uzyskanych wyników.}
+
+\section{Granice zaufania i model zagrożeń}
+\writingnote{Opisz zasoby, role i dostęp napastnika w laboratorium. Zdefiniuj, które zdarzenia system może obserwować i czego nie da się ustalić wyłącznie z telemetrii.}
+
+\section{Zakres realizacji i ograniczenia}
+Architektura ma umożliwiać pracę z jednym węzłem, typowym prototypem z 2--3 płytkami oraz dodatkowymi węzłami symulowanymi. Liczba fizycznych urządzeń nie stanowi stałej zapisanej w logice aplikacji.
+\writingnote{Wyodrębnij etap bez elektroniki. TinyML, autoenkoder i rozbudowany dashboard pozostaw jako rozszerzenia opcjonalne.}

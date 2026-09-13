@@ -1,0 +1,58 @@
+% Working format, NOT a verified university template.
+% Change margins, font, spacing and bibliography style after receiving guidelines.
+\usepackage{fontspec}
+\setmainfont{texgyretermes-regular.otf}[
+  BoldFont=texgyretermes-bold.otf,
+  ItalicFont=texgyretermes-italic.otf,
+  BoldItalicFont=texgyretermes-bolditalic.otf]
+\setmonofont{lmmono10-regular.otf}
+\usepackage[english,polish]{babel}
+\usepackage[left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\usepackage{graphicx}
+\graphicspath{{figures/}{generated/}}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\definecolor{draftblue}{HTML}{334B63}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,
+  frame=single,columns=fullflexible,keepspaces=true,showstringspaces=false}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[unicode,hidelinks,breaklinks]{hyperref}
+\hypersetup{pdftitle={\ThesisTitle},pdfauthor={\ThesisAuthor},
+  pdfsubject={EdgeGuard IoT - szkielet pracy magisterskiej}}
+\urlstyle{same}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\emergencystretch}{2em}
+\widowpenalty=10000
+\clubpenalty=10000
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+% Visible writing prompts; remove each as the corresponding section is written.
+% Disabling prompts does not turn an unfinished document into a finished thesis.
+\newif\ifdraftnotes
+\draftnotestrue
+\newcommand{\writingnote}[1]{%
+  \ifdraftnotes
+  \begin{quote}\small\singlespacing\raggedright\color{draftblue}\textbf{Do opracowania:} #1\end{quote}
+  \fi
+}
+\newcommand{\statusnote}[1]{%
+  \begin{quote}\small\singlespacing\raggedright\textbf{Status:} #1\end{quote}
+}

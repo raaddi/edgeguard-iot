@@ -1,0 +1,25 @@
+\chapter{Projekt architektury systemu}
+\label{chap:architecture}
+\section{Podział odpowiedzialności}
+Rysunek~\ref{fig:architecture} przedstawia architekturę docelową. W pierwszym etapie broker i aplikacja bramy mają działać na laptopie, a rolę urządzeń pełni symulator.
+\begin{figure}[htbp]
+\centering
+\input{figures/system-architecture}
+\caption{Planowany przepływ danych w EdgeGuard IoT. Schemat nie potwierdza ukończenia komponentów.}
+\label{fig:architecture}
+\end{figure}
+
+\section{Identyfikacja urządzeń i komponentów}
+\writingnote{Opisz device\_id, identyfikatory komponentów, role, strefy i możliwości urządzeń. Pokaż konfiguracje z różnym podziałem czujników, bez utrwalania GPIO w aplikacji bramy.}
+
+\section{Kontrakty MQTT i walidacja danych}
+\writingnote{Udokumentuj tematy, wersję schematu, czas urządzenia i odbioru, identyfikator uruchomienia, numer sekwencyjny, brakujące pomiary oraz obsługę duplikatów.}
+
+\section{Przechowywanie danych i API}
+\writingnote{Dodaj diagram bazy oraz opis encji i indeksów po ich implementacji. Powiąż przykłady odpowiedzi API z rzeczywistymi testami.}
+
+\section{Integracja detektora i obsługa modeli}
+\writingnote{Przedstaw interfejs AnomalyDetector, zgodność cech, wersjonowanie i wycofanie modelu. Oddziel trening na laptopie od inferencji na bramie.}
+
+\section{Niezawodność i bezpieczeństwo}
+\writingnote{Uzasadnij kolejki, limity, obsługę ponownych połączeń, statusy oraz późniejsze dane dostępowe i uprawnienia MQTT.}

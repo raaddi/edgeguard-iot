@@ -1,0 +1,17 @@
+{
+  "status": "template_not_executed",
+  "run_id": null,
+  "git_commit": null,
+  "data_source": null,
+  "dataset_version": null,
+  "dataset_sha256": null,
+  "seed": null,
+  "topology_config": null,
+  "scenario_config": null,
+  "started_at_utc": null,
+  "finished_at_utc": null,
+  "model_version": null,
+  "feature_version": null,
+  "hardware": null,
+  "metrics_file": null
+}

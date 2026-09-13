@@ -1,0 +1,44 @@
+# Local tools, environments and generated output
+.tools/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+output/
+tmp/
+thesis/build/
+thesis/config/private.tex
+# LaTeX files created when using other editors/engines
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lof
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+# Local research artifacts; publish only reviewed, compact exports
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+experiments/runs/*
+!experiments/runs/.gitkeep
+ml/models/*
+!ml/models/.gitkeep
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+.DS_Store
+Thumbs.db

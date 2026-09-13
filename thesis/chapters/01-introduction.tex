@@ -1,0 +1,23 @@
+\chapter{Wstęp}
+\label{chap:introduction}
+\section{Kontekst i motywacja}
+Projekt EdgeGuard IoT stanowi planowane rozwinięcie wcześniejszego prototypu inteligentnego domu. Nowa wersja zakłada rozproszenie czujników i elementów wykonawczych pomiędzy niezależne węzły ESP32 oraz analizę telemetrii na bramie Raspberry Pi.
+\writingnote{Dodaj odwołanie do własnej pracy inżynierskiej i opisz jej zakres. Wyraźnie wskaż ponownie wykorzystane elementy oraz nowy wkład magisterski.}
+
+\section{Cel i problem badawczy}
+Celem pracy jest zaprojektowanie systemu oraz zbadanie przydatności lekkich metod wykrywania anomalii w środowisku inteligentnego domu przy ograniczonych zasobach bramy brzegowej.
+\writingnote{Uzgodnij z promotorem dokładne brzmienie celu i zakres wykrywanych nieprawidłowości.}
+
+\section{Pytania badawcze}
+\begingroup\small\singlespacing
+\begin{enumerate}[label=RQ\arabic*:,leftmargin=1.5cm]
+\item Która metoda zapewnia najlepszy kompromis między skutecznością detekcji a zapotrzebowaniem na zasoby Raspberry Pi?
+\item Czy modele trenowane głównie na zgodnych danych publicznych lub syntetycznych wykrywają porównywalne anomalie w danych fizycznego prototypu?
+\item Jak skutecznie można wykrywać anomalie związane z poszczególnymi węzłami?
+\item Jak liczba węzłów fizycznych lub symulowanych wpływa na skuteczność i zużycie zasobów?
+\item W jakich warunkach ML daje korzyść względem prostych reguł?
+\end{enumerate}
+\endgroup
+
+\section{Zakres i organizacja pracy}
+\writingnote{Opisz zakres obowiązkowy, rozszerzenia opcjonalne oraz zawartość kolejnych rozdziałów. Oddziel przygotowanie infrastruktury od eksperymentalnej oceny metod.}

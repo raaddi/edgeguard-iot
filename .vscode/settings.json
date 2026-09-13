@@ -1,0 +1,43 @@
+{
+  "latex-workshop.latex.autoBuild.run": "never",
+  "latex-workshop.latex.outDir": "%DIR%/build",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "EdgeGuard: build online",
+      "tools": [
+        "edgeguard-online"
+      ]
+    },
+    {
+      "name": "EdgeGuard: build offline",
+      "tools": [
+        "edgeguard-offline"
+      ]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "edgeguard-online",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "%WORKSPACE_FOLDER%/scripts/build-thesis.ps1"
+      ]
+    },
+    {
+      "name": "edgeguard-offline",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "%WORKSPACE_FOLDER%/scripts/build-thesis.ps1",
+        "-Offline"
+      ]
+    }
+  ]
+}
