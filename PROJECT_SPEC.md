@@ -695,3 +695,55 @@ Do not lock the project to a specific number of ESP32 nodes.
 Every major architectural decision should have a clear technical justification.
 
 The project must run locally without paid cloud services.
+
+---
+
+## Agreed scope and research clarifications (2026-09-13)
+
+This addendum supplements the specification above without replacing the project goal, technology stack, research questions RQ1-RQ4, or the First milestone scope. It records planning decisions, not completed functionality or authorization to start implementation.
+
+### Delivery scope and hardware independence
+
+* Plan for approximately 10 months, keeping time for experiments, thesis writing, and corrections.
+* Milestone 1 must run entirely on a development workstation without ESP32 boards, Raspberry Pi, or physical sensors.
+* The eventual physical prototype may use 1-3 ESP32 nodes alongside additional simulated nodes. This is an expected deployment size, not an architectural limit.
+* Physical and simulated nodes use the same MQTT contracts. Adding nodes or redistributing components must not require duplicated application logic.
+* Physical telemetry validation and Raspberry Pi resource measurements remain part of the core thesis. Workstation and simulator results do not replace them.
+* TinyML, an autoencoder, and an elaborate dashboard remain optional. Prioritize a working telemetry path and reproducible experiments.
+
+### Device and telemetry contracts — Milestone 1
+
+* Support multiple sensors and actuators per node, with stable component identifiers, declared capabilities, and configurable device/zone assignments. Keep GPIO mapping isolated in firmware configuration.
+* Include a schema version, device identifier, boot/session identifier, and sequence number. Preserve device time separately from gateway receipt time.
+* Distinguish unsupported components, unavailable readings, and valid zero values. Distinguish commanded actuator state from independently measured state where feedback exists.
+* Treat the earlier flat telemetry fields as examples of measurements, not a restriction to one component of each type per device.
+
+### Reproducible simulation and experiments
+
+* From Milestone 1, record simulation configuration, seed, logical start time, scenario schedule, and code version. Keep scenario ground truth separate from operational telemetry and future model inputs.
+* Reproducibility applies to generated event content and logical timing; network delivery timing may vary.
+* After the basic simulator, add replay of recorded telemetry, preserving event order and relative timing. Identify replay runs separately so replayed samples do not collide with original records or silently enter physical evaluation data.
+* Later ML experiments must also record dataset, feature/preprocessing, and model versions.
+
+### Evaluation and dataset discipline — later research stages
+
+* Compare ML against simple thresholds and temporal rules. Initially select 2-3 suitable ML algorithms from the existing candidate list; expand only when justified by time and research value.
+* Add event detection delay and false alarms per hour to the existing metrics. Define event boundaries, repeated-alert grouping, and how missed events are reported.
+* Add RQ5: Under which conditions do machine learning methods provide a benefit over simple rule-based anomaly detection?
+* Preserve support for public, synthetic, and physical data. Assess feature semantics, units, anomaly definitions, and licenses before choosing public datasets. Public data may support separate benchmarks; merging all three sources is not required.
+* Use splits by time and/or independent runs as appropriate. Fit learned preprocessing and tune thresholds/models using training and validation data only. Keep final physical evaluation data separate from tuning.
+* Report limitations and negative results honestly; ML does not have to outperform rules in every scenario.
+
+### Reliability and security boundaries
+
+* In Milestone 1, define and test behaviour for disconnects, broker restarts, duplicate messages, invalid payloads, and queue overload. Bound message sizes, queues, and simulated traffic scenarios; expose rejected/dropped-message counts where observable and document any unmeasured loss.
+* Document a focused threat model and the limits of telemetry-based detection. An unusual reading alone does not establish whether its cause is a fault or malicious manipulation.
+* Before networked hardware/security experiments, add per-device credentials, MQTT topic permissions, and tests of rejected unauthorized operations. These are later-stage requirements, not an expansion into advanced authentication during Milestone 1.
+* All controlled security scenarios remain local to the laboratory.
+
+### Model deployment — later ML stage
+
+* Validate feature/preprocessing compatibility before activating a model, record the active model version, and support rollback to a previous compatible version.
+* Use lightweight scripts and metadata appropriate to Raspberry Pi; no paid cloud infrastructure or additional orchestration platform is required.
+
+Milestone 1 remains limited to the original foundation, with the contract, simulation metadata, reliability, and test clarifications above. Replay, trained models, model rollback, physical firmware, and the later security controls are not Milestone 1 deliverables.
