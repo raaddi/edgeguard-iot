@@ -11,7 +11,7 @@ tests and a thesis GitHub Actions workflow.
 
 The first simulator increment generates a repeatable, illustrative gas signal
 for one configurable node and prints draft JSON telemetry locally. It includes
-separate run metadata and automated Python tests. MQTT publishing, multiple-node
+separate CLI run metadata, an interactive Streamlit interface and automated Python tests. MQTT publishing, multiple-node
 orchestration and anomaly scenarios are still pending, as are the collector,
 API, ESP32 firmware and ML detectors. Their scope remains defined in
 [PROJECT_SPEC.md](PROJECT_SPEC.md).
@@ -20,12 +20,18 @@ nodes without a fixed architectural node limit.
 
 ## First simulation exercise
 
+**Interactive application:** [Polish setup and exercise](docs/step-02-interactive.md).
+With `.venv` already created, install `requirements-ui.txt` and run
+`scripts/start-simulator.ps1`. Open http://127.0.0.1:8501 for the live chart,
+start/pause/reset, single stepping, seed settings and draft JSON preview.
+The UI shares the CLI generator; it is still a single-node learning simulator.
+
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:
 
 ~~~powershell
 py -3.14 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt -r requirements-ui.txt
 .\.venv\Scripts\python.exe -m simulator --seed 42 --samples 5
 .\.venv\Scripts\python.exe -m pytest -q
 ~~~

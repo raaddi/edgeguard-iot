@@ -1,16 +1,15 @@
 """Print telemetry as JSON Lines; write separate run metadata to stderr."""
 
 import argparse
-from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import platform
 import re
 import subprocess
 import sys
-from uuid import NAMESPACE_URL, uuid5
 
 from simulator.normal_activity import gas_signal
+from simulator.telemetry import SENSOR_ID, START, build_message, session_id
 
 
 def identifier(value: str) -> str:
@@ -51,10 +50,10 @@ def main() -> None:
     args = parser.parse_args()
 
     # Logical time does not depend on when or how quickly the program runs.
-    start = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    start = START
     interval_seconds = 1
-    sensor_id = "gas_01"
-    boot_id = str(uuid5(NAMESPACE_URL, f"edgeguard:{args.run_id}:{args.device_id}"))
+    sensor_id = SENSOR_ID
+    boot_id = session_id(args.run_id, args.device_id)
     manifest = {
         "run_id": args.run_id,
         "source": "synthetic",
@@ -74,20 +73,7 @@ def main() -> None:
 
     signal = gas_signal(args.seed)
     for sequence in range(args.samples):
-        message = {
-            "schema_version": "0.1-draft",
-            "device_id": args.device_id,
-            "boot_id": boot_id,
-            "sequence_number": sequence,
-            "timestamp": (start + timedelta(seconds=sequence * interval_seconds)).isoformat(),
-            "sensors": {
-                sensor_id: {
-                    "measurement": "gas_signal",
-                    "unit": "normalized",
-                    "value": next(signal),
-                },
-            },
-        }
+        message = build_message(args.device_id, boot_id, sequence, next(signal))
         print(json.dumps(message))
 
 
