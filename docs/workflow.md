@@ -53,9 +53,11 @@ automatycznie reset --hard ani push --force.
 Konfiguracja/seed -> symulator -> MQTT -> kolektor/dane -> ewaluacja ->
 manifest i CSV -> eksport tabeli -> LaTeX -> PDF.
 
-Obecnie działają część dokumentacyjna i eksporter tabel.
-Symulator, kolektor i ewaluacja wymagają implementacji Milestone 1 i etapu ML.
-Po ich zbudowaniu zależności również trzeba pobrać przed pracą offline.
+Obecnie działają część dokumentacyjna, eksporter tabel oraz pierwszy lokalny
+generator sygnału i roboczych wiadomości JSON dla jednego węzła.
+[Ćwiczenie z generatorem](step-01-simulator.md) działa bez sieci.
+Publikowanie MQTT, scenariusze anomalii, kolektor i ewaluacja wymagają kolejnych
+etapów implementacji. Ich zależności również trzeba pobrać przed pracą offline.
 
 Źródła, konfiguracje bez sekretów i małe zatwierdzone eksporty trafiają do Git.
 Surowe dane, bazy, modele, lokalne dane autora i pliki kompilacji są ignorowane.
