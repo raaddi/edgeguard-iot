@@ -2,8 +2,22 @@
 
 ## Co możesz zrobić bez sprzętu
 
-Uruchom `scripts/start-simulator.ps1` i otwórz http://127.0.0.1:8501.
+W PowerShell przejdź do katalogu projektu i uruchom aplikację:
+
+```powershell
+cd A:\projects\edgeguard-iot
+.\.venv\Scripts\python.exe -m streamlit run simulator_app.py
+```
+
+Przed pierwszym uruchomieniem zainstaluj zależności zgodnie z README.
+Otwórz http://127.0.0.1:8501. Pozostaw terminal otwarty; Ctrl+C zatrzymuje aplikację.
+Nie trzeba aktywować środowiska ani zmieniać zasad uruchamiania skryptów PowerShell.
 Wszystkie węzły, pomiary i stany urządzeń w tej wersji są symulowane.
+
+Wybraliśmy Python + Streamlit jako interfejs laboratorium na laptopie. Silnik
+symulacji pozostaje niezależny od widoku. Osobne okno w PySide6 rozważymy dopiero,
+jeśli konkretne wymagania uzasadnią przebudowę. Wdrożenie docelowego panelu na
+Raspberry Pi wymaga osobnej oceny zasobów; nie jest jeszcze przesądzone.
 
 | Dział | Zastosowanie |
 |---|---|

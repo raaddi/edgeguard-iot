@@ -845,3 +845,28 @@ unavailable readings, unsynchronized device time and explicitly sourced actuator
 MQTT transport, command/status contracts, a device registry, SQLite persistence
 and API are still pending. This increment does not establish physical compatibility
 or MQTT reliability; the next step is the local broker/publisher/collector path.
+
+## Laboratory interface decision (2026-09-15)
+
+The user delegated the interface choice. Keep the existing Python + Streamlit
+browser interface for the workstation laboratory and Milestone 1. It supports
+local, hardware-free work after dependencies are installed and avoids rebuilding
+the working controls and experiment views during the approximately ten-month thesis.
+
+Keep simulation, telemetry, future storage and detection logic independent of
+Streamlit. The UI is an adapter, not the owner of the shared device contract.
+The experiment runner must eventually work without an open browser. Current
+interactive sessions remain in memory; this decision does not imply persistence.
+
+The considered alternative is a Python desktop application using PySide6/Qt.
+Revisit it only if concrete requirements such as extensive drag-and-drop model
+editing or native desktop integration justify the implementation and packaging cost.
+Do not maintain two interfaces or schedule a rewrite solely for appearance.
+The final gateway dashboard and its Raspberry Pi resource budget remain to be
+evaluated; selecting Streamlit for the laptop does not settle that deployment.
+
+Document Streamlit as a third-party dependency and distinguish the project's
+implementation and research contribution from library functionality. Default Windows
+instructions should invoke the virtual environment's Python directly, avoiding a
+requirement to change PowerShell execution policy. Continue next with MQTT, collector
+and SQLite integration rather than further interface expansion.

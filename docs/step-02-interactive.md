@@ -15,17 +15,16 @@ W PowerShell, w katalogu projektu, z istniejącym środowiskiem `.venv`:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-ui.txt
-.\scripts\start-simulator.ps1
-```
-
-Pierwsze polecenie wymaga internetu. Następnym razem uruchom tylko skrypt.
-Jeżeli nie masz środowiska, utwórz je wcześniej poleceniem `py -3.14 -m venv .venv`.
-Otwórz http://127.0.0.1:8501. Terminal utrzymuje aplikację; Ctrl+C ją zatrzymuje.
-Gdy polityka PowerShell blokuje skrypt, użyj z katalogu repozytorium:
-
-```powershell
 .\.venv\Scripts\python.exe -m streamlit run simulator_app.py
 ```
+
+Instalacja wymaga internetu, jeśli zależności nie są dostępne lokalnie.
+Następnym razem uruchom tylko drugie polecenie.
+Jeżeli nie masz środowiska, utwórz je wcześniej poleceniem `py -3.14 -m venv .venv`.
+Otwórz http://127.0.0.1:8501. Terminal utrzymuje aplikację; Ctrl+C ją zatrzymuje.
+Bezpośrednie uruchomienie Pythona nie wymaga aktywowania środowiska ani zmiany
+polityki PowerShell dotyczącej plików `.ps1`. Skrypt `scripts/start-simulator.ps1`
+pozostaje opcjonalnym skrótem w środowiskach, które pozwalają go uruchomić.
 
 Serwer nasłuchuje tylko na 127.0.0.1. Statystyki użycia Streamlit są wyłączone.
 Nie używamy zewnętrznych fontów, map ani zasobów wykresu.

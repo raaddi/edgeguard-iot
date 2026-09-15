@@ -27,10 +27,20 @@ nodes without a fixed architectural node limit.
 ## First simulation exercise
 
 **Interactive application:** [SmartHome laboratory guide](docs/smarthome-laboratory.md).
-With `.venv` already created, install `requirements-ui.txt` and run
-`scripts/start-simulator.ps1`. Open http://127.0.0.1:8501 for the live chart,
+With `.venv` already created, run from the repository root:
+
+~~~powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-ui.txt
+.\.venv\Scripts\python.exe -m streamlit run simulator_app.py
+~~~
+
+Install dependencies once; subsequent launches only need the second command.
+This invokes Python directly without changing PowerShell's script execution policy.
+Open http://127.0.0.1:8501 for the live chart,
 start/pause/reset, single stepping, seed settings, the house model and five work areas.
 The earlier single-node exercise is preserved in `simulator/lesson_app.py`.
+Streamlit is the selected laboratory interface; the simulation engine remains
+independent of it. The gateway dashboard deployment will be evaluated separately.
 
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:
