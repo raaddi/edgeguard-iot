@@ -1,5 +1,10 @@
 # Krok 2: lokalna aplikacja z wykresem
 
+Uwaga: ten dokument opisuje wcześniejsze ćwiczenie jednego węzła, zachowane w
+`simulator/lesson_app.py`. Główna aplikacja została rozbudowana o
+[wirtualną makietę i pięć działów laboratorium](smarthome-laboratory.md).
+Poniższa instrukcja uruchomienia otwiera teraz pełne laboratorium.
+
 Interfejs Streamlit uruchamia się na laptopie i jest dostępny w przeglądarce
 pod http://127.0.0.1:8501. Po pobraniu zależności działa bez internetu.
 Nie wymaga konta, chmury, brokera MQTT ani elektroniki.

@@ -747,3 +747,22 @@ This addendum supplements the specification above without replacing the project 
 * Use lightweight scripts and metadata appropriate to Raspberry Pi; no paid cloud infrastructure or additional orchestration platform is required.
 
 Milestone 1 remains limited to the original foundation, with the contract, simulation metadata, reliability, and test clarifications above. Replay, trained models, model rollback, physical firmware, and the later security controls are not Milestone 1 deliverables.
+
+## Interactive laboratory extension (2026-09-14)
+
+The user requested a comprehensive local simulation workspace with a visual model
+of the engineering-thesis Smart Home. Keep five areas: model and controls, devices,
+controlled scenarios, telemetry, and experiment exports. Develop and explain these
+in small increments alongside the original MQTT/collector milestone.
+
+The newly supplied source code and thesis listings describe 10 LEDs, 6 servos,
+4 MQ-9 sensors and 4 fans, differing from the earlier approximate inventory.
+Use a configurable reference-code profile; do not treat these counts or inferred
+component locations as a confirmed physical inventory. See docs/smarthome-laboratory.md
+for evidence, assumptions and limits. Support 1-3 eventual physical nodes alongside
+additional virtual nodes; current laboratory nodes are all simulated.
+
+The interactive model is behavioural, not a calibrated digital twin. A local model
+and experiment export do not replace MQTT integration, persistence, physical
+validation or Raspberry Pi measurements. Reconstructing its own seed/action log
+is a teaching and reproducibility feature, distinct from the planned physical-data replay.

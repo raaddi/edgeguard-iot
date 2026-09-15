@@ -5,26 +5,30 @@ environment, with inference planned on a Raspberry Pi gateway.
 
 ## Status
 
+The current branch includes a [SmartHome laboratory](docs/smarthome-laboratory.md)
+based on the supplied engineering-project material: an approximate interactive floor
+plan, device controls, four bounded scenarios, multiple simulated nodes, telemetry,
+and JSON/CSV experiment exports. All nodes remain simulated; MQTT, storage and ML
+integration are pending. The reference-code profile has 10 LEDs, 6 servos, 4 gas
+sensors and 4 fans; physical counts and detailed placement still need confirmation.
+
 The repository contains the agreed specification, a modular Polish LaTeX thesis,
 local PDF build scripts, an Overleaf exporter, a CSV-to-LaTeX results exporter,
 tests and a thesis GitHub Actions workflow.
 
-The first simulator increment generates a repeatable, illustrative gas signal
-for one configurable node and prints draft JSON telemetry locally. It includes
-separate CLI run metadata, an interactive Streamlit interface and automated Python tests. MQTT publishing, multiple-node
-orchestration and anomaly scenarios are still pending, as are the collector,
-API, ESP32 firmware and ML detectors. Their scope remains defined in
-[PROJECT_SPEC.md](PROJECT_SPEC.md).
+The original single-node CLI exercise remains available for learning the generator.
+The collector, API, ESP32 firmware and ML detectors remain to be implemented
+according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
 The system must support 1-3 physical ESP32 boards plus configurable simulated
 nodes without a fixed architectural node limit.
 
 ## First simulation exercise
 
-**Interactive application:** [Polish setup and exercise](docs/step-02-interactive.md).
+**Interactive application:** [SmartHome laboratory guide](docs/smarthome-laboratory.md).
 With `.venv` already created, install `requirements-ui.txt` and run
 `scripts/start-simulator.ps1`. Open http://127.0.0.1:8501 for the live chart,
-start/pause/reset, single stepping, seed settings and draft JSON preview.
-The UI shares the CLI generator; it is still a single-node learning simulator.
+start/pause/reset, single stepping, seed settings, the house model and five work areas.
+The earlier single-node exercise is preserved in `simulator/lesson_app.py`.
 
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:

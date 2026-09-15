@@ -26,7 +26,7 @@ def test_session_matches_generator_resets_and_bounds_history():
 
 
 def test_app_step_pause_reset_and_configuration():
-    app = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "simulator_app.py"))
+    app = AppTest.from_file(str(Path(__file__).resolve().parents[1] / "simulator/lesson_app.py"))
     app.run(timeout=20)
     assert not app.exception
     assert app.session_state.simulation.sequence == 1
