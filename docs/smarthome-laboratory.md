@@ -64,9 +64,10 @@ Docelowy adapter sprzętowy/MQTT będzie osobnym modułem; nie istnieje jeszcze.
 
 Podstawowe ćwiczenie jednego sygnału zachowano w `simulator/lesson_app.py`:
 `python -m streamlit run simulator/lesson_app.py --server.port 8502`.
-CLI `python -m simulator` również nadal działa. Ćwiczenie używa formatu 0.1-draft,
-a profil domu 0.2-draft, który dodaje mapę aktuatorów. Oba są robocze;
-wspólny kontrakt sprzętowy zostanie zatwierdzony przed integracją MQTT.
+CLI `python -m simulator` również nadal działa. Ćwiczenie i profil domu używają
+wspólnego kontraktu **1.0**, opisanego w [kroku 3](step-03-telemetry-contract.md).
+Wersje robocze 0.1-draft i 0.2-draft zostały zastąpione; stare archiwa odtwarzaj
+na ich oryginalnym commicie. Nowy model ma wersję `house-behaviour-v2`.
 
 ## Semantyka modelu
 
@@ -91,7 +92,8 @@ wspólny kontrakt sprzętowy zostanie zatwierdzony przed integracją MQTT.
 
 Nie modelujemy obwodów, charakterystyki chemicznej MQ-9, wentylacji powietrza,
 opóźnień mechaniki ani poboru energii. Serwo idealnie wykonuje polecenie 0/110.
-Stan `simulated` jest stanem modelu, a nie niezależnym fizycznym sprzężeniem zwrotnym.
+Wewnętrzny stan `simulated` jest stanem modelu, a nie niezależnym fizycznym sprzężeniem
+zwrotnym. Telemetria przekazuje go jako `reported` z jawnym `feedback: "simulated"`.
 Nie ma jeszcze MQTT, SQLite, API, modeli ML i bezpiecznego przełączania na sprzęt.
 To działające laboratorium zachowań, nie zakończony Milestone 1.
 

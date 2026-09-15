@@ -23,8 +23,9 @@ Jeżeli środowisko już istnieje, pomiń jego tworzenie.
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-Generator używa wyłącznie biblioteki standardowej Pythona. Po instalacji pytest
-także testy działają offline. Program kończy się sam po zadanej liczbie pomiarów.
+Generator sygnału używa biblioteki standardowej Pythona; walidacja wiadomości
+korzysta z jsonschema. Po instalacji zależności program i testy działają offline.
+Program kończy się sam po zadanej liczbie pomiarów.
 
 ## Czytamy kod w tej kolejności
 
@@ -55,21 +56,24 @@ Pozwala to rozbudować urządzenie o kolejne czujniki bez tworzenia pól
 
 | Pole | Znaczenie |
 |---|---|
-| schema_version | Robocza wersja formatu: 0.1-draft |
+| schema_version | Wspólna wersja formatu: 1.0 |
 | device_id | Tożsamość węzła, zmieniana przez --device-id |
 | boot_id | Tożsamość sesji, wyliczana z run_id i device_id |
 | sequence_number | Numer wiadomości od zera, w obrębie sesji |
 | timestamp | Logiczny czas pomiaru, w UTC |
+| uptime_ms | Czas od początku sesji w milisekundach |
 | sensors | Mapa identyfikatorów czujników i ich pomiarów |
+| actuators | Mapa aktuatorów, pusta w tym ćwiczeniu |
 
 Symulacja zaczyna logicznie od 2026-01-01 00:00:00 UTC i przesuwa czas
 o sekundę na pomiar. Program wypisuje całą serię od razu, bez czekania:
 sekunda symulacji nie musi oznaczać sekundy działania programu.
 Obsługę tempa publikacji dodamy przy MQTT.
 
-Format jest propozycją do rozwinięcia przed integracją MQTT: pełna walidacja,
-deklaracje możliwości urządzeń, brakujące pomiary, stany aktuatorów oraz czas
-odbioru przez bramkę pozostają do zrobienia. Obecny program nie łączy się z brokerem.
+Format 1.0 ma wspólną walidację, typy komponentów, brakujące pomiary i stany
+aktuatorów, opisane w [kroku 3](step-03-telemetry-contract.md).
+Czas odbioru przez bramkę zostanie dodany po stronie kolektora.
+Obecny program nie łączy się z brokerem.
 
 Osobny wiersz na `stderr` zawiera metadane przebiegu: seed, konfigurację,
 pochodzenie syntetyczne, pusty harmonogram scenariuszy, commit, stan zmian

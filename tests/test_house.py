@@ -74,9 +74,9 @@ def test_export_is_reproducible_and_ground_truth_is_separate():
         assert "scenario" not in json.dumps(message)
         assert "environment" not in json.dumps(message)
     last = next(m for m in reversed(sim.history) if "led_01" in m["actuators"])
-    previous = last["actuators"]["led_01"]["simulated"]
+    previous = last["actuators"]["led_01"]["reported"]
     sim.command("led_01", 0)
-    assert last["actuators"]["led_01"]["simulated"] == previous
+    assert last["actuators"]["led_01"]["reported"] == previous
 
 
 def test_limits_and_invalid_configuration():

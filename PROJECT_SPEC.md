@@ -829,9 +829,19 @@ Prioritize a single telemetry contract and the path simulator -> MQTT -> collect
 -> SQLite, followed by a repeatable integration test. Additional ML algorithms,
 elaborate 3D visuals and cloud infrastructure are not immediate priorities.
 
-The user raised PostgreSQL as a possible portfolio improvement. This is an open
-design question, not an approved database migration: SQLite remains the specified
-Milestone 1 default. Revisit the database against deployment, concurrency, resource,
+The user confirmed SQLite for Milestone 1 after considering PostgreSQL. There is
+no planned database migration. Revisit the database against deployment, concurrency, resource,
 learning and operational needs before implementation. PostgreSQL can run locally
 offline; offline operation alone does not determine the choice. Supporting two engines
 would require explicit schema/migration/integration testing and is not assumed to be free.
+
+## Telemetry contract increment (2026-09-15)
+
+The CLI and house simulator now share telemetry schema 1.0, a strict Python decoder
+and conformance tests. See docs/step-03-telemetry-contract.md for field semantics,
+bounds, versioning, hardware feedback limitations and a practical exercise.
+The schema replaces drafts 0.1 and 0.2; it supports full component snapshots,
+unavailable readings, unsynchronized device time and explicitly sourced actuator feedback.
+MQTT transport, command/status contracts, a device registry, SQLite persistence
+and API are still pending. This increment does not establish physical compatibility
+or MQTT reliability; the next step is the local broker/publisher/collector path.

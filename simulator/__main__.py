@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 
+from contracts.telemetry import SCHEMA_VERSION
 from simulator.normal_activity import gas_signal
 from simulator.telemetry import SENSOR_ID, START, build_message, session_id
 
@@ -58,6 +59,7 @@ def main() -> None:
         "run_id": args.run_id,
         "source": "synthetic",
         "generator": "illustrative-gas-v1",
+        "telemetry_schema": SCHEMA_VERSION,
         "seed": args.seed,
         "samples": args.samples,
         "device_id": args.device_id,

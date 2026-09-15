@@ -2,6 +2,8 @@ name: Python tests
 on:
   push:
     paths:
+      - 'contracts/**'
+      - 'requirements.txt'
       - 'simulator/**'
       - 'simulator_app.py'
       - '.streamlit/**'
@@ -13,6 +15,8 @@ on:
       - '.github/workflows/python.yml'
   pull_request:
     paths:
+      - 'contracts/**'
+      - 'requirements.txt'
       - 'simulator/**'
       - 'simulator_app.py'
       - '.streamlit/**'

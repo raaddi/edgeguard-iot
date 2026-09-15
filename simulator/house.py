@@ -8,6 +8,7 @@ import json
 import platform
 from pathlib import Path
 
+from contracts.telemetry import SCHEMA_VERSION, build_telemetry
 from simulator.normal_activity import gas_signal
 from simulator.telemetry import START, session_id
 
@@ -20,7 +21,7 @@ def load_profile() -> dict:
 
 
 class HouseSimulation:
-    VERSION = "house-behaviour-v1"
+    VERSION = "house-behaviour-v2"
     MAX_STEPS = 10_000
     MAX_ACTIONS = 1_000
     HISTORY_LIMIT = 3_000
@@ -151,15 +152,17 @@ class HouseSimulation:
                 self.alerts.append({"rule": "simulated_link_loss", "target": node})
                 self.suppressed_messages += 1
                 continue
-            message = {
-                "schema_version": "0.2-draft", "device_id": node,
-                "boot_id": session_id(self.run_id, node), "sequence_number": tick,
-                "timestamp": (START + timedelta(seconds=tick)).isoformat(),
-                "sensors": {cid: {"measurement": "gas_signal", "unit": "normalized", "value": s["value"]}
-                            for cid, s in self.sensors.items() if self.components[cid]["node"] == node},
-                "actuators": {cid: deepcopy(s) for cid, s in self.actuators.items()
-                              if self.components[cid]["node"] == node},
-            }
+            message = build_telemetry(
+                device_id=node, boot_id=session_id(self.run_id, node), sequence_number=tick,
+                timestamp=(START + timedelta(seconds=tick)).isoformat(), uptime_ms=tick * 1000,
+                sensors={cid: {"measurement": "gas_signal", "unit": "normalized", "status": "ok", "value": s["value"]}
+                         for cid, s in self.sensors.items() if self.components[cid]["node"] == node},
+                actuators={cid: {"kind": self.components[cid]["kind"],
+                                 "unit": "degrees" if self.components[cid]["kind"] == "servo" else "binary",
+                                 "mode": s["mode"], "commanded": s["commanded"],
+                                 "reported": s["simulated"], "feedback": "simulated"}
+                           for cid, s in self.actuators.items() if self.components[cid]["node"] == node},
+            )
             if len(self.history) == self.history.maxlen:
                 self.evicted_messages += 1
             self.history.append(message)
@@ -174,6 +177,7 @@ class HouseSimulation:
     def export(self, code_version=None):
         return {
             "manifest": {"format": "edgeguard-house-run-v1", "model": self.VERSION,
+                         "telemetry_schema": SCHEMA_VERSION,
                          "run_id": self.run_id, "source": "synthetic", "seed": self.seed,
                          "python_version": platform.python_version(),
                          "logical_start": START.isoformat(), "interval_seconds": 1,

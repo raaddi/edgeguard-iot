@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "device_id": "esp32_node_01",
+  "boot_id": "2347a478-0587-4e84-b569-7dc47e775c88",
+  "sequence_number": 0,
+  "timestamp": null,
+  "uptime_ms": 500,
+  "sensors": {
+    "gas_01": {"measurement": "gas_signal", "unit": "normalized", "status": "ok", "value": 0},
+    "gas_02": {"measurement": "gas_signal", "unit": "normalized", "status": "unavailable", "value": null}
+  },
+  "actuators": {
+    "servo_01": {"kind": "servo", "unit": "degrees", "mode": "manual", "commanded": 110, "reported": null, "feedback": "unavailable"},
+    "fan_01": {"kind": "fan", "unit": "binary", "mode": "auto", "commanded": 1, "reported": 0, "feedback": "measured"}
+  }
+}

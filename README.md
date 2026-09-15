@@ -17,6 +17,8 @@ local PDF build scripts, an Overleaf exporter, a CSV-to-LaTeX results exporter,
 tests and a thesis GitHub Actions workflow.
 
 The original single-node CLI exercise remains available for learning the generator.
+Both simulator entry points now emit validated telemetry **1.0** using the shared
+[contract and Polish exercise](docs/step-03-telemetry-contract.md).
 The collector, API, ESP32 firmware and ML detectors remain to be implemented
 according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
 The system must support 1-3 physical ESP32 boards plus configurable simulated
@@ -41,7 +43,8 @@ py -3.14 -m venv .venv
 ~~~
 
 Skip environment creation if `.venv` already exists. The generator needs no
-third-party packages, network or hardware. Its normalized signal is not a
+network or hardware after dependencies are installed. Telemetry validation uses
+`jsonschema`; the signal generator itself uses the standard library. Its normalized signal is not a
 calibrated MQ-9 measurement. Logical timestamps advance by one second; output
 is generated immediately. Metadata goes to stderr and telemetry to stdout.
 
@@ -78,7 +81,8 @@ No Python, Docker or electronics are needed to write and build the thesis.
 | Directory | Purpose |
 |---|---|
 | thesis/ | Chapters, bibliography, figures and optional result tables |
-| simulator/ | First offline signal generator and draft telemetry CLI |
+| simulator/ | Offline signal generator and interactive SmartHome model |
+| contracts/ | Shared telemetry schema, strict decoder and examples |
 | scripts/ | Build tools, Overleaf export and CSV table export |
 | experiments/ | Metadata/CSV templates and ignored local run files |
 | data/ | Ignored raw and processed datasets |
