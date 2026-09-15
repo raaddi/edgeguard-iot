@@ -766,3 +766,72 @@ The interactive model is behavioural, not a calibrated digital twin. A local mod
 and experiment export do not replace MQTT integration, persistence, physical
 validation or Raspberry Pi measurements. Reconstructing its own seed/action log
 is a teaching and reproducibility feature, distinct from the planned physical-data replay.
+
+## Project quality and completion criteria (2026-09-15)
+
+These agreed criteria guide subsequent work. They describe the intended completed
+project, not functionality already implemented. Consult this section before planning
+each increment, together with the milestone scope and research clarifications above.
+
+### Three priorities
+
+1. A strong Master's thesis with clear research questions, reproducible experiments
+   and honest analysis, including negative results.
+2. A substantial portfolio project whose architecture, implementation, tests and
+   limitations the author can explain independently.
+3. Productive laptop-only development before building the electronics, with later
+   physical validation rather than an assumption that synthetic results transfer.
+
+Teach and develop in small steps. Complete and verify the current increment before
+expanding scope. Publish completed source/documentation increments to GitHub as
+specified in AGENTS.md. Do not add technologies merely to make the stack look larger.
+
+### Evidence required for completion
+
+* **Shared device contract:** simulator and ESP32 use the same versioned telemetry
+  and command contracts, with automatic conformance checks. Reconcile the current
+  educational draft schemas before integrating MQTT. Adding a physical device must
+  not require a separate collector implementation.
+* **Repeatable experiments:** a documented command runs a bounded, predefined
+  scenario suite and records seeds, configuration, scenario ground truth, code and
+  dataset/model versions where applicable. Distinguish reproducible event content
+  from variable network timing. Ground truth remains separate from model inputs.
+* **Fair comparison:** thresholds/temporal rules and selected ML methods use the same
+  held-out evaluation data. Prevent leakage, report false alarms and detection delay
+  as well as classification metrics, and document tuning and limitations.
+* **System resilience:** automated integration tests cover broker restart, reconnects,
+  duplicates, missing/invalid readings and bounded overload. Define expected recovery
+  and account for rejected or lost data. Model-only tests do not establish MQTT reliability.
+* **Accessible demonstration:** document a simple hardware-free launch and prepare
+  a short demonstration recording. A roughly five-minute walkthrough should show
+  normal operation, a controlled anomaly, device/detector reaction, the message-to-event
+  path, and eventually measured method comparisons and Raspberry Pi resource costs.
+  Clearly label simulated behaviour and features that are not yet implemented.
+* **Decision record:** document the problem, alternatives, selected approach and
+  trade-offs for major architectural decisions. Keep diagrams and run instructions
+  current. Demonstrate quality through evidence rather than claims of production readiness.
+
+### Research emphasis: from simulation to physical validation
+
+Develop RQ2 through a concrete experiment: how does anomaly detection prepared in
+the simulator perform on a physical node, and which changes are necessary?
+Treat successful transfer as a hypothesis, not a promised outcome. Keep final real
+evaluation data separate from model tuning; report any adaptation protocol explicitly.
+
+After the software MQTT path works, perform an early integration check with one
+ESP32 when available. The fully assembled model must not block software development,
+but hardware compatibility must not be left until the final weeks. Physical validation
+and Raspberry Pi measurements remain core thesis work.
+
+### Next technical priority and scope control
+
+Prioritize a single telemetry contract and the path simulator -> MQTT -> collector
+-> SQLite, followed by a repeatable integration test. Additional ML algorithms,
+elaborate 3D visuals and cloud infrastructure are not immediate priorities.
+
+The user raised PostgreSQL as a possible portfolio improvement. This is an open
+design question, not an approved database migration: SQLite remains the specified
+Milestone 1 default. Revisit the database against deployment, concurrency, resource,
+learning and operational needs before implementation. PostgreSQL can run locally
+offline; offline operation alone does not determine the choice. Supporting two engines
+would require explicit schema/migration/integration testing and is not assumed to be free.

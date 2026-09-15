@@ -2,6 +2,9 @@
 
 - Communicate with Radek in Polish. Explain changes in small, teachable steps.
 - Read PROJECT_SPEC.md and preserve the hardware-independent architecture.
+- Before planning or implementing an increment, check the "Project quality and
+  completion criteria (2026-09-15)" section in PROJECT_SPEC.md. Use it to choose
+  work and assess completion; distinguish planned requirements from verified results.
 - Every completed project increment must be committed and pushed to GitHub.
   The user has explicitly requested this as the default; do not ask again for
   routine commits and pushes of authorized work.
