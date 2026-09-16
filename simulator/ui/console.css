@@ -1,0 +1,36 @@
+.stMainBlockContainer {padding-top: 2rem; padding-bottom: 1.5rem; max-width: 1700px;}
+.stMainBlockContainer [data-testid="stVerticalBlock"] {gap: .65rem;}
+.console-brand {border-left: 4px solid #f5b544; padding: 0 0 0 16px; margin-bottom: 8px;}
+.console-brand > span {float: right; color: #f5b544; font: 700 16px monospace; padding-top: 14px;}
+.console-brand h1 {font-size: 26px; letter-spacing: 2px; padding: 0; line-height: 1.4;}
+.console-brand em {font-weight: 400; font-style: normal; color: #8e9da9;}
+.console-brand p {font: 11px monospace; letter-spacing: 2px; color: #8e9da9; margin: 4px 0 0;}
+.console-status {display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: #303b44; border: 1px solid #303b44; margin: 10px 0 6px;}
+.console-status div {background: #141a20; padding: 12px 16px; min-width: 0;}
+.console-status small {display: block; color: #94a3b0; font: 10px monospace; letter-spacing: 1px;}
+.console-status strong {display: block; color: #edf2f6; font: 600 21px monospace; margin-top: 5px; overflow-wrap: anywhere;}
+.console-status .accent {color: #f5b544;}
+.console-status .good {color: #65d7c3;}
+.panel-heading {font: 600 12px monospace; letter-spacing: 1px; color: #b7c5d0; margin: 0 0 14px;}
+.panel-heading span {color: #f5b544; margin-right: 8px;}
+.signal-reading {display: flex; align-items: baseline; gap: 10px; font-family: monospace;}
+.signal-reading strong {font-size: 44px; color: #65d7c3; line-height: 1.15;}
+.signal-reading.warn strong {color: #f5b544;}
+.signal-reading small {color: #94a3b0; font-size: 12px;}
+.signal-track {height: 7px; background: #303b44; position: relative; margin: 14px 0 8px;}
+.signal-track i {height: 7px; display: block; background: #65d7c3;}
+.signal-track b {position: absolute; top: -4px; height: 15px; width: 2px; background: #f5b544;}
+.event-log {background: #0c1014; border: 1px solid #303b44; padding: 12px 16px; max-height: 190px; overflow-y: auto; font: 12px/1.9 monospace;}
+.event-log div {overflow-wrap: anywhere;}
+.event-log time {color: #f5b544; margin-right: 14px;}
+.event-log span {color: #b7c5d0;}
+.st-key-workspace [data-testid="stVerticalBlockBorderWrapper"] {border-radius: 4px;}
+@media (max-width: 900px) {
+  .console-status {grid-template-columns: repeat(3, 1fr);}
+  .console-brand h1 {font-size: 21px;}
+}
+@media (max-width: 640px) {
+  .stMainBlockContainer {padding-left: 1rem; padding-right: 1rem;}
+  .console-status {grid-template-columns: repeat(2, 1fr);}
+  .console-brand > span {display: none;}
+}

@@ -9,7 +9,7 @@ def floorplan(sim, selected="garage"):
              'style="width:100%;max-height:720px;display:block">',
              '<defs><pattern id="tiles" width="25" height="25" patternUnits="userSpaceOnUse">'
              '<path d="M25 0H0V25" fill="none" stroke="#ffffff" opacity=".04"/></pattern></defs>',
-             '<rect x="18" y="12" width="724" height="750" rx="20" fill="#101f2c"/>']
+             '<rect x="18" y="12" width="724" height="750" rx="20" fill="#141a20"/>']
 
     def text(x, y, value, size=15, color="#c9d9e7"):
         parts.append(f'<text x="{x}" y="{y}" fill="{color}" font-family="sans-serif" font-size="{size}">{escape(str(value))}</text>')
@@ -23,8 +23,8 @@ def floorplan(sim, selected="garage"):
         components = [c for c in sim.components.values() if c["room"] == rid]
         lights = [c for c in components if c["kind"] == "light"]
         lit = any(sim.actuators[c["id"]]["simulated"] for c in lights)
-        fill = "#263930" if rid == "yard" else "#343b30" if lit else "#172c3c"
-        rect(x, y, w, h, fill, "#61e3c2" if rid == selected else "#567081")
+        fill = "#202f2b" if rid == "yard" else "#343b30" if lit else "#1b2731"
+        rect(x, y, w, h, fill, "#f5b544" if rid == selected else "#567081")
         rect(x+3, y+3, w-6, h-6, "url(#tiles)", "none")
         text(x+14, y+26, room["name"], 16 if rid != "room" else 13, "#f0f5fa")
         node = sim.room_nodes[rid]

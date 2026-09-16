@@ -37,7 +37,9 @@ With `.venv` already created, run from the repository root:
 Install dependencies once; subsequent launches only need the second command.
 This invokes Python directly without changing PowerShell's script execution policy.
 Open http://127.0.0.1:8501 for the live chart,
-start/pause/reset, single stepping, seed settings, the house model and five work areas.
+start/pause, single stepping and a consolidated diagnostic console: model, signals,
+actuator controls and scenario tests together. Configuration, inventory and experiment
+exports (including reset) are expandable panels. See the Polish guide for a short walkthrough.
 The earlier single-node exercise is preserved in `simulator/lesson_app.py`.
 Streamlit is the selected laboratory interface; the simulation engine remains
 independent of it. The gateway dashboard deployment will be evaluated separately.

@@ -19,16 +19,36 @@ symulacji pozostaje niezależny od widoku. Osobne okno w PySide6 rozważymy dopi
 jeśli konkretne wymagania uzasadnią przebudowę. Wdrożenie docelowego panelu na
 Raspberry Pi wymaga osobnej oceny zasobów; nie jest jeszcze przesądzone.
 
-| Dział | Zastosowanie |
-|---|---|
-| Makieta | Orientacyjny rzut domu, wybór strefy, sterowanie LED-ami, wentylatorami i serwami |
-| Urządzenia | Spis komponentów, przypisanie do węzłów i ich stan |
-| Scenariusze | Wzrost sygnału gazowego, zamrożenie czujnika, awaria wentylatora, utrata łączności |
-| Telemetria | Wykresy węzłów, wiadomości JSON, proste reguły i liczniki utraty danych |
-| Eksperymenty | Eksport JSON/CSV, dziennik działań, sprawdzenie odtwarzalności |
+## Konsola diagnostyczna
 
-Panel boczny (strzałka w lewym górnym rogu) zawiera seed, identyfikator przebiegu,
-tempo i liczbę węzłów. Formularz zmienia konfigurację po kliknięciu **Nowy przebieg**.
+Jeden pulpit łączy mapę, sygnał, sterowanie i testy zachowania. Ciemna stylistyka,
+liczniki, pasek sygnału oraz dziennik nawiązują do konsol diagnostycznych i strojenia.
+Nie zmieniamy silnika ani kontraktu telemetrii; Streamlit pozostaje adapterem.
+
+1. U góry wybierz **Strefę roboczą**. Ramka na mapie, kanał pomiarowy i lista
+   elementów wykonawczych odnoszą się do tej strefy.
+2. W **Sterowaniu strefą** wybierz element (np. światło albo skrzydło bramy)
+   i wydaj polecenie. Wentylator ma osobny przycisk przywrócenia AUTO.
+3. **Podgląd sygnału** pokazuje wartość modelu i wykres wyemitowanej telemetrii.
+   Przerywana linia oznacza próg reguły. Przy braku czujnika w strefie wybierasz
+   jawnie sygnał referencyjny; dodatkowe węzły mają osobną strefę wirtualną.
+4. W **Teście zachowania** wybierz zdarzenie i czas, następnie **Dodaj zdarzenie**.
+   Cel domyślnie odpowiada obserwowanemu kanałowi; możesz wybrać inny.
+   Kliknij **Krok +1 s** albo **Start**. Harmonogram pokazuje oczekujące/aktywne zdarzenia.
+5. Wskazania reguł dotyczą całego domu. Dziennik poniżej pokazuje ostatnie osiem
+   poleceń i zaplanowanych scenariuszy, w tym odrzucone polecenia offline.
+
+**Zapis przebiegu** na dole zawiera eksport JSON/CSV, sprawdzenie odtwarzalności
+oraz reset. **Inwentarz** zawiera pełną listę komponentów. **Konfiguracja przebiegu**
+u góry zawiera seed, identyfikator i liczbę węzłów. Formularz stosujesz przyciskiem
+**Nowy przebieg**. Tempo odtwarzania jest obok Start/Pauza.
+
+Reset i Nowy przebieg usuwają stan bieżącej sesji; najpierw pobierz eksport.
+Reset jest dostępny przy pauzie. Mapa jest podglądem, a strefę wybierasz z listy.
+Czas logiczny nie jest pomiarem wydajności komputera. Przerwy offline są przerwami
+na wykresie; wskaźnik wartości modelu może nadal się zmieniać. Dziennik operacji
+nie udaje jeszcze historii alarmów detektora.
+
 Interfejs oferuje 1–3 węzły makiety i 0–9 dodatkowych. To limity panelu demonstracyjnego;
 silnik ma osobny limit zasobów, po 32 węzły w każdej grupie. Nie zakłada konkretnej
 liczby fizycznych ESP32. Dodatkowe węzły mają własny czujnik i nie są rysowane w domu.
@@ -65,8 +85,10 @@ SHA-256 analizowanych plików:
 simulator/config/house.json  strefy, komponenty, geometria, próg
 simulator/house.py           stan domu, polecenia, czas, scenariusze, telemetria
 simulator/ui/floorplan.py    wizualizacja SVG
-simulator/ui/views.py        pięć działów aplikacji
-simulator/ui/app.py          nawigacja, konfiguracja i odtwarzanie
+simulator/ui/console.py      pulpit, sygnały, scenariusze i dziennik
+simulator/ui/views.py        sterowanie, inwentarz i eksport
+simulator/ui/console.css     styl konsoli
+simulator/ui/app.py          sesja, konfiguracja i odtwarzanie
 simulator_app.py            punkt uruchomienia
 ```
 
@@ -132,9 +154,9 @@ odświeżenie lub zamknięcie może ją utracić. Eksporty zapisuj w ignorowanym
 
 ## Nauka krok po kroku
 
-1. W Makiecie wybierz garaż, włącz LED i otwórz skrzydło bramy.
-2. W Scenariuszach dodaj wzrost sygnału gas_01, wykonaj krok i sprawdź automatykę fan_01.
+1. Wybierz strefę Garaż, włącz światło A; wybierz skrzydło A i otwórz je.
+2. W Teście zachowania dodaj wzrost sygnału gas_01, wykonaj krok i sprawdź automatykę fan_01.
 3. Dodaj awarię fan_01: porównaj stan zadany i symulowany oraz wskazanie reguły.
-4. W Telemetrii wybierz węzeł garażu i prześledź wiadomość JSON.
-5. W Eksperymentach pobierz dane i sprawdź odtwarzalność.
+4. Pod wykresem rozwiń Ostatnią wiadomość JSON i prześledź dane węzła garażu.
+5. Wstrzymaj odtwarzanie. W Zapisie przebiegu pobierz dane i sprawdź odtwarzalność.
 6. Następnie wspólnie rozwijamy kontrakt MQTT, zapis do SQLite i testy niezawodności.

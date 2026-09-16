@@ -905,3 +905,22 @@ An anomalous pattern alone cannot distinguish an attack from a software fault.
 Implement after the MQTT/collector/storage foundation. Preserve support for
 1-3 physical ESP32 nodes alongside configurable virtual nodes. The simulator
 remains a test tool after hardware integration, not a replacement for real validation.
+
+
+## Consolidated diagnostic console (2026-09-17)
+
+The user requested simplification of the fragmented simulator UI before the next
+transport increment. Present the existing five functional areas in one diagnostic
+workspace: linked zone selection, model schematic, signal/telemetry, actuator
+controls, scenario injection and operation log. Keep configuration, inventory and
+export in expandable panels; preserve JSON/CSV export and deterministic replay.
+Use a console-like visual style inspired by tuning software without inventing
+measurements, detector scores or hardware connectivity.
+
+The model, shared telemetry contract and planned support for 1-3 physical ESP32
+nodes plus virtual nodes remain unchanged. Distinguish internal model values from
+emitted telemetry during offline scenarios. Display rule findings as current state
+and operation logs as actions, not as an implemented security-event history.
+This increment serves the accessible-demonstration criterion; it does not complete
+MQTT, persistence, ML or hardware validation. Resume the agreed MQTT/collector/SQLite
+priority after this usability increment.

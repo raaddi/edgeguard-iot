@@ -110,7 +110,7 @@ Po aktualizacji kodu uruchom nową sesję aplikacji; nie mieszaj wersji w jednym
 1. Wygeneruj trzy wiadomości i znajdź licznik, czas oraz odczyt.
 2. Otwórz przykład fizycznego węzła i wyjaśnij różnicę między `0` i `null`.
 3. W makiecie wywołaj awarię wentylatora przy wysokim sygnale gazowym.
-   W Telemetrii porównaj `commanded`, `reported` i `feedback`.
+   Pod wykresem konsoli rozwiń ostatnią wiadomość JSON i porównaj `commanded`, `reported` i `feedback`.
 4. Przeczytaj test odrzucający wartość `2` dla wentylatora i jednostkę `ppm` dla
    naszego sygnału. Walidacja formatu nie oznacza jeszcze detekcji anomalii:
    poprawnie zapisany, wysoki odczyt powinien dotrzeć do przyszłego detektora.
