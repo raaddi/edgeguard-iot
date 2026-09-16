@@ -870,3 +870,38 @@ implementation and research contribution from library functionality. Default Win
 instructions should invoke the virtual environment's Python directly, avoiding a
 requirement to change PowerShell execution policy. Continue next with MQTT, collector
 and SQLite integration rather than further interface expansion.
+
+## Agreed cybersecurity experiment (2026-09-16)
+
+Make MQTT behaviour monitoring and detection of control-command abuse the concrete
+cybersecurity component of EdgeGuard. This refines the existing security scope and
+RQ5; it is planned work, not an implemented detector or an expansion of Milestone 1.
+
+The primary scenario is an authenticated controller with permission to operate a
+gate sending unusual repeated open/close commands. Emulate misuse of valid access
+within the local laboratory; no credential theft or exploitation is required.
+Compare it with ordinary use, legitimate busy periods and faulty-client behaviour.
+An anomalous pattern alone cannot distinguish an attack from a software fault.
+
+* Observe command/message counts, inter-arrival times and state transitions in
+  bounded time windows. Measure arrival timing and traffic volume at the gateway;
+  do not rely solely on device-reported counters. Record commands at the trusted
+  control path and define attribution explicitly: payload device_id is not proof
+  of the publishing client's authenticated identity.
+* Compare simple rate/temporal rules with a selected anomaly detector, initially
+  considering Isolation Forest. Use independent runs for training, validation and
+  testing, including legitimate high-activity runs; keep scenario labels outside
+  the inputs. Report precision/recall, false alarms per hour, detection delay and
+  Raspberry Pi resource costs. Do not assume ML will outperform the rules.
+* Apply per-device/client credentials and MQTT topic permissions as preventive
+  controls. Test denied unauthorized operations separately from allowed-but-unusual
+  behaviour; ML complements access control and does not replace it.
+* Start with bounded virtual-device scenarios. Later validate the shared message
+  path on physical ESP32 nodes, with independent actuator limits protecting the
+  mechanism; do not reproduce rapid mechanical cycling merely to demonstrate an alert.
+* Emit a suspicious-behaviour alert with supporting events. Automatic blocking
+  based on model scores is not part of this experiment's initial scope.
+
+Implement after the MQTT/collector/storage foundation. Preserve support for
+1-3 physical ESP32 nodes alongside configurable virtual nodes. The simulator
+remains a test tool after hardware integration, not a replacement for real validation.
