@@ -3,10 +3,11 @@
 Uwaga: ten dokument opisuje wcześniejsze ćwiczenie jednego węzła, zachowane w
 `simulator/lesson_app.py`. Główna aplikacja została rozbudowana o
 [wirtualną makietę i pięć działów laboratorium](smarthome-laboratory.md).
-Poniższa instrukcja uruchomienia otwiera teraz pełne laboratorium.
+Poniższa instrukcja otwiera ćwiczenie jednego węzła. Pełne laboratorium
+uruchom zgodnie z osobnym przewodnikiem podlinkowanym powyżej.
 
 Interfejs Streamlit uruchamia się na laptopie i jest dostępny w przeglądarce
-pod http://127.0.0.1:8501. Po pobraniu zależności działa bez internetu.
+pod http://127.0.0.1:8502. Po pobraniu zależności działa bez internetu.
 Nie wymaga konta, chmury, brokera MQTT ani elektroniki.
 
 ## Uruchomienie
@@ -15,16 +16,17 @@ W PowerShell, w katalogu projektu, z istniejącym środowiskiem `.venv`:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-ui.txt
-.\.venv\Scripts\python.exe -m streamlit run simulator_app.py
+.\.venv\Scripts\python.exe -m streamlit run simulator/lesson_app.py --server.port 8502
 ```
 
 Instalacja wymaga internetu, jeśli zależności nie są dostępne lokalnie.
 Następnym razem uruchom tylko drugie polecenie.
 Jeżeli nie masz środowiska, utwórz je wcześniej poleceniem `py -3.14 -m venv .venv`.
-Otwórz http://127.0.0.1:8501. Terminal utrzymuje aplikację; Ctrl+C ją zatrzymuje.
+Otwórz http://127.0.0.1:8502. Osobny port pozwala równolegle uruchomić makietę
+na porcie 8501. Terminal utrzymuje aplikację; Ctrl+C ją zatrzymuje.
 Bezpośrednie uruchomienie Pythona nie wymaga aktywowania środowiska ani zmiany
 polityki PowerShell dotyczącej plików `.ps1`. Skrypt `scripts/start-simulator.ps1`
-pozostaje opcjonalnym skrótem w środowiskach, które pozwalają go uruchomić.
+uruchamia pełną makietę, a nie opisane tutaj ćwiczenie.
 
 Serwer nasłuchuje tylko na 127.0.0.1. Statystyki użycia Streamlit są wyłączone.
 Nie używamy zewnętrznych fontów, map ani zasobów wykresu.
@@ -50,7 +52,7 @@ Nie nadrabiamy zaległych próbek seriami po powrocie do karty.
 ## Jak połączony jest kod
 
 ```text
-normal_activity.py → session.py → simulator_app.py → wykres
+normal_activity.py → session.py → lesson_app.py → wykres
                           ↓
                     telemetry.py → podgląd JSON
 ```
@@ -58,14 +60,16 @@ normal_activity.py → session.py → simulator_app.py → wykres
 `normal_activity.py` zawiera dotychczasowy generator sygnału.
 `telemetry.py` buduje ten sam format wiadomości dla CLI i interfejsu.
 `session.py` przechowuje stan przebiegu i ostatnie 300 próbek; licznik jest ciągły.
-`simulator_app.py` odpowiada za przyciski, ustawienia i prezentację.
+`simulator/lesson_app.py` odpowiada za przyciski, ustawienia i prezentację ćwiczenia.
 Stan każdej karty przeglądarki jest niezależny. Pełne odświeżenie strony może
-utracić sesję. Nie ma jeszcze trwałego zapisu danych ani eksportu eksperymentu.
+utracić sesję. Ćwiczenie nie ma trwałego zapisu ani eksportu eksperymentu;
+pełna makieta udostępnia osobno eksport JSON/CSV.
 Domyślna tożsamość sesji służy ćwiczeniu, zgodnie z krokiem 1.
 
 To nadal jeden węzeł i ilustracyjny sygnał gazowy 0–1, bez kalibracji MQ-9.
 Wykres nie wykrywa anomalii i nie potwierdza sprawności fizycznego czujnika.
-Wiele węzłów, kontrolowane scenariusze i MQTT to kolejne kroki.
+Wiele węzłów i kontrolowane scenariusze są dostępne w pełnej makiecie.
+Integracja MQTT pozostaje kolejnym etapem projektu.
 
 ## Weryfikacja
 
