@@ -58,6 +58,25 @@ network or hardware after dependencies are installed. Telemetry validation uses
 calibrated MQ-9 measurement. Logical timestamps advance by one second; output
 is generated immediately. Metadata goes to stderr and telemetry to stdout.
 
+## Check telemetry without hardware
+
+After installing the dependencies above, run this from the repository root:
+
+~~~powershell
+.\.venv\Scripts\python.exe -m simulator --samples 3 --run-id contract-lesson | .\.venv\Scripts\python.exe -m contracts
+~~~
+
+Expected output: `Validated 3 telemetry messages (schema 1.0).`
+The run manifest is printed separately on stderr; it is not an error and is not
+passed into the validator. This checks the message format locally, without MQTT
+or SQLite. It does not test network delivery or anomaly detection.
+
+To check a saved JSONL file, use `python -m contracts path/to/telemetry.jsonl`
+with the project's Python environment. Each line must contain one telemetry
+message; the full laboratory experiment JSON export has a different structure.
+See the [Polish contract lesson](docs/step-03-telemetry-contract.md) for field
+meanings and the distinction between zero, unavailable readings and actuator feedback.
+
 ## Start with Overleaf
 
 [Instrukcja po polsku](thesis/README.md) |
