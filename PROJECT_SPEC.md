@@ -946,3 +946,26 @@ Primary deployment is a laptop, without electronics or Internet after installati
 Qt packaging and performance on Raspberry Pi remain unverified. This increment
 does not add MQTT, ML, physical feedback or persistence. After evaluating usability,
 return to the agreed communication/collector/SQLite milestone.
+
+## Full desktop laboratory scope (2026-09-17)
+
+After evaluating the garage prototype, the user requested a more complete, coherent
+desktop product with a black console palette and clear functional meaning.
+Expand Qt to the existing local-laboratory scope: the whole house and additional
+virtual nodes, linked device navigation, all actuator controls, four bounded fault
+scenarios, telemetry, current rules, node inventory, run configuration/reset,
+JSON/CSV export, verified archive import and reproducibility checks.
+
+Retain the same HouseSimulation engine and telemetry contract. Use a black background
+with semantic device/status colors and textual state labels. Avoid fictional network
+connections, ML scores or hardware measurements. Expose pending research components
+as scope information, not as working controls. A coherent laboratory is not the same
+as a production-ready deployment or completion of the Master's project.
+
+Protect unsaved sessions on replacement/close. Rebuild and validate imported archives
+before replacing a session; bound input size and model workload, and perform replay
+outside the GUI thread. Do not treat scenario labels as detector inputs. Keep JSON
+archives authoritative for actions and configuration; CSV contains buffered sensor
+measurements. Qt is the active laboratory UI; Streamlit remains a comparison/legacy
+tool instead of receiving parallel new features. Packaging, Raspberry Pi evaluation,
+MQTT/collector/SQLite, ML and physical validation remain separate pending work.

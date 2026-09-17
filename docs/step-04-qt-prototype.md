@@ -1,5 +1,8 @@
 # Krok 4 — prototyp garażu jako aplikacja desktopowa
 
+> To zapis wcześniejszego etapu. Obecna aplikacja obsługuje cały dom;
+> aktualna instrukcja znajduje się w [Desktopowym laboratorium](desktop-laboratory.md).
+
 To mały test sposobu obsługi w **Pythonie i PySide6 (Qt)**. Otwiera osobne okno.
 Dotychczasowe laboratorium Streamlit pozostaje dostępne do porównania; prototyp
 nie przenosi jeszcze wszystkich pomieszczeń, eksportu CSV i narzędzi eksperymentów.

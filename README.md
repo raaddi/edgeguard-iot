@@ -26,10 +26,11 @@ nodes without a fixed architectural node limit.
 
 ## First simulation exercise
 
-**Native desktop prototype:** [Python + Qt garage walkthrough](docs/step-04-qt-prototype.md).
-This small alternative UI has clickable garage devices, an inspector and a live
-telemetry plot, all backed by the same simulation model. It is not yet a replacement
-for the full browser laboratory. With the existing virtual environment:
+**Desktop laboratory:** [Python + Qt walkthrough](docs/desktop-laboratory.md).
+The native workspace now covers the whole house, device navigation and controls,
+fault scenarios, telemetry, JSON/CSV exports and verified experiment replay.
+It uses the same simulation model and has a black console theme. MQTT, storage,
+ML and physical validation remain pending. With the existing virtual environment:
 
 ~~~powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt

@@ -1,5 +1,8 @@
 # Wirtualne laboratorium SmartHome
 
+> Ten dokument opisuje zachowany interfejs Streamlit. Rozwijana aplikacja Qt
+> ma [osobną instrukcję](desktop-laboratory.md) i korzysta z tego samego modelu.
+
 ## Co możesz zrobić bez sprzętu
 
 W PowerShell przejdź do katalogu projektu i uruchom aplikację:
