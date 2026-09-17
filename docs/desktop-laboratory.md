@@ -29,7 +29,7 @@ i 0–9 dodatkowych węzłów wirtualnych. Wszystkie węzły są obecnie symulow
 | Makieta | Rzut całego domu; kliknięcie wybiera urządzenie, dwuklik strefy otwiera zbliżenie |
 | Inspektor | Wybrane urządzenie, węzeł, łączność, stan modelu, polecenia i AUTO wentylatora |
 | Test zachowania | Cztery rodzaje zdarzeń, dowolny właściwy cel i czas 1–120 s |
-| Sygnał | Wybór czujnika; 120 ostatnich sekund wyemitowanej telemetrii i próg reguły |
+| Wykresy | Domyślnie wszystkie czujniki obok siebie; opcjonalnie pojedynczy kanał; 120 ostatnich sekund telemetrii |
 | Dziennik | Operacje użytkownika, odrzucenia, pojawienie się i ustąpienie reguł |
 | Scenariusze | Pełny harmonogram; oczekujące, aktywne i zakończone zdarzenia |
 | Reguły | Bieżące wskazania, ich cel i jawne źródło |
@@ -39,8 +39,19 @@ i 0–9 dodatkowych węzłów wirtualnych. Wszystkie węzły są obecnie symulow
 
 Separatory paneli są regulowane. Przy małym oknie inspektor przewija się niezależnie.
 Wybór w drzewie, na makiecie i w liście inspektora jest synchronizowany. Wybranie
-czujnika lub wentylatora ustawia odpowiadający mu kanał wykresu. Strefa bez czujnika
+czujnika lub wentylatora ustawia odpowiadający mu kanał w trybie pojedynczym,
+ale nie przełącza widoku wszystkich wykresów. Strefa bez czujnika
 nie tworzy sztucznego odczytu: wykres zachowuje kanał jawnie wskazany na jego liście.
+
+**Start całej makiety** (F5) uruchamia cały model i wszystkie węzły, niezależnie
+od wybranego pomieszczenia. Cztery czujniki domu mają osobne wykresy w jednym rzędzie,
+ze wspólną osią czasu i skalą 0–1. Dodatkowe węzły wirtualne dostają kolejne wykresy
+w przewijanych rzędach; panel można powiększyć separatorem. Przełącznik w zakładce
+Wykresy pozwala przejść do pojedynczego kanału i wrócić do całej makiety.
+Odczyt w nagłówku wykresu pochodzi z telemetrii. Offline oznacza brak nowej próbki
+i lukę na wykresie, nawet jeśli wewnętrzny stan modelu nadal się zmienia.
+Start nie włącza wszystkich lamp ani nie otwiera bram — te urządzenia zachowują
+ustawiony stan, a lokalna automatyka wentylatorów reaguje na sygnały.
 
 Kolory na czarnym tle: turkus — czujnik, zieleń — wentylator, żółty — światło,
 fiolet — serwo, czerwony — offline, pomarańczowy — przekroczony próg czujnika.

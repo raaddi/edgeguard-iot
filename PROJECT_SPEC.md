@@ -969,3 +969,13 @@ archives authoritative for actions and configuration; CSV contains buffered sens
 measurements. Qt is the active laboratory UI; Streamlit remains a comparison/legacy
 tool instead of receiving parallel new features. Packaging, Raspberry Pi evaluation,
 MQTT/collector/SQLite, ML and physical validation remain separate pending work.
+
+## Whole-house monitoring view (2026-09-17)
+
+Make it clear that Start advances the entire house model, not only the selected
+room. Default the desktop chart area to simultaneous sensor plots with shared time
+and normalized-value scales. Keep a separate single-channel focus mode; selecting
+a device must not hide the whole-house overview. Include additional virtual-node
+sensors in scrollable rows and rebuild the chart grid when starting or importing
+a different topology. Preserve missing-message gaps and label offline channels;
+plot headers must use emitted telemetry rather than hidden model values.

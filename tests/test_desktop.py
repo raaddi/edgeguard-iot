@@ -186,3 +186,39 @@ def test_cancel_reset_preserves_unsaved_state(window, monkeypatch):
     monkeypatch.setattr(QMessageBox, "question", lambda *args: QMessageBox.StandardButton.Discard)
     window.reset_dialog()
     assert window.sim.time == 1 and not window.dirty
+
+
+def test_all_charts_share_clock_and_preserve_offline_gaps(window):
+    assert window.chart_mode.currentIndex() == 0
+    assert set(window.all_plots.plots) == set(window.sim.sensors)
+    assert len(window.all_plots.plots) == 4
+    window.select_device("gas_04")
+    assert window.chart_stack.currentWidget() is window.all_plots
+    window.chart_mode.setCurrentIndex(1)
+    assert window.chart_stack.currentWidget() is window.plot
+    assert window.plot.sensor == "gas_04"
+    window.chart_mode.setCurrentIndex(0)
+    offline_node = window.sim.components["gas_01"]["node"]
+    window.perform(window.sim.inject, "node_offline", offline_node, 2)
+    for _ in range(3):
+        click(window.single_step)
+    timelines = []
+    for cid, plot in window.all_plots.plots.items():
+        samples = plot.samples()
+        timelines.append([t for t, _ in samples])
+        offline = window.sim.components[cid]["node"] == offline_node
+        assert [value is None for _, value in samples] == [False, offline, offline, False]
+    assert all(times == timelines[0] for times in timelines)
+
+
+def test_chart_grid_rebuilds_for_new_and_restored_topologies(window):
+    sim = HouseSimulation(node_count=1, extra_nodes=9)
+    sim.step()
+    window.replace_simulation(sim)
+    assert len(window.all_plots.plots) == 13
+    assert all(plot.sim is sim for plot in window.all_plots.plots.values())
+    assert window.all_plots.plots["virtual_gas_09"].samples()[-1][0] == 1
+    window.replace_simulation(HouseSimulation.replay(sim.export()))
+    assert len(window.all_plots.plots) == 13
+    window.replace_simulation(HouseSimulation())
+    assert set(window.all_plots.plots) == {"gas_01", "gas_02", "gas_03", "gas_04"}

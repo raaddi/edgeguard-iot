@@ -6,11 +6,11 @@ from PySide6.QtCore import Qt, QThread, QTimer, Signal, Slot, QSaveFile, QIODevi
 from PySide6.QtGui import QAction, QColor, QKeySequence
 from PySide6.QtWidgets import (QComboBox, QDialog, QFileDialog, QFormLayout, QHBoxLayout,
     QLabel, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QPushButton, QScrollArea,
-    QSpinBox, QSplitter, QTabWidget, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
+    QSpinBox, QSplitter, QStackedWidget, QTabWidget, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 from simulator.__main__ import code_version
 from simulator.house import HouseSimulation, SCENARIOS
 from simulator.desktop.archive import measurements_csv, read_archive, restore_archive
-from simulator.desktop.canvas import SignalPlot
+from simulator.desktop.canvas import SignalGrid, SignalPlot
 from simulator.desktop.house_canvas import HouseCanvas, COLORS
 from simulator.desktop.panels import RunDialog, table, fill_table
 
@@ -185,13 +185,28 @@ class LaboratoryWindow(QMainWindow):
         chart = QWidget()
         chart_layout = QVBoxLayout(chart)
         chart_layout.setContentsMargins(4, 4, 4, 0)
+        chart_toolbar = QHBoxLayout()
+        self.chart_mode = QComboBox()
+        self.chart_mode.setAccessibleName("Układ wykresów")
+        self.chart_mode.addItems(["Cała makieta — wszystkie czujniki", "Pojedynczy kanał"])
+        chart_toolbar.addWidget(self.chart_mode)
         self.channels = QComboBox()
         self.channels.setAccessibleName("Kanał wykresu")
         self.channels.currentIndexChanged.connect(self.channel_changed)
-        chart_layout.addWidget(self.channels)
+        chart_toolbar.addWidget(self.channels, 1)
+        self.chart_note = QLabel("Wspólny czas · skala 0–1 · linia przerywana = próg")
+        self.chart_note.setObjectName("muted")
+        chart_toolbar.addWidget(self.chart_note, 1)
+        chart_layout.addLayout(chart_toolbar)
         self.plot = SignalPlot(self.sim)
-        chart_layout.addWidget(self.plot, 1)
-        self.tabs.addTab(chart, "Sygnał")
+        self.all_plots = SignalGrid(self.sim)
+        self.chart_stack = QStackedWidget()
+        self.chart_stack.addWidget(self.all_plots)
+        self.chart_stack.addWidget(self.plot)
+        chart_layout.addWidget(self.chart_stack, 1)
+        self.chart_mode.currentIndexChanged.connect(self.change_chart_mode)
+        self.change_chart_mode()
+        self.tabs.addTab(chart, "Wykresy")
         self.log = QPlainTextEdit()
         self.log.setReadOnly(True)
         self.log.document().setMaximumBlockCount(250)
@@ -322,6 +337,12 @@ class LaboratoryWindow(QMainWindow):
             self.plot.setAccessibleName(f"Telemetria {self.plot.sensor}; próg i przerwy w wiadomościach")
             self.plot.update()
 
+    def change_chart_mode(self):
+        single = self.chart_mode.currentIndex() == 1
+        self.chart_stack.setCurrentIndex(int(single))
+        self.channels.setVisible(single)
+        self.chart_note.setVisible(not single)
+
     def update_target(self):
         kind = self.scenario.currentData()
         options = list(self.sim.nodes) if kind == "node_offline" else [cid for cid, c in self.sim.components.items() if c["kind"] == ("fan" if kind == "fan_failure" else "gas")]
@@ -383,7 +404,7 @@ class LaboratoryWindow(QMainWindow):
         if not hasattr(self, 'tree_items'):
             return
         running = self.timer.isActive()
-        self.play.setText("Pauza" if running else "Start")
+        self.play.setText("Pauza" if running else "Start całej makiety")
         self.single_step.setEnabled(not running)
         self.clock.setText(f"{'PRACA' if running else 'PAUZA'}  |  t = {self.sim.time - 1:05d} s")
         online_count = sum(self.sim.nodes.values())
@@ -415,6 +436,7 @@ class LaboratoryWindow(QMainWindow):
         self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · MQTT / SQLite / sprzęt: kolejny etap")
         self.canvas.update()
         self.plot.update()
+        self.all_plots.refresh()
         self.refresh_data()
 
     def refresh_data(self):
@@ -438,6 +460,7 @@ class LaboratoryWindow(QMainWindow):
     def replace_simulation(self, sim, dirty=False):
         self.timer.stop()
         self.sim = self.canvas.sim = self.plot.sim = sim
+        self.all_plots.set_simulation(sim)
         self.version, self.dirty = code_version(), dirty
         self.previous_alerts = {(a['target'], a['rule']) for a in sim.alerts}
         self.log.clear()
