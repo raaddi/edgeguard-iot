@@ -26,6 +26,16 @@ nodes without a fixed architectural node limit.
 
 ## First simulation exercise
 
+**Native desktop prototype:** [Python + Qt garage walkthrough](docs/step-04-qt-prototype.md).
+This small alternative UI has clickable garage devices, an inspector and a live
+telemetry plot, all backed by the same simulation model. It is not yet a replacement
+for the full browser laboratory. With the existing virtual environment:
+
+~~~powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
+.\.venv\Scripts\python.exe -m simulator.desktop
+~~~
+
 **Interactive application:** [SmartHome laboratory guide](docs/smarthome-laboratory.md).
 With `.venv` already created, run from the repository root:
 

@@ -924,3 +924,25 @@ and operation logs as actions, not as an implemented security-event history.
 This increment serves the accessible-demonstration criterion; it does not complete
 MQTT, persistence, ML or hardware validation. Resume the agreed MQTT/collector/SQLite
 priority after this usability increment.
+
+## Bounded Qt interaction prototype (2026-09-17)
+
+The user accepted a small Python/PySide6 desktop prototype after finding the
+Streamlit console too constrained for direct interaction with the house model.
+This revisits the earlier interface decision for a concrete usability test:
+clickable devices, a persistent inspector, adjustable split panes and a telemetry
+plot in one native window. Start with the garage only, using Qt Widgets and custom
+QPainter drawings. Do not duplicate the behavioural engine or telemetry contract.
+
+The prototype runs the shared house model, including configurable 1-3 house nodes
+and additional simulated nodes, while exposing only garage controls. Include
+bounded faults, start/pause/step and JSON export to verify meaningful interaction.
+Keep model truth and emitted telemetry visibly separate during offline periods.
+This is not a completed replacement for the full Streamlit laboratory. Preserve
+that working interface as the comparison baseline; do not expand both in parallel.
+Evaluate the prototype with the user before migrating the remaining rooms/tools.
+
+Primary deployment is a laptop, without electronics or Internet after installation.
+Qt packaging and performance on Raspberry Pi remain unverified. This increment
+does not add MQTT, ML, physical feedback or persistence. After evaluating usability,
+return to the agreed communication/collector/SQLite milestone.
