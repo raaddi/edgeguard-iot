@@ -1,0 +1,40 @@
+{
+  "profile": "engineering-source-v1",
+  "layout_status": "Approximate plan based on supplied photos; room assignments and LED positions need confirmation.",
+  "threshold": 0.3225806451612903,
+  "rooms": [
+    {"id":"wc","name":"Toaleta","rect":[50,45,235,110]},
+    {"id":"bathroom","name":"Łazienka","rect":[50,155,235,150]},
+    {"id":"garage","name":"Garaż","rect":[50,305,235,235]},
+    {"id":"hall","name":"Korytarz","rect":[285,45,140,495]},
+    {"id":"kitchen","name":"Kuchnia","rect":[425,45,285,260]},
+    {"id":"room","name":"Pokój • do potwierdzenia","rect":[425,305,285,235]},
+    {"id":"yard","name":"Podwórko","rect":[50,540,660,190]}
+  ],
+  "components": [
+    {"id":"gas_01","kind":"gas","room":"garage","name":"MQ-9 · garaż"},
+    {"id":"gas_02","kind":"gas","room":"bathroom","name":"MQ-9 · łazienka"},
+    {"id":"gas_03","kind":"gas","room":"wc","name":"MQ-9 · toaleta"},
+    {"id":"gas_04","kind":"gas","room":"kitchen","name":"MQ-9 · kuchnia"},
+    {"id":"fan_01","kind":"fan","room":"garage","name":"Wentylator · garaż","sensor":"gas_01"},
+    {"id":"fan_02","kind":"fan","room":"bathroom","name":"Wentylator · łazienka","sensor":"gas_02"},
+    {"id":"fan_03","kind":"fan","room":"wc","name":"Wentylator · toaleta","sensor":"gas_03"},
+    {"id":"fan_04","kind":"fan","room":"kitchen","name":"Wentylator · kuchnia","sensor":"gas_04"},
+    {"id":"led_01","kind":"light","room":"garage","name":"Garaż · światło A"},
+    {"id":"led_02","kind":"light","room":"garage","name":"Garaż · światło B"},
+    {"id":"led_03","kind":"light","room":"hall","name":"Korytarz · światło A"},
+    {"id":"led_04","kind":"light","room":"hall","name":"Korytarz · światło B"},
+    {"id":"led_05","kind":"light","room":"bathroom","name":"Łazienka · światło"},
+    {"id":"led_06","kind":"light","room":"wc","name":"Toaleta · światło"},
+    {"id":"led_07","kind":"light","room":"kitchen","name":"Kuchnia · światło"},
+    {"id":"led_08","kind":"light","room":"yard","name":"Podwórko · lampa A"},
+    {"id":"led_09","kind":"light","room":"yard","name":"Podwórko · lampa B"},
+    {"id":"led_10","kind":"light","room":"yard","name":"Podwórko · lampa C"},
+    {"id":"servo_01","kind":"servo","room":"garage","name":"Garaż · skrzydło A","line":[70,540,165,540]},
+    {"id":"servo_02","kind":"servo","room":"garage","name":"Garaż · skrzydło B","line":[260,540,165,540]},
+    {"id":"servo_03","kind":"servo","room":"yard","name":"Wjazd · skrzydło A","line":[70,730,165,730]},
+    {"id":"servo_04","kind":"servo","room":"yard","name":"Wjazd · skrzydło B","line":[260,730,165,730]},
+    {"id":"servo_05","kind":"servo","room":"hall","name":"Drzwi wejściowe","line":[310,540,400,540]},
+    {"id":"servo_06","kind":"servo","room":"yard","name":"Furtka","line":[310,730,400,730]}
+  ]
+}

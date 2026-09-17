@@ -1,7 +1,13 @@
 # Rozpiska pracy
 
-Tytuł roboczy: Projekt i ocena metod wykrywania anomalii w rozproszonym systemie
-IoT inteligentnego domu z przetwarzaniem brzegowym.
+Tytuł roboczy: Detekcja anomalii w rozproszonym systemie SmartHome
+z wykorzystaniem uczenia maszynowego i analizy wielowymiarowych szeregów
+czasowych na urządzeniu brzegowym.
+
+[Plan badań ML i proponowane zmiany makiety](ml-research-plan.md) określa
+główny eksperyment: predykcja sekwencyjna GRU, Isolation Forest i reguły,
+polecenia zestawione z pomiarem odpowiedzi mechanizmu, ablacje oraz transfer
+na sprzęt. To zakres planowany; tytuł i metodykę należy uzgodnić z promotorem.
 
 | Rozdział | Sekcje i zakres |
 |---|---|

@@ -1,0 +1,29 @@
+QWidget { background: #080a0d; color: #d9e2ec; font: 10pt 'Segoe UI'; }
+QLabel { background: transparent; }
+QLabel#brand { font: 600 16pt 'Segoe UI'; color: #f4f7fb; }
+QLabel#reading { font: 28pt 'Consolas'; color: #49d7ff; }
+QLabel#muted { color: #8795a7; }
+QLabel#status { padding: 8px; background: #0e1319; border: 1px solid #24303d; font: 10pt 'Consolas'; }
+QLabel#section { color: #49d7ff; font: 600 9pt 'Segoe UI'; padding-top: 8px; }
+QPushButton, QComboBox, QSpinBox, QLineEdit { background: #111820; border: 1px solid #334252; border-radius: 3px; padding: 6px; }
+QPushButton:hover { background: #182633; border-color: #49d7ff; }
+QPushButton:focus, QComboBox:focus, QSpinBox:focus, QLineEdit:focus { border: 1px solid #49d7ff; }
+QPushButton:disabled { color: #697586; border-color: #202832; }
+QPushButton#primary { background: #0b3949; border-color: #22c5ef; color: #ecfbff; }
+QComboBox QAbstractItemView { background: #101720; selection-background-color: #13455a; }
+QTreeWidget, QTableWidget, QPlainTextEdit { background: #050709; alternate-background-color: #0d1218; border: 1px solid #253240; }
+QTreeWidget::item { padding: 4px 2px; }
+QTreeWidget::item:selected, QTableWidget::item:selected { background: #15394c; color: #f4fcff; }
+QHeaderView::section { background: #111820; color: #a7b5c7; padding: 6px; border: none; border-right: 1px solid #263240; }
+QPlainTextEdit { font: 9pt 'Consolas'; padding: 6px; }
+QTabWidget::pane { border: 1px solid #253240; }
+QTabBar::tab { background: #0b1016; color: #91a2b5; padding: 8px 14px; border-bottom: 2px solid #202a35; }
+QTabBar::tab:selected { color: #55dbff; border-bottom: 2px solid #22c5ef; background: #111820; }
+QSplitter::handle { background: #24303d; }
+QStatusBar { background: #050709; color: #91a2b5; }
+QMenuBar { background: #050709; }
+QMenuBar::item:selected, QMenu::item:selected { background: #15394c; }
+QMenu { background: #101720; border: 1px solid #334252; }
+QScrollBar:vertical { background: #080a0d; width: 10px; }
+QScrollBar::handle:vertical { background: #334252; min-height: 20px; }
+QToolTip { color: #e9f7ff; background: #111d29; border: 1px solid #42617e; padding: 5px; }

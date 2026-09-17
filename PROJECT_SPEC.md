@@ -747,3 +747,272 @@ This addendum supplements the specification above without replacing the project 
 * Use lightweight scripts and metadata appropriate to Raspberry Pi; no paid cloud infrastructure or additional orchestration platform is required.
 
 Milestone 1 remains limited to the original foundation, with the contract, simulation metadata, reliability, and test clarifications above. Replay, trained models, model rollback, physical firmware, and the later security controls are not Milestone 1 deliverables.
+
+## Interactive laboratory extension (2026-09-14)
+
+The user requested a comprehensive local simulation workspace with a visual model
+of the engineering-thesis Smart Home. Keep five areas: model and controls, devices,
+controlled scenarios, telemetry, and experiment exports. Develop and explain these
+in small increments alongside the original MQTT/collector milestone.
+
+The newly supplied source code and thesis listings describe 10 LEDs, 6 servos,
+4 MQ-9 sensors and 4 fans, differing from the earlier approximate inventory.
+Use a configurable reference-code profile; do not treat these counts or inferred
+component locations as a confirmed physical inventory. See docs/smarthome-laboratory.md
+for evidence, assumptions and limits. Support 1-3 eventual physical nodes alongside
+additional virtual nodes; current laboratory nodes are all simulated.
+
+The interactive model is behavioural, not a calibrated digital twin. A local model
+and experiment export do not replace MQTT integration, persistence, physical
+validation or Raspberry Pi measurements. Reconstructing its own seed/action log
+is a teaching and reproducibility feature, distinct from the planned physical-data replay.
+
+## Project quality and completion criteria (2026-09-15)
+
+These agreed criteria guide subsequent work. They describe the intended completed
+project, not functionality already implemented. Consult this section before planning
+each increment, together with the milestone scope and research clarifications above.
+
+### Three priorities
+
+1. A strong Master's thesis with clear research questions, reproducible experiments
+   and honest analysis, including negative results.
+2. A substantial portfolio project whose architecture, implementation, tests and
+   limitations the author can explain independently.
+3. Productive laptop-only development before building the electronics, with later
+   physical validation rather than an assumption that synthetic results transfer.
+
+Teach and develop in small steps. Complete and verify the current increment before
+expanding scope. Publish completed source/documentation increments to GitHub as
+specified in AGENTS.md. Do not add technologies merely to make the stack look larger.
+
+### Evidence required for completion
+
+* **Shared device contract:** simulator and ESP32 use the same versioned telemetry
+  and command contracts, with automatic conformance checks. Reconcile the current
+  educational draft schemas before integrating MQTT. Adding a physical device must
+  not require a separate collector implementation.
+* **Repeatable experiments:** a documented command runs a bounded, predefined
+  scenario suite and records seeds, configuration, scenario ground truth, code and
+  dataset/model versions where applicable. Distinguish reproducible event content
+  from variable network timing. Ground truth remains separate from model inputs.
+* **Fair comparison:** thresholds/temporal rules and selected ML methods use the same
+  held-out evaluation data. Prevent leakage, report false alarms and detection delay
+  as well as classification metrics, and document tuning and limitations.
+* **System resilience:** automated integration tests cover broker restart, reconnects,
+  duplicates, missing/invalid readings and bounded overload. Define expected recovery
+  and account for rejected or lost data. Model-only tests do not establish MQTT reliability.
+* **Accessible demonstration:** document a simple hardware-free launch and prepare
+  a short demonstration recording. A roughly five-minute walkthrough should show
+  normal operation, a controlled anomaly, device/detector reaction, the message-to-event
+  path, and eventually measured method comparisons and Raspberry Pi resource costs.
+  Clearly label simulated behaviour and features that are not yet implemented.
+* **Decision record:** document the problem, alternatives, selected approach and
+  trade-offs for major architectural decisions. Keep diagrams and run instructions
+  current. Demonstrate quality through evidence rather than claims of production readiness.
+
+### Research emphasis: from simulation to physical validation
+
+Develop RQ2 through a concrete experiment: how does anomaly detection prepared in
+the simulator perform on a physical node, and which changes are necessary?
+Treat successful transfer as a hypothesis, not a promised outcome. Keep final real
+evaluation data separate from model tuning; report any adaptation protocol explicitly.
+
+After the software MQTT path works, perform an early integration check with one
+ESP32 when available. The fully assembled model must not block software development,
+but hardware compatibility must not be left until the final weeks. Physical validation
+and Raspberry Pi measurements remain core thesis work.
+
+### Next technical priority and scope control
+
+Prioritize a single telemetry contract and the path simulator -> MQTT -> collector
+-> SQLite, followed by a repeatable integration test. Additional ML algorithms,
+elaborate 3D visuals and cloud infrastructure are not immediate priorities.
+
+The user confirmed SQLite for Milestone 1 after considering PostgreSQL. There is
+no planned database migration. Revisit the database against deployment, concurrency, resource,
+learning and operational needs before implementation. PostgreSQL can run locally
+offline; offline operation alone does not determine the choice. Supporting two engines
+would require explicit schema/migration/integration testing and is not assumed to be free.
+
+## Telemetry contract increment (2026-09-15)
+
+The CLI and house simulator now share telemetry schema 1.0, a strict Python decoder
+and conformance tests. See docs/step-03-telemetry-contract.md for field semantics,
+bounds, versioning, hardware feedback limitations and a practical exercise.
+The schema replaces drafts 0.1 and 0.2; it supports full component snapshots,
+unavailable readings, unsynchronized device time and explicitly sourced actuator feedback.
+MQTT transport, command/status contracts, a device registry, SQLite persistence
+and API are still pending. This increment does not establish physical compatibility
+or MQTT reliability; the next step is the local broker/publisher/collector path.
+
+## Laboratory interface decision (2026-09-15)
+
+The user delegated the interface choice. Keep the existing Python + Streamlit
+browser interface for the workstation laboratory and Milestone 1. It supports
+local, hardware-free work after dependencies are installed and avoids rebuilding
+the working controls and experiment views during the approximately ten-month thesis.
+
+Keep simulation, telemetry, future storage and detection logic independent of
+Streamlit. The UI is an adapter, not the owner of the shared device contract.
+The experiment runner must eventually work without an open browser. Current
+interactive sessions remain in memory; this decision does not imply persistence.
+
+The considered alternative is a Python desktop application using PySide6/Qt.
+Revisit it only if concrete requirements such as extensive drag-and-drop model
+editing or native desktop integration justify the implementation and packaging cost.
+Do not maintain two interfaces or schedule a rewrite solely for appearance.
+The final gateway dashboard and its Raspberry Pi resource budget remain to be
+evaluated; selecting Streamlit for the laptop does not settle that deployment.
+
+Document Streamlit as a third-party dependency and distinguish the project's
+implementation and research contribution from library functionality. Default Windows
+instructions should invoke the virtual environment's Python directly, avoiding a
+requirement to change PowerShell execution policy. Continue next with MQTT, collector
+and SQLite integration rather than further interface expansion.
+
+## Agreed cybersecurity experiment (2026-09-16)
+
+Make MQTT behaviour monitoring and detection of control-command abuse the concrete
+cybersecurity component of EdgeGuard. This refines the existing security scope and
+RQ5; it is planned work, not an implemented detector or an expansion of Milestone 1.
+
+The primary scenario is an authenticated controller with permission to operate a
+gate sending unusual repeated open/close commands. Emulate misuse of valid access
+within the local laboratory; no credential theft or exploitation is required.
+Compare it with ordinary use, legitimate busy periods and faulty-client behaviour.
+An anomalous pattern alone cannot distinguish an attack from a software fault.
+
+* Observe command/message counts, inter-arrival times and state transitions in
+  bounded time windows. Measure arrival timing and traffic volume at the gateway;
+  do not rely solely on device-reported counters. Record commands at the trusted
+  control path and define attribution explicitly: payload device_id is not proof
+  of the publishing client's authenticated identity.
+* Compare simple rate/temporal rules with a selected anomaly detector, initially
+  considering Isolation Forest. Use independent runs for training, validation and
+  testing, including legitimate high-activity runs; keep scenario labels outside
+  the inputs. Report precision/recall, false alarms per hour, detection delay and
+  Raspberry Pi resource costs. Do not assume ML will outperform the rules.
+* Apply per-device/client credentials and MQTT topic permissions as preventive
+  controls. Test denied unauthorized operations separately from allowed-but-unusual
+  behaviour; ML complements access control and does not replace it.
+* Start with bounded virtual-device scenarios. Later validate the shared message
+  path on physical ESP32 nodes, with independent actuator limits protecting the
+  mechanism; do not reproduce rapid mechanical cycling merely to demonstrate an alert.
+* Emit a suspicious-behaviour alert with supporting events. Automatic blocking
+  based on model scores is not part of this experiment's initial scope.
+
+Implement after the MQTT/collector/storage foundation. Preserve support for
+1-3 physical ESP32 nodes alongside configurable virtual nodes. The simulator
+remains a test tool after hardware integration, not a replacement for real validation.
+
+
+## Consolidated diagnostic console (2026-09-17)
+
+The user requested simplification of the fragmented simulator UI before the next
+transport increment. Present the existing five functional areas in one diagnostic
+workspace: linked zone selection, model schematic, signal/telemetry, actuator
+controls, scenario injection and operation log. Keep configuration, inventory and
+export in expandable panels; preserve JSON/CSV export and deterministic replay.
+Use a console-like visual style inspired by tuning software without inventing
+measurements, detector scores or hardware connectivity.
+
+The model, shared telemetry contract and planned support for 1-3 physical ESP32
+nodes plus virtual nodes remain unchanged. Distinguish internal model values from
+emitted telemetry during offline scenarios. Display rule findings as current state
+and operation logs as actions, not as an implemented security-event history.
+This increment serves the accessible-demonstration criterion; it does not complete
+MQTT, persistence, ML or hardware validation. Resume the agreed MQTT/collector/SQLite
+priority after this usability increment.
+
+## Bounded Qt interaction prototype (2026-09-17)
+
+The user accepted a small Python/PySide6 desktop prototype after finding the
+Streamlit console too constrained for direct interaction with the house model.
+This revisits the earlier interface decision for a concrete usability test:
+clickable devices, a persistent inspector, adjustable split panes and a telemetry
+plot in one native window. Start with the garage only, using Qt Widgets and custom
+QPainter drawings. Do not duplicate the behavioural engine or telemetry contract.
+
+The prototype runs the shared house model, including configurable 1-3 house nodes
+and additional simulated nodes, while exposing only garage controls. Include
+bounded faults, start/pause/step and JSON export to verify meaningful interaction.
+Keep model truth and emitted telemetry visibly separate during offline periods.
+This is not a completed replacement for the full Streamlit laboratory. Preserve
+that working interface as the comparison baseline; do not expand both in parallel.
+Evaluate the prototype with the user before migrating the remaining rooms/tools.
+
+Primary deployment is a laptop, without electronics or Internet after installation.
+Qt packaging and performance on Raspberry Pi remain unverified. This increment
+does not add MQTT, ML, physical feedback or persistence. After evaluating usability,
+return to the agreed communication/collector/SQLite milestone.
+
+## Full desktop laboratory scope (2026-09-17)
+
+After evaluating the garage prototype, the user requested a more complete, coherent
+desktop product with a black console palette and clear functional meaning.
+Expand Qt to the existing local-laboratory scope: the whole house and additional
+virtual nodes, linked device navigation, all actuator controls, four bounded fault
+scenarios, telemetry, current rules, node inventory, run configuration/reset,
+JSON/CSV export, verified archive import and reproducibility checks.
+
+Retain the same HouseSimulation engine and telemetry contract. Use a black background
+with semantic device/status colors and textual state labels. Avoid fictional network
+connections, ML scores or hardware measurements. Expose pending research components
+as scope information, not as working controls. A coherent laboratory is not the same
+as a production-ready deployment or completion of the Master's project.
+
+Protect unsaved sessions on replacement/close. Rebuild and validate imported archives
+before replacing a session; bound input size and model workload, and perform replay
+outside the GUI thread. Do not treat scenario labels as detector inputs. Keep JSON
+archives authoritative for actions and configuration; CSV contains buffered sensor
+measurements. Qt is the active laboratory UI; Streamlit remains a comparison/legacy
+tool instead of receiving parallel new features. Packaging, Raspberry Pi evaluation,
+MQTT/collector/SQLite, ML and physical validation remain separate pending work.
+
+## Whole-house monitoring view (2026-09-17)
+
+Make it clear that Start advances the entire house model, not only the selected
+room. Default the desktop chart area to simultaneous sensor plots with shared time
+and normalized-value scales. Keep a separate single-channel focus mode; selecting
+a device must not hide the whole-house overview. Include additional virtual-node
+sensors in scrollable rows and rebuild the chart grid when starting or importing
+a different topology. Preserve missing-message gaps and label offline channels;
+plot headers must use emitted telemetry rather than hidden model values.
+
+## ML research core and interactive product priority (2026-09-17)
+
+The user explicitly confirms two essential deliverables: a coherent, interactive
+laboratory interface and a substantial machine-learning contribution appropriate
+to the AI/ML specialization. Do not treat either as a disposable extra. Earlier
+warnings about visual scope mean avoiding unsupported decoration, not downgrading
+the interface requirement. Keep UI work connected to controls, measurements and
+research evidence; it must not indefinitely postpone the data and ML pipeline.
+
+Use [the Polish research plan](docs/ml-research-plan.md) for subsequent decisions.
+It records the proposed temporal anomaly-detection study: a compact GRU predictor,
+Isolation Forest on window features, and threshold/temporal rules evaluated on the
+same held-out runs. This makes a trained temporal model a planned core research
+deliverable, superseding the earlier optional-only treatment of neural models.
+The GRU architecture, window duration and deployment runtime remain candidates to
+validate, not demonstrated solutions. No grade or superiority of ML is guaranteed.
+The original MQTT/collector/SQLite foundation remains required; this does not
+authorize skipping it or claim that Milestone 1 now includes a trained detector.
+
+After reviewing observability, prioritize one instrumented gate/garage mechanism
+as the proposed physical research fixture: command events plus independently
+measured endpoint feedback, optionally current and continuous position. Preserve
+the existing house and gas/fan automation. New hardware is a recommendation pending
+inventory, fit and electrical verification, not an installed component or purchase.
+Study command misuse and replay/manipulation of observed feedback against legitimate
+busy activity and faults. Detection relies on remaining trustworthy observations;
+an anomaly is not proof of malicious intent. Gas-based replay remains a secondary
+candidate only if a physical pilot demonstrates useful observable relationships.
+
+The current gas-only sensor schema and one-second ideal-actuator simulation cannot
+be relabelled as this experiment. Extend contracts with versioning and compatibility
+tests before adding contact/current measurements; distinguish commanded, measured,
+unavailable and simulated values. Simulate the proposed fixture first, retain
+1-3 physical ESP32 nodes plus virtual nodes, and verify physical transfer later.
+Model fitting, ablations, event-level evaluation and Raspberry Pi resource tests
+remain planned work. This documentation increment implements none of them.

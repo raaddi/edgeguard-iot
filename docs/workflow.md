@@ -2,6 +2,10 @@
 
 ## Jedno repozytorium jako punkt odniesienia
 
+Stałe ustalenie: każdy ukończony krok projektu kończymy przeglądem zmian,
+odpowiednimi testami, commitem i pushem na GitHub. W podsumowaniu podajemy gałąź
+oraz link do commita. Zmiana na gałęzi roboczej nie jest jeszcze zmianą na main.
+
 GitHub przechowuje źródła pracy pod thesis/, specyfikację, narzędzia i późniejszy
 kod systemu. ZIP do Overleaf zawiera samodzielny projekt z main.tex w katalogu
 głównym. **Wgranie ZIP nie uruchamia dwukierunkowej synchronizacji.**
@@ -53,9 +57,11 @@ automatycznie reset --hard ani push --force.
 Konfiguracja/seed -> symulator -> MQTT -> kolektor/dane -> ewaluacja ->
 manifest i CSV -> eksport tabeli -> LaTeX -> PDF.
 
-Obecnie działają część dokumentacyjna i eksporter tabel.
-Symulator, kolektor i ewaluacja wymagają implementacji Milestone 1 i etapu ML.
-Po ich zbudowaniu zależności również trzeba pobrać przed pracą offline.
+Obecnie działają część dokumentacyjna, eksporter tabel, podstawowe ćwiczenie
+generatora oraz [laboratorium SmartHome](smarthome-laboratory.md) z makietą,
+sterowaniem, wieloma symulowanymi węzłami i kontrolowanymi scenariuszami.
+Publikowanie MQTT, kolektor, trwały zapis i ewaluacja ML wymagają kolejnych etapów.
+Ich zależności również trzeba pobrać przed pracą offline.
 
 Źródła, konfiguracje bez sekretów i małe zatwierdzone eksporty trafiają do Git.
 Surowe dane, bazy, modele, lokalne dane autora i pliki kompilacji są ignorowane.
