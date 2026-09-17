@@ -2,6 +2,8 @@
 
 - Communicate with Radek in Polish. Explain changes in small, teachable steps.
 - Read PROJECT_SPEC.md and preserve the hardware-independent architecture.
+- For research, simulator and UI decisions, also consult docs/ml-research-plan.md:
+  ML is a core deliverable and the interactive interface is a key user requirement.
 - Before planning or implementing an increment, check the "Project quality and
   completion criteria (2026-09-15)" section in PROJECT_SPEC.md. Use it to choose
   work and assess completion; distinguish planned requirements from verified results.

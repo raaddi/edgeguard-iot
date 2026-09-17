@@ -979,3 +979,40 @@ a device must not hide the whole-house overview. Include additional virtual-node
 sensors in scrollable rows and rebuild the chart grid when starting or importing
 a different topology. Preserve missing-message gaps and label offline channels;
 plot headers must use emitted telemetry rather than hidden model values.
+
+## ML research core and interactive product priority (2026-09-17)
+
+The user explicitly confirms two essential deliverables: a coherent, interactive
+laboratory interface and a substantial machine-learning contribution appropriate
+to the AI/ML specialization. Do not treat either as a disposable extra. Earlier
+warnings about visual scope mean avoiding unsupported decoration, not downgrading
+the interface requirement. Keep UI work connected to controls, measurements and
+research evidence; it must not indefinitely postpone the data and ML pipeline.
+
+Use [the Polish research plan](docs/ml-research-plan.md) for subsequent decisions.
+It records the proposed temporal anomaly-detection study: a compact GRU predictor,
+Isolation Forest on window features, and threshold/temporal rules evaluated on the
+same held-out runs. This makes a trained temporal model a planned core research
+deliverable, superseding the earlier optional-only treatment of neural models.
+The GRU architecture, window duration and deployment runtime remain candidates to
+validate, not demonstrated solutions. No grade or superiority of ML is guaranteed.
+The original MQTT/collector/SQLite foundation remains required; this does not
+authorize skipping it or claim that Milestone 1 now includes a trained detector.
+
+After reviewing observability, prioritize one instrumented gate/garage mechanism
+as the proposed physical research fixture: command events plus independently
+measured endpoint feedback, optionally current and continuous position. Preserve
+the existing house and gas/fan automation. New hardware is a recommendation pending
+inventory, fit and electrical verification, not an installed component or purchase.
+Study command misuse and replay/manipulation of observed feedback against legitimate
+busy activity and faults. Detection relies on remaining trustworthy observations;
+an anomaly is not proof of malicious intent. Gas-based replay remains a secondary
+candidate only if a physical pilot demonstrates useful observable relationships.
+
+The current gas-only sensor schema and one-second ideal-actuator simulation cannot
+be relabelled as this experiment. Extend contracts with versioning and compatibility
+tests before adding contact/current measurements; distinguish commanded, measured,
+unavailable and simulated values. Simulate the proposed fixture first, retain
+1-3 physical ESP32 nodes plus virtual nodes, and verify physical transfer later.
+Model fitting, ablations, event-level evaluation and Raspberry Pi resource tests
+remain planned work. This documentation increment implements none of them.

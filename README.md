@@ -21,6 +21,9 @@ Both simulator entry points now emit validated telemetry **1.0** using the share
 [contract and Polish exercise](docs/step-03-telemetry-contract.md).
 The collector, API, ESP32 firmware and ML detectors remain to be implemented
 according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
+The [ML research and instrumentation plan (Polish)](docs/ml-research-plan.md)
+records the core temporal-model study, proposed physical feedback, evaluation
+protocol and the interactive UI requirements. These are planned capabilities.
 The system must support 1-3 physical ESP32 boards plus configurable simulated
 nodes without a fixed architectural node limit.
 
@@ -52,8 +55,9 @@ start/pause, single stepping and a consolidated diagnostic console: model, signa
 actuator controls and scenario tests together. Configuration, inventory and experiment
 exports (including reset) are expandable panels. See the Polish guide for a short walkthrough.
 The earlier single-node exercise is preserved in `simulator/lesson_app.py`.
-Streamlit is the selected laboratory interface; the simulation engine remains
-independent of it. The gateway dashboard deployment will be evaluated separately.
+Qt is the actively developed laboratory interface; Streamlit is retained as the
+earlier comparison interface. The simulation engine remains independent of both.
+The gateway dashboard deployment will be evaluated separately.
 
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:
