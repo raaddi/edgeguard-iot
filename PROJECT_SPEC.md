@@ -1016,3 +1016,13 @@ unavailable and simulated values. Simulate the proposed fixture first, retain
 1-3 physical ESP32 nodes plus virtual nodes, and verify physical transfer later.
 Model fitting, ablations, event-level evaluation and Raspberry Pi resource tests
 remain planned work. This documentation increment implements none of them.
+
+## Rolling training history experiment (2026-09-18)
+
+The user proposed adapting detection to recent behaviour, for example the last
+60 days. Record this as a planned follow-up to the fixed-model baseline in
+[the research plan](docs/ml-research-plan.md). Distinguish short inference context
+from the training-history window. Prefer evaluated periodic retraining on the
+workstation, with data admission rules, chronological evaluation, version checks
+and rollback, before considering unrestricted online updates. No retraining job,
+schedule or trained model is implemented by this planning increment.
