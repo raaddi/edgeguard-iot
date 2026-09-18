@@ -12,6 +12,18 @@ Instalację wykonujesz raz. Aplikacja otwiera własne okno; po instalacji dział
 Nie wymaga przeglądarki ani zmiany polityki PowerShell. Wygenerowane dane trzymaj
 w ignorowanym `experiments/runs/`. Nie jest to jeszcze instalator ani pakiet EXE.
 
+Po przygotowaniu środowiska możesz też uruchamiać aplikację dwuklikiem pliku
+**start-laboratory.cmd** w głównym katalogu repozytorium. Korzysta on z lokalnego
+`.venv`, nie wymaga zmiany polityki PowerShell i nie instaluje zależności.
+Plik działa także z innego katalogu i przekazuje opcje startowe, np.:
+
+```powershell
+.\start-laboratory.cmd --nodes 1 --extra-nodes 2
+```
+
+Jeżeli okno przy dwukliku od razu się zamknie, uruchom ten plik z terminala,
+aby przeczytać komunikat błędu. Skrypt zwraca kod zakończenia aplikacji.
+
 Opcjonalne ustawienia startowe:
 
 ```powershell
