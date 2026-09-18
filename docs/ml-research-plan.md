@@ -148,6 +148,40 @@ Ilość danych oceniamy krzywymi uczenia, liczbą niezależnych sesji/cykli i cz
 normalnej pracy. 50 tys. silnie skorelowanych rekordów nie oznacza 50 tys.
 niezależnych przykładów. Pełny trening na laptopie; inferencja i pomiary na Pi.
 
+## Aktualizacja modelu na ostatnich danych — plan z 18.09.2026
+
+Rozważamy okresowe ponowne trenowanie na przesuwającym się oknie historii,
+np. ostatnich 60 dni. To inny parametr niż 60 sekund kontekstu pojedynczej
+predykcji. Najpierw uruchamiamy i oceniamy model stały; adaptacja jest kolejnym
+eksperymentem, a nie już działającą funkcją ani uczeniem po każdej wiadomości.
+
+Proponowany cykl: zbieranie danych -> wybór dopuszczonych sesji -> trening
+wersji kandydującej na laptopie -> walidacja -> wdrożenie na Raspberry Pi.
+W trakcie treningu inferencja nadal korzysta z dotychczasowego modelu.
+Częstotliwość, np. raz w tygodniu, oraz okno 7/30/60 dni dobierzemy w badaniu.
+Jeśli danych jest za mało, zachowujemy dotychczasowy model; nie udajemy pełnej
+historii ani nie uzupełniamy jej powielonymi sesjami.
+
+- Podejrzane i uszkodzone przebiegi kierujemy do osobnej oceny. Brak alarmu
+  nie potwierdza poprawności danych. Zapisujemy źródło decyzji o dopuszczeniu
+  do treningu; nie utożsamiamy legalnej zmiany nawyków z awarią lub atakiem.
+- Nową wersję porównujemy z aktywną na walidacji dostępnej przed wdrożeniem,
+  w tym na kontrolnych scenariuszach. Kryteria fałszywych alarmów, wykrywalności
+  i kosztu inferencji ustalamy przed porównaniem. Zachowujemy wersję do rollbacku.
+- W badaniu kroczącym każda predykcja powstaje przed ewentualnym użyciem danej
+  próbki do uczenia. Podziały całymi sesjami i brak przecieku okien nadal obowiązują;
+  końcowego zbioru testowego nie używamy do treningu ani wyboru wersji.
+- Pełny trening od nowej inicjalizacji na wybranym oknie pozwala zbadać wariant
+  „tylko ostatnie 60 dni”. Douczanie starych wag może zachować wpływ starszych
+  danych, więc ewentualnie raportujemy je jako osobną metodę.
+- Porównujemy model stały i aktualizowany przy legalnej zmianie sposobu
+  użytkowania oraz kontrolowanych nieprawidłowościach. Raportujemy także
+  koszt treningu i przypadki, w których adaptacja pogorszyła detekcję.
+
+W interfejsie planujemy pokazać datę i zakres treningu, liczbę dopuszczonych
+sesji, wersję modelu oraz wynik walidacji kandydata. Symulator może przyspieszyć
+czas logiczny; symulowane 60 dni nie zastępuje 60 dni fizycznych obserwacji.
+
 ## Interfejs jako część laboratorium ML
 
 Docelowo w istniejącym czarnym pulpicie:
