@@ -41,7 +41,7 @@ i 0–9 dodatkowych węzłów wirtualnych. Wszystkie węzły są obecnie symulow
 | Makieta | Rzut całego domu; kliknięcie wybiera urządzenie, dwuklik strefy otwiera zbliżenie |
 | Inspektor | Wybrane urządzenie, węzeł, łączność, stan modelu, polecenia i AUTO wentylatora |
 | Test zachowania | Cztery rodzaje zdarzeń, dowolny właściwy cel i czas 1–120 s |
-| Wykresy | Domyślnie wszystkie czujniki obok siebie; opcjonalnie pojedynczy kanał; 120 ostatnich sekund telemetrii |
+| Wykresy | Wszystkie 24 komponenty i dodatkowe czujniki wirtualne; grupy, pojedynczy kanał i powiększenie panelu; 120 ostatnich sekund telemetrii |
 | Dziennik | Operacje użytkownika, odrzucenia, pojawienie się i ustąpienie reguł |
 | Scenariusze | Pełny harmonogram; oczekujące, aktywne i zakończone zdarzenia |
 | Reguły | Bieżące wskazania, ich cel i jawne źródło |
@@ -51,15 +51,27 @@ i 0–9 dodatkowych węzłów wirtualnych. Wszystkie węzły są obecnie symulow
 
 Separatory paneli są regulowane. Przy małym oknie inspektor przewija się niezależnie.
 Wybór w drzewie, na makiecie i w liście inspektora jest synchronizowany. Wybranie
-czujnika lub wentylatora ustawia odpowiadający mu kanał w trybie pojedynczym,
-ale nie przełącza widoku wszystkich wykresów. Strefa bez czujnika
-nie tworzy sztucznego odczytu: wykres zachowuje kanał jawnie wskazany na jego liście.
+dowolnego urządzenia ustawia jego własny kanał w trybie pojedynczym,
+ale nie przełącza widoku wszystkich wykresów. Wentylator, lampa i serwo
+mają własną historię telemetrii, niezależną od czujnika w pomieszczeniu.
 
 **Start całej makiety** (F5) uruchamia cały model i wszystkie węzły, niezależnie
-od wybranego pomieszczenia. Cztery czujniki domu mają osobne wykresy w jednym rzędzie,
-ze wspólną osią czasu i skalą 0–1. Dodatkowe węzły wirtualne dostają kolejne wykresy
-w przewijanych rzędach; panel można powiększyć separatorem. Przełącznik w zakładce
-Wykresy pozwala przejść do pojedynczego kanału i wrócić do całej makiety.
+od wybranego pomieszczenia. Wykresy są podzielone na cztery przewijane grupy:
+4 czujniki gazu (0–1), 4 wentylatory (ON/OFF), 10 lamp (ON/OFF) i 6 serw (stopnie).
+Dodatkowe czujniki wirtualne automatycznie dołączają do grupy gazu.
+Wszystkie kanały mają wspólny czas. Lista grup pozwala ograniczyć widok,
+a **Powiększ wykresy** chowa makietę i przeznacza większą część okna na wykresy;
+**Przywróć makietę** odtwarza poprzedni podział. Wszystkie wykresy są dostępne
+przez przewijanie — nie muszą mieścić się naraz na ekranie laptopa.
+Przełącznik w zakładce Wykresy pozwala przejść do pojedynczego kanału.
+
+Dla gazu przerywana linia oznacza próg reguły. Dla aktuatorów przerywana linia
+oznacza stan zadany, a ciągła — raportowany w telemetrii. Przebiegi aktuatorów
+są schodkowe; obecny model serwa nie symuluje ciągłego ruchu. Raport pochodzi
+z symulacji, nie z fizycznego pomiaru pozycji. Zmiana polecenia trafia na wykres
+dopiero po emisji kolejnej wiadomości. Awaria wentylatora pokazuje rozbieżność
+między zadanym ON a raportowanym OFF.
+
 Odczyt w nagłówku wykresu pochodzi z telemetrii. Offline oznacza brak nowej próbki
 i lukę na wykresie, nawet jeśli wewnętrzny stan modelu nadal się zmienia.
 Start nie włącza wszystkich lamp ani nie otwiera bram — te urządzenia zachowują

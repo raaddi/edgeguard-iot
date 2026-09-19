@@ -180,6 +180,7 @@ class LaboratoryWindow(QMainWindow):
             top.addWidget(widget)
         top.setSizes([240, 820, 340])
         top.setChildrenCollapsible(False)
+        self.top_panel = top
         self.tabs = QTabWidget()
         self.tabs.currentChanged.connect(self.refresh_data)
         chart = QWidget()
@@ -188,18 +189,29 @@ class LaboratoryWindow(QMainWindow):
         chart_toolbar = QHBoxLayout()
         self.chart_mode = QComboBox()
         self.chart_mode.setAccessibleName("Układ wykresów")
-        self.chart_mode.addItems(["Cała makieta — wszystkie czujniki", "Pojedynczy kanał"])
+        self.chart_mode.addItems(["Cała makieta", "Pojedynczy kanał"])
         chart_toolbar.addWidget(self.chart_mode)
+        self.chart_group = QComboBox()
+        self.chart_group.setAccessibleName("Grupa wykresów")
+        chart_toolbar.addWidget(self.chart_group)
         self.channels = QComboBox()
         self.channels.setAccessibleName("Kanał wykresu")
         self.channels.currentIndexChanged.connect(self.channel_changed)
         chart_toolbar.addWidget(self.channels, 1)
-        self.chart_note = QLabel("Wspólny czas · skala 0–1 · linia przerywana = próg")
+        self.expand_charts = QPushButton("Powiększ wykresy")
+        self.expand_charts.setCheckable(True)
+        self.expand_charts.toggled.connect(self.expand_chart_area)
+        chart_toolbar.addWidget(self.expand_charts)
+        self.chart_note = QLabel("Wspólny czas · gaz 0–1 / stany ON–OFF / serwa ° · przewiń po kolejne grupy")
         self.chart_note.setObjectName("muted")
-        chart_toolbar.addWidget(self.chart_note, 1)
         chart_layout.addLayout(chart_toolbar)
+        chart_layout.addWidget(self.chart_note)
+        legend = QLabel("Gaz: przerywana = próg. Aktuatory: przerywana = zadane, ciągła = raport z symulacji.")
+        legend.setObjectName("muted")
+        chart_layout.addWidget(legend)
         self.plot = SignalPlot(self.sim)
         self.all_plots = SignalGrid(self.sim)
+        self.chart_group.currentIndexChanged.connect(lambda: self.all_plots.set_kind(self.chart_group.currentData()))
         self.chart_stack = QStackedWidget()
         self.chart_stack.addWidget(self.all_plots)
         self.chart_stack.addWidget(self.plot)
@@ -226,8 +238,9 @@ class LaboratoryWindow(QMainWindow):
         vertical = QSplitter(Qt.Orientation.Vertical)
         vertical.addWidget(top)
         vertical.addWidget(self.tabs)
-        vertical.setSizes([560, 255])
+        vertical.setSizes([500, 315])
         vertical.setChildrenCollapsible(False)
+        self.vertical_splitter = vertical
         root.addWidget(vertical, 1)
 
     @staticmethod
@@ -249,7 +262,7 @@ class LaboratoryWindow(QMainWindow):
         help_menu = self.menuBar().addMenu("Pomoc")
         action = help_menu.addAction("Jak pracować / zakres wersji")
         action.triggered.connect(lambda: QMessageBox.information(self, "Laboratorium — instrukcja",
-            "1. Wybierz urządzenie w drzewie lub na makiecie.\n2. Wydaj polecenie lub dodaj zdarzenie.\n3. Wykonaj krok; porównaj wykres i reguły.\n4. Zapisz eksperyment przez Ctrl+S.\n\nWszystkie węzły i pomiary są symulowane. Gaz jest w skali 0–1, nie ppm. Wykres pokazuje wyemitowane wiadomości, makieta wewnętrzny stan modelu.\n\nBrak MQTT, SQLite, ML i fizycznej elektroniki w tej wersji. Reguły nie stanowią dowodu ataku. Bufor: 3000 wiadomości, limit: 1000 działań / 10 000 kroków.\n\nOtwieranie pliku odtwarza własny przebieg, nie dane sprzętowe. CSV zawiera pomiary, nie ocenę modeli ML."))
+            "1. Wybierz urządzenie w drzewie lub na makiecie.\n2. Wydaj polecenie lub dodaj zdarzenie.\n3. Wykonaj krok; porównaj wykres i reguły.\n4. Zapisz eksperyment przez Ctrl+S.\n\nWszystkie węzły i pomiary są symulowane. Gaz jest w skali 0–1, nie ppm. Wykres pokazuje wyemitowane wiadomości, makieta wewnętrzny stan modelu.\n\nOkno Qt działa lokalnie; osobne narzędzia MQTT/SQLite opisuje docs/step-05-mqtt.md. ML i fizyczna elektronika pozostają do realizacji. Reguły nie stanowią dowodu ataku. Bufor: 3000 wiadomości, limit: 1000 działań / 10 000 kroków.\n\nOtwieranie pliku odtwarza własny przebieg, nie dane sprzętowe. CSV zawiera pomiary, nie ocenę modeli ML."))
 
     def populate(self):
         self.tree.blockSignals(True)
@@ -276,8 +289,17 @@ class LaboratoryWindow(QMainWindow):
                 parent.addChild(child)
                 self.tree_items[cid] = child
                 self.devices.addItem(f"{cid} · {c['name']}", cid)
-                if c["kind"] == "gas":
-                    self.channels.addItem(f"{cid} · {c['name']} / telemetria 0–1", cid)
+                self.channels.addItem(f"{cid} · {c['name']}", cid)
+        self.chart_group.blockSignals(True)
+        selected_group = self.chart_group.currentData()
+        self.chart_group.clear()
+        self.chart_group.addItem(f"Wszystkie ({len(self.sim.components)})", None)
+        for kind, title, color in SignalGrid.GROUPS:
+            count = sum(c["kind"] == kind for c in self.sim.components.values())
+            self.chart_group.addItem(f"{title} ({count})", kind)
+        self.chart_group.setCurrentIndex(max(0, self.chart_group.findData(selected_group)))
+        self.chart_group.blockSignals(False)
+        self.all_plots.set_kind(self.chart_group.currentData())
         self.tree.expandAll()
         for widget in (self.tree, self.devices, self.channels, self.room_view):
             widget.blockSignals(False)
@@ -323,25 +345,31 @@ class LaboratoryWindow(QMainWindow):
         component = self.sim.components[cid]
         if self.canvas.room is not None:
             self.focus_room(component["room"])
-        sensor = cid if component["kind"] == "gas" else component.get("sensor")
-        if sensor is None:
-            sensor = next((key for key, c in self.sim.components.items() if c["kind"] == "gas" and c["room"] == component["room"]), None)
-        if sensor:
-            self.channels.setCurrentIndex(self.channels.findData(sensor))
+        self.channels.setCurrentIndex(self.channels.findData(cid))
         self.update_target()
         self.refresh()
 
     def channel_changed(self):
         if self.channels.currentData():
-            self.plot.sensor = self.channels.currentData()
-            self.plot.setAccessibleName(f"Telemetria {self.plot.sensor}; próg i przerwy w wiadomościach")
+            self.plot.component = self.channels.currentData()
+            self.plot.color = COLORS[self.sim.components[self.plot.component]["kind"]]
+            self.plot.setAccessibleName(f"Telemetria {self.plot.component}; przerwy oznaczają brak danych")
             self.plot.update()
 
     def change_chart_mode(self):
         single = self.chart_mode.currentIndex() == 1
         self.chart_stack.setCurrentIndex(int(single))
         self.channels.setVisible(single)
+        self.chart_group.setVisible(not single)
         self.chart_note.setVisible(not single)
+
+    def expand_chart_area(self, expanded):
+        if expanded:
+            self.previous_panel_sizes = self.vertical_splitter.sizes()
+        self.top_panel.setVisible(not expanded)
+        self.expand_charts.setText("Przywróć makietę" if expanded else "Powiększ wykresy")
+        if not expanded:
+            self.vertical_splitter.setSizes(self.previous_panel_sizes)
 
     def update_target(self):
         kind = self.scenario.currentData()
@@ -433,7 +461,7 @@ class LaboratoryWindow(QMainWindow):
             value = f"{self.sim.sensors[cid]['value']:.3f}" if c['kind'] == 'gas' else str(self.sim.actuators[cid]['simulated'])
             tree_item.setText(0, f"{cid}  ·  {value}")
             tree_item.setForeground(0, QColor(COLORS[c['kind']] if self.sim.nodes[c['node']] else '#ff657a'))
-        self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · MQTT / SQLite / sprzęt: kolejny etap")
+        self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · Qt: symulacja lokalna, bez połączenia z kolektorem")
         self.canvas.update()
         self.plot.update()
         self.all_plots.refresh()

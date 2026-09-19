@@ -103,8 +103,7 @@ def test_whole_house_selection_linked_channels_and_virtual_nodes(window):
     for cid in window.sim.components:
         QTest.mouseClick(window.canvas, Qt.MouseButton.LeftButton, pos=window.canvas.device_center(cid))
         assert window.current == cid
-        if cid in window.sim.sensors:
-            assert window.plot.sensor == cid
+        assert window.plot.component == cid
     window.focus_room("yard")
     assert set(window.canvas.areas()) == {"led_08", "led_09", "led_10", "servo_03", "servo_04", "servo_06"}
     window.select_device("servo_06")
@@ -116,7 +115,7 @@ def test_whole_house_selection_linked_channels_and_virtual_nodes(window):
     click(window.single_step)
     assert window.sim.sensors["virtual_gas_02"]["value"] > 0.5
     window.replace_simulation(HouseSimulation())
-    assert window.plot.sensor in window.sim.sensors
+    assert window.plot.component in window.sim.sensors
     assert window.current == "gas_01"
     window.plot.samples()
 
@@ -190,13 +189,13 @@ def test_cancel_reset_preserves_unsaved_state(window, monkeypatch):
 
 def test_all_charts_share_clock_and_preserve_offline_gaps(window):
     assert window.chart_mode.currentIndex() == 0
-    assert set(window.all_plots.plots) == set(window.sim.sensors)
-    assert len(window.all_plots.plots) == 4
+    assert set(window.all_plots.plots) == set(window.sim.components)
+    assert len(window.all_plots.plots) == 24
     window.select_device("gas_04")
     assert window.chart_stack.currentWidget() is window.all_plots
     window.chart_mode.setCurrentIndex(1)
     assert window.chart_stack.currentWidget() is window.plot
-    assert window.plot.sensor == "gas_04"
+    assert window.plot.component == "gas_04"
     window.chart_mode.setCurrentIndex(0)
     offline_node = window.sim.components["gas_01"]["node"]
     window.perform(window.sim.inject, "node_offline", offline_node, 2)
@@ -211,14 +210,69 @@ def test_all_charts_share_clock_and_preserve_offline_gaps(window):
     assert all(times == timelines[0] for times in timelines)
 
 
+
+def test_actuator_charts_show_telemetry_not_unsent_commands(window):
+    lamp = window.all_plots.plots["led_01"]
+    servo = window.all_plots.plots["servo_01"]
+    fan = window.all_plots.plots["fan_01"]
+    window.select_device("led_01")
+    click(window.command_button)
+    # The model has changed, but no new telemetry has been emitted yet.
+    assert lamp.samples()[-1][1] == lamp.samples("commanded")[-1][1] == 0
+    window.select_device("servo_01")
+    click(window.command_button)
+    window.perform(window.sim.inject, "gas_spike", "gas_01", 3)
+    window.perform(window.sim.inject, "fan_failure", "fan_01", 3)
+    click(window.single_step)
+    assert lamp.samples()[-1][1] == lamp.samples("commanded")[-1][1] == 1
+    assert servo.samples()[-1][1] == servo.samples("commanded")[-1][1] == 110
+    assert servo.scale == 180 and lamp.scale == fan.scale == 1
+    assert fan.samples("commanded")[-1][1] == 1
+    assert fan.samples()[-1][1] == 0
+    assert "Zadane: ON" in fan.status_text() and "raport: OFF" in fan.status_text()
+    # An explicitly unavailable report must not be replaced by commanded/model state.
+    message = next(m for m in reversed(window.sim.history) if "servo_01" in m["actuators"])
+    message["actuators"]["servo_01"].update(reported=None, feedback="unavailable")
+    assert servo.samples()[-1][1] is None
+    assert servo.samples("commanded")[-1][1] == 110
+    assert "raport: —" in servo.status_text()
+
+
+def test_chart_groups_focus_and_enlargement_preserve_simulation(window, application):
+    assert window.channels.count() == 24
+    assert window.chart_group.itemText(0) == "Wszystkie (24)"
+    window.chart_group.setCurrentIndex(window.chart_group.findData("servo"))
+    assert all(group.isHidden() == (kind != "servo") for kind, group in window.all_plots.groups.items())
+    window.select_device("servo_06")
+    window.chart_mode.setCurrentIndex(1)
+    assert window.plot.component == "servo_06"
+    click(window.expand_charts)
+    assert window.top_panel.isHidden()
+    click(window.single_step)
+    assert window.sim.time == 2
+    click(window.expand_charts)
+    assert not window.top_panel.isHidden()
+    window.chart_mode.setCurrentIndex(0)
+    window.chart_group.setCurrentIndex(0)
+    assert all(not group.isHidden() for group in window.all_plots.groups.values())
+    window.replace_simulation(HouseSimulation(extra_nodes=2))
+    assert window.chart_group.itemText(0) == "Wszystkie (26)"
+    assert window.channels.count() == 26
+    # Old, evicted telemetry is missing, never filled from current model state.
+    window.sim.history.clear()
+    assert all(plot.samples() == [(0, None)] for plot in window.all_plots.plots.values())
+    application.processEvents()
+    assert not window.all_plots.grab().isNull()
+
+
 def test_chart_grid_rebuilds_for_new_and_restored_topologies(window):
     sim = HouseSimulation(node_count=1, extra_nodes=9)
     sim.step()
     window.replace_simulation(sim)
-    assert len(window.all_plots.plots) == 13
+    assert len(window.all_plots.plots) == 33
     assert all(plot.sim is sim for plot in window.all_plots.plots.values())
     assert window.all_plots.plots["virtual_gas_09"].samples()[-1][0] == 1
     window.replace_simulation(HouseSimulation.replay(sim.export()))
-    assert len(window.all_plots.plots) == 13
+    assert len(window.all_plots.plots) == 33
     window.replace_simulation(HouseSimulation())
-    assert set(window.all_plots.plots) == {"gas_01", "gas_02", "gas_03", "gas_04"}
+    assert set(window.all_plots.plots) == set(window.sim.components)

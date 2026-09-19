@@ -1045,3 +1045,18 @@ mean disconnected consumers and overload can lose messages. Broker ACK is not a
 collector receipt. Full overload testing, persistent recovery and end-to-end loss
 accounting remain outstanding. Integration tests must run against real Mosquitto
 in CI; tests do not establish physical compatibility or Raspberry Pi performance.
+
+## Charts for every house component (2026-09-19)
+
+The desktop monitoring view now includes every component of the current profile:
+four gas sensors, four fans, ten lights and six servos, plus configured virtual
+sensors. Group filters, a single-channel view and an expandable chart area keep
+the scrollable overview usable on a laptop. All plots share logical time; gas
+uses the normalized 0–1 scale, binary actuators ON/OFF and servos degrees.
+
+Actuator charts distinguish commanded from reported telemetry using step traces.
+Missing reports and offline messages remain gaps, never values copied from the
+internal model. Reported actuator state is still simulated, not physical feedback;
+this increment adds neither a motion model nor ML predictions. Tests cover all
+components, command/report discrepancies, missing data and topology replacement.
+Qt remains separate from the MQTT collector described above.
