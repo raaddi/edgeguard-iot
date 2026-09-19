@@ -1026,3 +1026,22 @@ from the training-history window. Prefer evaluated periodic retraining on the
 workstation, with data admission rules, chronological evaluation, version checks
 and rollback, before considering unrestricted online updates. No retraining job,
 schedule or trained model is implemented by this planning increment.
+
+## Local MQTT and SQLite increment (2026-09-19)
+
+The headless house publisher now uses telemetry 1.0 with a local Mosquitto broker,
+QoS 1 and a validating SQLite collector. The database preserves device and receipt
+time separately and deduplicates device/boot/sequence identities without replacing
+conflicting data. The collector commits before acknowledging valid messages,
+counts invalid/duplicate/conflicting/retained messages and resubscribes after a
+broker restart. Run metadata and scenario truth remain outside model inputs.
+See [the exercise and limits](docs/step-05-mqtt.md).
+
+This is a loopback-only learning increment, not completed Milestone 1 or authenticated
+hardware deployment. Qt is still an independent in-memory laboratory. MQTT commands,
+status, device registry, API, ML and physical integration remain pending. Broker
+queues and payloads are bounded; clean sessions and disabled broker persistence
+mean disconnected consumers and overload can lose messages. Broker ACK is not a
+collector receipt. Full overload testing, persistent recovery and end-to-end loss
+accounting remain outstanding. Integration tests must run against real Mosquitto
+in CI; tests do not establish physical compatibility or Raspberry Pi performance.

@@ -8,8 +8,10 @@ environment, with inference planned on a Raspberry Pi gateway.
 The current branch includes a [SmartHome laboratory](docs/smarthome-laboratory.md)
 based on the supplied engineering-project material: an approximate interactive floor
 plan, device controls, four bounded scenarios, multiple simulated nodes, telemetry,
-and JSON/CSV experiment exports. All nodes remain simulated; MQTT, storage and ML
-integration are pending. The reference-code profile has 10 LEDs, 6 servos, 4 gas
+and JSON/CSV experiment exports. All nodes remain simulated. A separate
+[local MQTT/SQLite exercise](docs/step-05-mqtt.md) now sends headless house telemetry
+through Mosquitto to a validating collector. Qt integration and ML remain pending.
+The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
 The repository contains the agreed specification, a modular Polish LaTeX thesis,
@@ -19,7 +21,7 @@ tests and a thesis GitHub Actions workflow.
 The original single-node CLI exercise remains available for learning the generator.
 Both simulator entry points now emit validated telemetry **1.0** using the shared
 [contract and Polish exercise](docs/step-03-telemetry-contract.md).
-The collector, API, ESP32 firmware and ML detectors remain to be implemented
+The API, ESP32 firmware and ML detectors remain to be implemented
 according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
 The [ML research and instrumentation plan (Polish)](docs/ml-research-plan.md)
 records the core temporal-model study, proposed physical feedback, evaluation
@@ -32,8 +34,9 @@ nodes without a fixed architectural node limit.
 **Desktop laboratory:** [Python + Qt walkthrough](docs/desktop-laboratory.md).
 The native workspace now covers the whole house, device navigation and controls,
 fault scenarios, telemetry, JSON/CSV exports and verified experiment replay.
-It uses the same simulation model and has a black console theme. MQTT, storage,
-ML and physical validation remain pending. With the existing virtual environment:
+It uses the same simulation model and has a black console theme. Connecting this
+window to the MQTT/SQLite path, ML and physical validation remains pending.
+With the existing virtual environment:
 
 ~~~powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
@@ -133,7 +136,9 @@ No Python, Docker or electronics are needed to write and build the thesis.
 | experiments/ | Metadata/CSV templates and ignored local run files |
 | data/ | Ignored raw and processed datasets |
 | ml/models/ | Reserved local model artifacts |
-| tests/ | Simulator and results-export verification |
+| edge/ | Local MQTT collector and validated SQLite telemetry storage |
+| mqtt/ | Loopback Mosquitto configuration |
+| tests/ | Simulator, real MQTT/SQLite and results-export verification |
 | docs/ | Writing plan and project workflow |
 | .github/workflows/ | Python tests, thesis build and downloadable PDF |
 
