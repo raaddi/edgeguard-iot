@@ -11,7 +11,8 @@ plan, device controls, four bounded scenarios, multiple simulated nodes, telemet
 and JSON/CSV experiment exports. All nodes remain simulated. A separate
 [local MQTT/SQLite exercise](docs/step-05-mqtt.md) now sends headless house telemetry
 through Mosquitto to a validating collector. A [read-only HTTP API](docs/step-06-api.md)
-now exposes stored devices and telemetry. Qt integration and ML remain pending.
+now exposes stored devices and telemetry. The [Qt collector view](docs/step-07-collector-view.md)
+reads this history over HTTP. MQTT control integration and ML remain pending.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -36,7 +37,8 @@ nodes without a fixed architectural node limit.
 The native workspace now covers the whole house, device navigation and controls,
 fault scenarios, telemetry, JSON/CSV exports and verified experiment replay.
 It uses the same simulation model and has a black console theme. Connecting this
-window to the MQTT/SQLite path, ML and physical validation remains pending.
+window's controls to MQTT, ML and physical validation remains pending. Select
+**Kolektor — dane z API** in the desktop workspace to read persisted telemetry.
 With the existing virtual environment:
 
 ~~~powershell

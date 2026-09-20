@@ -1075,3 +1075,21 @@ The local append-only history uses rowid cursors valid only for the same databas
 without deletion/rebuild/VACUUM. They are not experiment identities or a complete
 dataset export protocol. Qt integration, authenticated deployment, persistent
 experiment registration, other planned endpoints and ML remain outstanding.
+
+## Qt collector history increment (2026-09-20)
+
+The desktop workspace now switches between the local simulation and a read-only
+collector view using HTTP. A bounded recent-history endpoint returns the last
+200 persisted reports of a selected node. The view separates boot sessions,
+plots their available components on a sequence-number axis and preserves missing
+reports/gaps. Receipt time and actuator feedback provenance remain visible.
+
+Requests are asynchronous, bounded and cancellable. Source changes preserve the
+local experiment and stop its clock; old requests cannot replace a new selection.
+Tests cover real HTTP/SQLite reads and network failures. See the
+[Polish exercise](docs/step-07-collector-view.md).
+
+This completes the first read-side Qt/API integration, not MQTT control or live
+device status. Local Qt simulation still does not publish telemetry or commands;
+the separate publisher feeds the collector. Simultaneous multi-node history,
+experiment registration, authenticated deployment, ML and hardware remain pending.

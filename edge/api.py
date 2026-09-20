@@ -12,7 +12,7 @@ from pydantic import BaseModel
 import uvicorn
 
 from contracts.telemetry import TelemetryError
-from edge.readings import check_history, device_details, device_history, device_summaries, open_history
+from edge.readings import check_history, device_details, device_history, device_summaries, open_history, recent_history
 
 DeviceId = Annotated[str, ApiPath(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
 PageLimit = Annotated[int, Query(ge=1, le=200)]
@@ -49,6 +49,11 @@ class TelemetryPage(BaseModel):
     items: list[TelemetryRecord]
     has_more: bool
     next_after_id: int
+
+
+class RecentPage(BaseModel):
+    items: list[TelemetryRecord]
+    older_available: bool
 
 
 def create_app(database="data/telemetry.sqlite3"):
@@ -90,6 +95,15 @@ def create_app(database="data/telemetry.sqlite3"):
                   after_id: Annotated[int, Query(ge=0, le=9223372036854775807)] = 0):
         with open_history(database) as db:
             result = device_history(db, device_id, after_id=after_id, limit=limit)
+        if result is None:
+            raise HTTPException(404, "Brak zapisanej telemetrii tego węzła.")
+        return result
+
+    @app.get("/devices/{device_id}/telemetry/recent", response_model=RecentPage,
+             summary="Ostatnie raporty w kolejności zapisu; ograniczony podgląd konsoli")
+    def recent(device_id: DeviceId, limit: PageLimit = 200):
+        with open_history(database) as db:
+            result = recent_history(db, device_id, limit=limit)
         if result is None:
             raise HTTPException(404, "Brak zapisanej telemetrii tego węzła.")
         return result
