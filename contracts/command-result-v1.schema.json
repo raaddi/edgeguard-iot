@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EdgeGuard command result 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "command_id", "device_id", "boot_id", "component_id", "status", "reason", "handled_uptime_ms"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "command_id": {"$ref": "#/$defs/uuid"},
+    "device_id": {"$ref": "#/$defs/identifier"},
+    "boot_id": {"$ref": "#/$defs/uuid"},
+    "component_id": {"$ref": "#/$defs/identifier"},
+    "status": {"enum": ["accepted", "rejected"]},
+    "reason": {"enum": [null, "wrong_device", "wrong_boot", "expired", "not_yet_valid", "unknown_component", "unsupported_operation", "value_out_of_range", "duplicate_conflict", "capacity_exceeded", "internal_error"]},
+    "handled_uptime_ms": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+  },
+  "if": {"properties": {"status": {"const": "accepted"}}},
+  "then": {"properties": {"reason": {"type": "null"}}},
+  "else": {"properties": {"reason": {"type": "string"}}},
+  "$defs": {
+    "identifier": {"type": "string", "minLength": 1, "maxLength": 64, "not": {"pattern": "[^A-Za-z0-9_-]"}},
+    "uuid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "maxLength": 36}
+  }
+}

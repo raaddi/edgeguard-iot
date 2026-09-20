@@ -1093,3 +1093,17 @@ This completes the first read-side Qt/API integration, not MQTT control or live
 device status. Local Qt simulation still does not publish telemetry or commands;
 the separate publisher feeds the collector. Simultaneous multi-node history,
 experiment registration, authenticated deployment, ML and hardware remain pending.
+
+## Command wire contract increment (2026-09-20)
+
+Command and command-result schemas 1.0 now define explicit component setpoints,
+fan AUTO requests and accepted/rejected outcomes correlated by UUID. Target boot
+identity and a validity window of at most 60 seconds in the target node's uptime
+avoid requiring synchronized UTC on ESP32. Wire validation and a pure target
+check are implemented and tested; configuration determines allowed setpoints.
+An accepted setpoint is not measured physical execution. See
+[the contract exercise](docs/step-08-command-contract.md).
+
+The MQTT receiver, result cache/deduplication, command audit storage, Qt command
+publication and hardware execution are not implemented by this increment.
+These fields do not authenticate a client or prevent malicious authorized use.

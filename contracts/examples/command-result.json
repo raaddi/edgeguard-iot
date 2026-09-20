@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "command_id": "12dd06c6-1895-4d42-af9c-4f330b8f20ba",
+  "device_id": "esp32_node_01",
+  "boot_id": "2347a478-0587-4e84-b569-7dc47e775c88",
+  "component_id": "servo_01",
+  "status": "accepted",
+  "reason": null,
+  "handled_uptime_ms": 700
+}
