@@ -10,7 +10,8 @@ based on the supplied engineering-project material: an approximate interactive f
 plan, device controls, four bounded scenarios, multiple simulated nodes, telemetry,
 and JSON/CSV experiment exports. All nodes remain simulated. A separate
 [local MQTT/SQLite exercise](docs/step-05-mqtt.md) now sends headless house telemetry
-through Mosquitto to a validating collector. Qt integration and ML remain pending.
+through Mosquitto to a validating collector. A [read-only HTTP API](docs/step-06-api.md)
+now exposes stored devices and telemetry. Qt integration and ML remain pending.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -21,7 +22,7 @@ tests and a thesis GitHub Actions workflow.
 The original single-node CLI exercise remains available for learning the generator.
 Both simulator entry points now emit validated telemetry **1.0** using the shared
 [contract and Polish exercise](docs/step-03-telemetry-contract.md).
-The API, ESP32 firmware and ML detectors remain to be implemented
+The remaining API endpoints, ESP32 firmware and ML detectors remain to be implemented
 according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
 The [ML research and instrumentation plan (Polish)](docs/ml-research-plan.md)
 records the core temporal-model study, proposed physical feedback, evaluation
