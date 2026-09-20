@@ -159,6 +159,9 @@ def test_store_validation_duplicate_conflict_and_restart(tmp_path):
 
 
 def test_house_through_mqtt_to_sqlite_with_offline_gap(receiver, sender):
+    from fastapi.testclient import TestClient
+    from edge.api import create_app
+
     sim = HouseSimulation(node_count=3, extra_nodes=2, run_id="mqtt-integration")
     sim.inject("node_offline", "esp32_node_01", 2)
     assert publish_run(sim, sender, steps=5, interval=0) == 23
@@ -169,6 +172,13 @@ def test_house_through_mqtt_to_sqlite_with_offline_gap(receiver, sender):
         assert {m["sequence_number"] for m in messages if m["device_id"] == "esp32_node_01"} == {0, 3, 4}
         assert sorted(messages, key=lambda m: (m["device_id"], m["sequence_number"])) == sorted(
             sim.history, key=lambda m: (m["device_id"], m["sequence_number"]))
+    # Read committed WAL data while the real MQTT collector is still running.
+    with TestClient(create_app(receiver.database)) as api:
+        assert api.get('/health').status_code == 200
+        assert sum(item['message_count'] for item in api.get('/devices').json()['items']) == 23
+        records = api.get('/devices/esp32_node_01/telemetry').json()['items']
+        assert [r['telemetry']['sequence_number'] for r in records] == [0, 3, 4]
+        assert all(r['telemetry'] in messages for r in records)
 
 
 def test_invalid_duplicate_and_conflict_do_not_stop_collector(receiver, sender):

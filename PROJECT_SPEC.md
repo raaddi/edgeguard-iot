@@ -1060,3 +1060,18 @@ internal model. Reported actuator state is still simulated, not physical feedbac
 this increment adds neither a motion model nor ML predictions. Tests cover all
 components, command/report discrepancies, missing data and topology replacement.
 Qt remains separate from the MQTT collector described above.
+
+## Read-only telemetry API increment (2026-09-20)
+
+FastAPI now exposes `/health`, `/devices`, `/devices/{device_id}` and
+`/devices/{device_id}/telemetry` over the existing collector database. Reads use
+separate read-only SQLite connections, bounded pages and per-request snapshots.
+Missing databases are not created. Device history is not a live device registry:
+the API reports the last persisted message without inferring online status.
+Receipt metadata remains separate from validated telemetry 1.0 and unavailable
+reports remain null. See [the Polish exercise](docs/step-06-api.md).
+
+The local append-only history uses rowid cursors valid only for the same database
+without deletion/rebuild/VACUUM. They are not experiment identities or a complete
+dataset export protocol. Qt integration, authenticated deployment, persistent
+experiment registration, other planned endpoints and ML remain outstanding.

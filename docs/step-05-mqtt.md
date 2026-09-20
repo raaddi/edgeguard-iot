@@ -109,7 +109,8 @@ pomaga mierzyć odstępy na tym samym uruchomionym systemie, nie czas między ko
 
 To laboratorium loopback bez haseł i TLS, nie konfiguracja do sieci domowej.
 Przed ESP32 i badaniami cyberbezpieczeństwa dodamy tożsamości klientów oraz ACL.
-API, integracja Qt z kolektorem, nowe czujniki, ML i pełne zamknięcie Milestone 1
+[API odczytu historii](step-06-api.md) jest dostępne jako następne ćwiczenie.
+Integracja Qt z kolektorem, nowe czujniki, ML i pełne zamknięcie Milestone 1
 pozostają kolejnymi etapami. Baza nie dodaje ukrytych stanów ani etykiet do cech ML.
 
 ## Testy i źródła
