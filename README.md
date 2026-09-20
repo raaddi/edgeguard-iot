@@ -65,6 +65,10 @@ Qt is the actively developed laboratory interface; Streamlit is retained as the
 earlier comparison interface. The simulation engine remains independent of both.
 The gateway dashboard deployment will be evaluated separately.
 
+The [command contract exercise](docs/step-08-command-contract.md) defines and
+validates setpoints and node responses. MQTT command transport and execution
+remain pending; validating a command does not execute it or prove physical movement.
+
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:
 

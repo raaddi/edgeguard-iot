@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EdgeGuard command 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "command_id", "device_id", "target_boot_id", "component_id", "operation", "value", "observed_uptime_ms", "expires_uptime_ms"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "command_id": {"$ref": "#/$defs/uuid"},
+    "device_id": {"$ref": "#/$defs/identifier"},
+    "target_boot_id": {"$ref": "#/$defs/uuid"},
+    "component_id": {"$ref": "#/$defs/identifier"},
+    "operation": {"enum": ["set", "auto"]},
+    "value": {"type": ["integer", "null"], "minimum": 0, "maximum": 180},
+    "observed_uptime_ms": {"$ref": "#/$defs/uptime"},
+    "expires_uptime_ms": {"$ref": "#/$defs/uptime"}
+  },
+  "if": {"properties": {"operation": {"const": "set"}}},
+  "then": {"properties": {"value": {"type": "integer"}}},
+  "else": {"properties": {"value": {"type": "null"}}},
+  "$defs": {
+    "identifier": {"type": "string", "minLength": 1, "maxLength": 64, "not": {"pattern": "[^A-Za-z0-9_-]"}},
+    "uuid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "maxLength": 36},
+    "uptime": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+  }
+}
