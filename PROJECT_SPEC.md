@@ -1107,3 +1107,23 @@ An accepted setpoint is not measured physical execution. See
 The MQTT receiver, result cache/deduplication, command audit storage, Qt command
 publication and hardware execution are not implemented by this increment.
 These fields do not authenticate a client or prevent malicious authorized use.
+
+## Simulated MQTT command receiver increment (2026-09-20)
+
+The headless house publisher now optionally receives MQTT commands, applies
+validated setpoints/AUTO mode and publishes correlated results. A terminal sender
+uses newly received telemetry to choose the boot and validity window. The shared
+model remains independent of transport and Qt. Real-broker tests cover command
+results and the changed telemetry reaching SQLite; model tests cover boundaries.
+See [the Polish exercise](docs/step-09-mqtt-control.md).
+
+Per-node result caches reject conflicting IDs and never evict within a run;
+bounded queues and caches report/drop overload as documented. Outcomes are cached
+before publication, but process failure has no persistent exactly-once guarantee.
+An accepted command remains a logical setpoint, not measured physical motion.
+The receiver ends on broker failure; new runs require new boot identities.
+
+This loopback increment adds bounded simulator diagnostics, not durable gateway
+command observations, client authentication, Qt command publication, ESP32
+execution or ML. These remain pending. The next data-path priority is durable
+command/result observations for the temporal research described in the ML plan.

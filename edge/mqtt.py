@@ -58,6 +58,26 @@ class Connection:
                 raise TimeoutError("Broker acknowledgement timed out; delivery is uncertain")
         self.acknowledged += 1
 
+    def subscribe(self, topics, timeout=3):
+        """Wait for SUBACK before callers advertise readiness (outside callbacks)."""
+        replies = {}
+        previous = self.client.on_subscribe
+        self.client.on_subscribe = lambda client, userdata, mid, reasons, properties: replies.update(
+            {mid: reasons})
+        try:
+            result, mid = self.client.subscribe([(topic, 1) for topic in topics])
+            if result != mqtt.MQTT_ERR_SUCCESS:
+                raise ConnectionError(mqtt.error_string(result))
+            deadline = time.monotonic() + timeout
+            while mid not in replies:
+                self.pump()
+                if time.monotonic() >= deadline:
+                    raise TimeoutError("MQTT subscription timed out")
+            if len(replies[mid]) != len(topics) or any(r.is_failure for r in replies[mid]):
+                raise ConnectionError("MQTT subscription rejected")
+        finally:
+            self.client.on_subscribe = previous
+
     def close(self):
         self.client.disconnect()
         self.client.loop(timeout=0.1)

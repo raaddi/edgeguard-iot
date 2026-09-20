@@ -10,6 +10,7 @@ from contracts.telemetry import telemetry_topic, validate_telemetry
 from edge.mqtt import Connection, port_number
 from simulator.__main__ import code_version, identifier
 from simulator.house import HouseSimulation
+from simulator.control import CommandReceiver
 
 
 def publish_run(sim, connection, steps, interval=1):
@@ -37,6 +38,7 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--run-id", type=identifier, default=f"mqtt-{uuid4().hex}")
     parser.add_argument("--port", type=port_number, default=1883)
+    parser.add_argument("--commands", action="store_true", help="Also receive commands and publish results")
     args = parser.parse_args()
     if not 1 <= args.steps <= HouseSimulation.MAX_STEPS or not 0 <= args.seed <= 2**31 - 1:
         parser.error("Steps must be 1..10000 and seed 0..2147483647")
@@ -49,11 +51,18 @@ def main():
     except FileExistsError:
         parser.error("Run archive already exists; choose another --run-id")
     connection = Connection(args.port)
+    receiver = CommandReceiver(sim, connection) if args.commands else None
     version = code_version()
     result = {"status": "failed", "broker_acked": None, "collector_delivery": "unverified"}
     try:
-        connection.connect()
-        result["broker_acked"] = publish_run(sim, connection, args.steps)
+        if receiver:
+            receiver.connect()
+            print("Command receiver ready (loopback, simulated nodes).", flush=True)
+            receiver.run(args.steps)
+        else:
+            connection.connect()
+            publish_run(sim, connection, args.steps)
+        result["broker_acked"] = connection.acknowledged
         result["status"] = "completed"
         print(json.dumps(result))
         return 0
@@ -64,7 +73,8 @@ def main():
         connection.close()
         result["broker_acked"] = connection.acknowledged
         with output:
-            json.dump({**sim.export(version), "transport": result}, output, indent=2)
+            control = {"control": receiver.export()} if receiver else {}
+            json.dump({**sim.export(version), "transport": result, **control}, output, indent=2)
         print(f"Archive: {archive}")
 
 
