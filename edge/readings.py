@@ -64,3 +64,12 @@ def device_history(db, device_id, *, after_id, limit):
     items = [record(row) for row in rows[:limit]]
     return {"items": items, "has_more": len(rows) > limit,
             "next_after_id": items[-1]["id"] if items else after_id}
+
+
+def recent_history(db, device_id, *, limit):
+    rows = db.execute("""SELECT rowid, * FROM telemetry WHERE device_id=?
+        ORDER BY rowid DESC LIMIT ?""", (device_id, limit + 1)).fetchall()
+    if not rows:
+        return None
+    return {"items": [record(row) for row in reversed(rows[:limit])],
+            "older_available": len(rows) > limit}

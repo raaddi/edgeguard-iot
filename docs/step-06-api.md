@@ -2,7 +2,7 @@
 
 API to umówiony sposób pobierania danych przez inne programy. Kolektor zapisuje
 wiadomości w SQLite, a API udostępnia ich historię przez HTTP. Docelowo skorzysta
-z niego konsola Qt. Teraz te części nadal uruchamiamy osobno.
+z niego [konsola Qt](step-07-collector-view.md). Serwer API i konsolę uruchamiamy osobno.
 
 ## Uruchomienie
 
@@ -42,6 +42,7 @@ przeglądarki. Same adresy JSON oraz `/openapi.json` działają offline.
 | `GET /devices` | Węzły obecne w historii, liczba zapisanych wiadomości i czas odbioru ostatnio zapisanego raportu |
 | `GET /devices/{device_id}` | Liczba wiadomości i ostatnio zapisany raport danego węzła |
 | `GET /devices/{device_id}/telemetry` | Strona zapisanych raportów w kolejności ich dodania do bazy |
+| `GET /devices/{device_id}/telemetry/recent` | Ostatnie maksymalnie 200 raportów do podglądu konsoli; również w kolejności zapisu |
 
 Raport zawiera `telemetry` w dotychczasowym formacie 1.0 oraz osobno informacje
 kolektora: `received_at`, `received_monotonic_ns` i `topic`. Pole `id` służy do
@@ -92,7 +93,8 @@ Każde żądanie widzi spójną migawkę; kolejne strony mogą już obejmować n
   ograniczają rozmiar odpowiedzi; nie stanowią pomiaru wydajności na Raspberry Pi.
 - Uruchomienie CLI nasłuchuje wyłącznie na `127.0.0.1`. Ten etap nie dodaje
   uwierzytelniania, zdalnego dostępu, poleceń sterujących ani modeli ML.
-  Podłączenie konsoli, rejestr eksperymentów i pozostałe endpointy są kolejnymi krokami.
+  Konsola odczytuje historię; sterowanie MQTT, rejestr eksperymentów i pozostałe
+  endpointy są kolejnymi krokami.
 
 Weryfikacja:
 

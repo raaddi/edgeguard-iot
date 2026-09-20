@@ -124,9 +124,10 @@ Gaz jest umowny (0–1), stany aktuatorów są modelowane, a offline oznacza utr
 komunikacji przy nadal działającej automatyce. Bufor 3000 wiadomości raportuje
 usunięcia i pominięcia offline. Czas logiczny nie mierzy wydajności.
 
-[Osobne ćwiczenie MQTT/SQLite](step-05-mqtt.md) korzysta z tego samego modelu,
-ale okno Qt nie jest jeszcze podłączone do kolektora ani do nowego
-[API odczytu historii](step-06-api.md). ML, fizyczne ESP32 i ocena
+[Ćwiczenie MQTT/SQLite](step-05-mqtt.md) korzysta z tego samego modelu.
+Obszar **Kolektor — dane z API** w tej aplikacji pozwala teraz odczytywać zapisaną
+historię przez HTTP — zobacz [instrukcję konsoli kolektora](step-07-collector-view.md).
+Lokalna makieta nadal nie publikuje telemetrii ani poleceń MQTT. ML, fizyczne ESP32 i ocena
 Raspberry Pi pozostają do realizacji.
 Nie ma jeszcze detekcji cyberataku, automatycznego blokowania ani importu danych
 z fizycznych urządzeń. Silnik działa niezależnie od Qt; widok go nie kopiuje.

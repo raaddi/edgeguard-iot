@@ -13,6 +13,7 @@ from simulator.desktop.archive import measurements_csv, read_archive, restore_ar
 from simulator.desktop.canvas import SignalGrid, SignalPlot
 from simulator.desktop.house_canvas import HouseCanvas, COLORS
 from simulator.desktop.panels import RunDialog, table, fill_table
+from simulator.desktop.collector_view import CollectorView
 
 RULES = {"gas_threshold": "Przekroczony próg", "actuator_mismatch": "Rozbieżność aktuatora", "simulated_link_loss": "Brak łączności w modelu"}
 
@@ -50,6 +51,40 @@ class LaboratoryWindow(QMainWindow):
         self.build_menu()
         self.populate()
         self.refresh()
+        self.build_sources()
+
+    def build_sources(self):
+        local = self.takeCentralWidget()
+        host = QWidget()
+        layout = QVBoxLayout(host)
+        layout.setContentsMargins(4, 4, 4, 0)
+        bar = QHBoxLayout()
+        bar.addWidget(QLabel("Obszar pracy:"))
+        self.source = QComboBox()
+        self.source.addItems(["Makieta lokalna — symulacja", "Kolektor — dane z API"])
+        self.source.setAccessibleName("Źródło danych obszaru pracy")
+        bar.addWidget(self.source)
+        bar.addStretch()
+        layout.addLayout(bar)
+        self.workspaces = QStackedWidget()
+        self.workspaces.addWidget(local)
+        self.collector_view = CollectorView()
+        self.workspaces.addWidget(self.collector_view)
+        layout.addWidget(self.workspaces)
+        self.setCentralWidget(host)
+        self.source.currentIndexChanged.connect(self.change_source)
+
+    def change_source(self, index):
+        self.pause()
+        self.collector_view.stop()
+        self.workspaces.setCurrentIndex(index)
+        self.experiment_menu.setEnabled(index == 0)
+        for action in self.experiment_menu.actions():
+            action.setEnabled(index == 0)
+        if index:
+            self.statusBar().showMessage("Kolektor / API · tylko odczyt · brak sterowania MQTT i detektora ML")
+        else:
+            self.refresh()
 
     def build_workspace(self):
         central = QWidget()
@@ -251,6 +286,7 @@ class LaboratoryWindow(QMainWindow):
 
     def build_menu(self):
         file_menu = self.menuBar().addMenu("Eksperyment")
+        self.experiment_menu = file_menu
         for label, callback, shortcut in [("Nowy…", self.new_dialog, "Ctrl+N"), ("Otwórz i odtwórz JSON…", self.open_dialog, "Ctrl+O"),
             ("Zapisz JSON…", self.save_dialog, "Ctrl+S"), ("Eksportuj pomiary CSV…", self.csv_dialog, ""),
             ("Sprawdź odtwarzalność", self.verify_replay, ""), ("Reset tego przebiegu…", self.reset_dialog, "")]:
@@ -262,7 +298,7 @@ class LaboratoryWindow(QMainWindow):
         help_menu = self.menuBar().addMenu("Pomoc")
         action = help_menu.addAction("Jak pracować / zakres wersji")
         action.triggered.connect(lambda: QMessageBox.information(self, "Laboratorium — instrukcja",
-            "1. Wybierz urządzenie w drzewie lub na makiecie.\n2. Wydaj polecenie lub dodaj zdarzenie.\n3. Wykonaj krok; porównaj wykres i reguły.\n4. Zapisz eksperyment przez Ctrl+S.\n\nWszystkie węzły i pomiary są symulowane. Gaz jest w skali 0–1, nie ppm. Wykres pokazuje wyemitowane wiadomości, makieta wewnętrzny stan modelu.\n\nOkno Qt działa lokalnie; osobne narzędzia MQTT/SQLite opisuje docs/step-05-mqtt.md. ML i fizyczna elektronika pozostają do realizacji. Reguły nie stanowią dowodu ataku. Bufor: 3000 wiadomości, limit: 1000 działań / 10 000 kroków.\n\nOtwieranie pliku odtwarza własny przebieg, nie dane sprzętowe. CSV zawiera pomiary, nie ocenę modeli ML."))
+            "1. Wybierz urządzenie w drzewie lub na makiecie.\n2. Wydaj polecenie lub dodaj zdarzenie.\n3. Wykonaj krok; porównaj wykres i reguły.\n4. Zapisz eksperyment przez Ctrl+S.\n\nWszystkie węzły i pomiary są symulowane. Gaz jest w skali 0–1, nie ppm. Wykres pokazuje wyemitowane wiadomości, makieta wewnętrzny stan modelu.\n\nMakieta działa lokalnie. Obszar Kolektor odczytuje historię przez API; instrukcja: docs/step-07-collector-view.md. ML i fizyczna elektronika pozostają do realizacji. Reguły nie stanowią dowodu ataku. Bufor: 3000 wiadomości, limit: 1000 działań / 10 000 kroków.\n\nOtwieranie pliku odtwarza własny przebieg, nie dane sprzętowe. CSV zawiera pomiary, nie ocenę modeli ML."))
 
     def populate(self):
         self.tree.blockSignals(True)
@@ -461,7 +497,10 @@ class LaboratoryWindow(QMainWindow):
             value = f"{self.sim.sensors[cid]['value']:.3f}" if c['kind'] == 'gas' else str(self.sim.actuators[cid]['simulated'])
             tree_item.setText(0, f"{cid}  ·  {value}")
             tree_item.setForeground(0, QColor(COLORS[c['kind']] if self.sim.nodes[c['node']] else '#ff657a'))
-        self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · Qt: symulacja lokalna, bez połączenia z kolektorem")
+        if hasattr(self, "source") and self.source.currentIndex() == 1:
+            self.statusBar().showMessage("Kolektor / API · tylko odczyt · brak sterowania MQTT i detektora ML")
+        else:
+            self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · Qt: symulacja lokalna, bez połączenia z kolektorem")
         self.canvas.update()
         self.plot.update()
         self.all_plots.refresh()
@@ -600,6 +639,7 @@ class LaboratoryWindow(QMainWindow):
             event.ignore()
             return
         if self.confirm_replace():
+            self.collector_view.stop()
             event.accept()
         else:
             event.ignore()

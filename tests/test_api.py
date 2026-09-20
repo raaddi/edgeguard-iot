@@ -118,6 +118,18 @@ def test_reject_invalid_ids_and_device_pagination(history):
     assert client.get('/devices').status_code == 200
 
 
+def test_recent_history_returns_tail_in_arrival_order(history):
+    client, store, sim, path = history
+    node = next(iter(sim.nodes))
+    endpoint = f'/devices/{node}/telemetry/recent'
+    page = client.get(endpoint, params={'limit': 2}).json()
+    assert page['older_available']
+    assert [r['telemetry']['sequence_number'] for r in page['items']] == [2, 3]
+    assert not client.get(endpoint).json()['older_available']
+    assert client.get(endpoint+'?limit=201').status_code == 422
+    assert client.get('/devices/absent/telemetry/recent').status_code == 404
+
+
 @pytest.mark.parametrize('kind', ['missing', 'wrong_schema', 'broken_file', 'invalid_payload'])
 def test_unavailable_database_returns_503_without_creating_or_exposing_path(tmp_path, kind):
     path = tmp_path / 'private-name.sqlite3'
