@@ -12,7 +12,9 @@ and JSON/CSV experiment exports. All nodes remain simulated. A separate
 [local MQTT/SQLite exercise](docs/step-05-mqtt.md) now sends headless house telemetry
 through Mosquitto to a validating collector. A [read-only HTTP API](docs/step-06-api.md)
 now exposes stored devices and telemetry. The [Qt collector view](docs/step-07-collector-view.md)
-reads this history over HTTP. MQTT control integration and ML remain pending.
+reads this history over HTTP. A [terminal command exercise](docs/step-09-mqtt-control.md)
+now controls simulated nodes through MQTT with application results and duplicate
+protection. Qt command integration and ML remain pending.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -66,8 +68,10 @@ earlier comparison interface. The simulation engine remains independent of both.
 The gateway dashboard deployment will be evaluated separately.
 
 The [command contract exercise](docs/step-08-command-contract.md) defines and
-validates setpoints and node responses. MQTT command transport and execution
-remain pending; validating a command does not execute it or prove physical movement.
+validates setpoints and node responses. Run `python -m simulator.mqtt --commands
+--steps 300` with the project environment and local broker to enable the receiver;
+the [next exercise](docs/step-09-mqtt-control.md) explains how to send a command.
+Accepted setpoints do not prove physical movement.
 
 Follow the [step-by-step Polish guide](docs/step-01-simulator.md).
 From the repository root on Windows, with Python 3.14 installed:

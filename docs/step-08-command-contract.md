@@ -4,6 +4,9 @@ Gotowy jest format wiadomości i walidacja. Ten krok **nie dodaje jeszcze**
 wysyłania poleceń z Qt, odbiornika MQTT ani sterowania ESP32. Pozwala przygotować
 je według jednego kontraktu, zamiast osobno dla symulatora i sprzętu.
 
+Aktualizacja: odbiór i wysyłanie MQTT w symulatorze są już dostępne w
+[kroku 9](step-09-mqtt-control.md). Poniżej pozostaje opis kontraktu i jego założeń.
+
 ## Trzy różne informacje
 
 1. **MQTT PUBACK**: broker potwierdził odebranie publikacji. Nie dowodzi to
@@ -68,7 +71,8 @@ może tworzyć nowe ID i ważne okna; właśnie takie zachowania będziemy bada�
 
 Poniższe zasady są planem implementacji, nie gotową funkcją tego przyrostu:
 
-- QoS 1, `retain=false`; odbiornik odrzuca polecenia retained. Najpierw kontrakt,
+- QoS 1, `retain=false`; odbiornik odrzuca migawki z flagą retained dostarczone
+  przy subskrypcji (ograniczenia MQTT 3.1.1 opisuje krok 9). Najpierw kontrakt,
   topic, właściwy węzeł/sesja, ważność i lokalne możliwości, potem zmiana nastawy.
 - Deduplikacja po sesji odbiorcy i `command_id`. Ten sam ID i treść nie wykonują
   operacji ponownie; odbiornik odsyła zapisany wynik. Inna treść pod tym samym ID

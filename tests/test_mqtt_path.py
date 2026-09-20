@@ -2,12 +2,7 @@
 
 from copy import deepcopy
 import json
-import os
-from pathlib import Path
-import shutil
-import socket
 import sqlite3
-import subprocess
 from types import SimpleNamespace
 import threading
 import time
@@ -29,53 +24,6 @@ def wait_until(predicate, timeout=8):
             return
         time.sleep(0.03)
     raise AssertionError("Timed out waiting for MQTT condition")
-
-
-@pytest.fixture
-def broker(tmp_path):
-    binary = os.environ.get("MOSQUITTO_EXECUTABLE") or shutil.which("mosquitto")
-    if not binary:
-        local = Path(__file__).resolve().parents[1] / ".tools/mosquitto/mosquitto.exe"
-        binary = str(local) if local.exists() else None
-    if not binary:
-        if os.environ.get("REQUIRE_MQTT_TESTS") == "1":
-            pytest.fail("Mosquitto is required for integration tests")
-        pytest.skip("Install Mosquitto or set MOSQUITTO_EXECUTABLE for integration tests")
-    with socket.socket() as probe:
-        probe.bind(("127.0.0.1", 0))
-        port = probe.getsockname()[1]
-    root = Path(__file__).resolve().parents[1]
-    config = tmp_path / "mosquitto.conf"
-    config.write_text((root / "mqtt/mosquitto-local.conf").read_text().replace(
-        "listener 1883", f"listener {port}"), encoding="utf-8")
-
-    class Broker:
-        process = None
-
-        def start(self):
-            self.process = subprocess.Popen([binary, "-c", str(config)],
-                                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            def listening():
-                assert self.process.poll() is None, "Mosquitto did not start"
-                try:
-                    with socket.create_connection(("127.0.0.1", port), timeout=0.1):
-                        return True
-                except OSError:
-                    return False
-            wait_until(listening)
-
-        def stop(self):
-            if self.process and self.process.poll() is None:
-                self.process.terminate()
-                self.process.wait(timeout=5)
-
-    instance = Broker()
-    instance.port = port
-    try:
-        instance.start()
-        yield instance
-    finally:
-        instance.stop()
 
 
 class RunningCollector:
@@ -269,3 +217,41 @@ def test_failed_publisher_preserves_run_manifest(tmp_path, monkeypatch):
     with pytest.raises(SystemExit) as existing:
         publisher.main()
     assert existing.value.code == 2
+
+
+def test_mqtt_control_changes_telemetry_stored_by_collector(receiver, sender, broker):
+    from uuid import uuid4
+    from contracts.commands import command_topic, decode_result, result_topic
+    from simulator.control import CommandReceiver
+    from simulator.telemetry import session_id
+    sim = HouseSimulation(node_count=1, extra_nodes=1)
+    connection = Connection(broker.port)
+    control = CommandReceiver(sim, connection)
+    replies = []
+    sender.client.on_message = lambda client, userdata, packet: replies.append(
+        decode_result(packet.payload, topic=packet.topic))
+    node = "esp32_node_01"
+    command = {"schema_version": "1.0", "command_id": str(uuid4()), "device_id": node,
+               "target_boot_id": session_id(sim.run_id, node), "component_id": "led_01",
+               "operation": "set", "value": 1, "observed_uptime_ms": 0, "expires_uptime_ms": 5000}
+    try:
+        control.connect()
+        sender.subscribe([result_topic(node)])
+        control.publish_telemetry()
+        sender.publish(command_topic(node), json.dumps(command).encode())
+        def responded():
+            control.service()
+            sender.pump()
+            return bool(replies)
+        wait_until(responded)
+        assert replies[0]["status"] == "accepted"
+        sim.step()
+        control.publish_telemetry()
+        wait_until(lambda: receiver.count() == 4)
+        with sqlite3.connect(receiver.database) as db:
+            reports = [json.loads(row[0]) for row in db.execute(
+                "SELECT payload FROM telemetry WHERE device_id=? ORDER BY sequence_number", (node,))]
+        assert [r["actuators"]["led_01"]["commanded"] for r in reports] == [0, 1]
+        assert receiver.collector.counts["conflict"] == 0
+    finally:
+        connection.close()
