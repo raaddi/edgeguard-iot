@@ -1127,3 +1127,19 @@ This loopback increment adds bounded simulator diagnostics, not durable gateway
 command observations, client authentication, Qt command publication, ESP32
 execution or ML. These remain pending. The next data-path priority is durable
 command/result observations for the temporal research described in the ML plan.
+
+## Household generation and optional AI ideas (2026-09-21)
+
+The user proposed synthetic family routines spanning, for example, three logical
+years, plus sound/voice control or license-plate recognition for a cardboard car.
+The [ML research plan](docs/ml-research-plan.md) records these as proposals, not
+implemented capabilities or mandatory scope additions. Prioritize varied normal
+household routines, leakage-free evaluation and the existing command/feedback
+study. Pilot shorter histories before scaling; the current bounded simulator
+does not yet support multi-year generation. Physical validation remains required.
+
+After the core ML pilot, plate recognition is the preferred optional demonstration;
+voice is an alternative. Neither recognition result establishes identity or
+authorization. Preserve shared device contracts, hardware independence and the
+1–3 physical ESP32 plus simulated-node architecture. This update changes planning
+documentation only; it does not introduce a camera, microphone or new model.

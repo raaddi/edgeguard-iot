@@ -182,6 +182,140 @@ W interfejsie planujemy pokazać datę i zakres treningu, liczbę dopuszczonych
 sesji, wersję modelu oraz wynik walidacji kandydata. Symulator może przyspieszyć
 czas logiczny; symulowane 60 dni nie zastępuje 60 dni fizycznych obserwacji.
 
+## Pomysły użytkownika: życie rodziny i dodatkowe AI — 21.09.2026
+
+**Status: zapis propozycji i rekomendacji do pilota, bez implementacji oraz bez
+rozszerzania obowiązkowego zakresu pracy o kamerę i mikrofon.** Użytkownik proponuje
+wygenerowanie np. trzech lat życia rodziny w makiecie, trening na tych danych,
+sterowanie dźwiękiem/głosem oraz kamerę rozpoznającą tablicę kartonowego samochodzika.
+Pomysły rozwijają dotychczasowy plan; nie zastępują badania odpowiedzi mechanizmu.
+
+### Generator codziennego użytkowania jako źródło danych ML
+
+Rekomendacja: przygotować konfigurowalny generator **różnych prawidłowych dni**.
+Łączyć kalendarz i rytm aktywności z istniejącym modelem urządzeń:
+
+| Rodzaj dnia / zdarzenia | Przykładowe obserwowalne następstwa |
+|---|---|
+| Dzień roboczy | Poranne światła, otwarcie i zamknięcie drzwi/bramy, okresy bezczynności, powrót i wieczorne światła |
+| Weekend / praca z domu | Inne pory, więcej aktywności w domu, krótsze wyjścia |
+| Goście / wyjazd / powrót po zapomnianą rzecz | Legalne intensywne używanie, dłuższa cisza, poprawne powtórzenie operacji |
+| Zmiana nawyków / sezonu | Stopniowe lub nagłe przesunięcie pór i częstości działań |
+| Działanie urządzeń i komunikacji | Zmienny czas odpowiedzi, pomiary kontaktów po ich dodaniu, opóźnienia i braki wiadomości |
+
+Pory, odstępy i kolejność losujemy z opisanych rozkładów zależnych od profilu
+rodziny, zachowując związki między zdarzeniami. Nie losujemy niezależnie każdego
+światła co sekundę. Nie kopiujemy jednego dnia 1095 razy. Scenariusz rodziny może
+być generatorem regułowym/probabilistycznym; uczącym się elementem jest detektor.
+Nie potrzebujemy LLM do produkowania wiarygodnie wyglądających, lecz niesprawdzonych
+odczytów. Parametry i źródła założeń zapisujemy, a później konfrontujemy z pomiarami.
+
+Odczyty gazu pozostają osobnym kanałem: normalna zmienność i jawnie wydzielone
+scenariusze nieprawidłowości. Bez pomiarów nie zakładamy, że gotowanie oznacza
+określone stężenie ani że obecny model opisuje fizykę MQ-9 i wentylacji.
+Wewnętrzna wiedza generatora „rodzina wyszła” nie jest cechą detektora, dopóki
+nie mamy odpowiadającej jej dostępnej obserwacji. Harmonogram, etykiety i seed
+pozostają oddzielone od wejść ML.
+
+**Co model ma wykrywać:** niezgodne z kontekstem sekwencje i rytm poleceń,
+powtórzenia operacji oraz niezgodność polecenia z czasem/rodzajem odpowiedzi.
+Przykład badawczy: seria cykli bramy poniżej prostego limitu częstości, lecz
+o nietypowym przebiegu, zestawiona z legalnym intensywnym używaniem. Samo otwarcie
+o 02:00 nie dowodzi ataku; późny powrót lub praca zmianowa są kontrprzykładami.
+Anomalia jest wskazaniem do oceny, nie automatyczną klasyfikacją intencji.
+
+Krótka historia mechanizmu i rytm dobowy mają różne skale czasu. Okno GRU 60 s
+nie obejmuje dnia: w pilocie sprawdzimy jawny kontekst godziny/dnia tygodnia
+i agregaty liczone wyłącznie z przeszłości obok szybkich pomiarów mechanizmu.
+Kalendarz wymaga dostępnego źródła czasu; zapisujemy strefę i obsługę zmian czasu,
+a brak zsynchronizowanego czasu na urządzeniu nie może być ukrycie uzupełniany
+przyszłą wiedzą. Porównanie obejmie także reguły czasowe i prosty statystyczny
+model częstości zależnej od pory dnia, nie tylko pojedyncze stałe progi.
+
+### Trzy lata są wariantem eksperymentu, nie wymaganym rozmiarem
+
+Najpierw mały pilot, np. 30–90 dni logicznych z kilkoma profilami rodziny.
+Jeżeli dane są użyteczne, porównamy większe zakresy, np. 365 i 1095 dni,
+krzywe uczenia oraz koszt przechowywania i treningu. Te liczby są punktami
+startowymi do badań, nie gwarancją wystarczającej ilości danych.
+
+Przy założeniu 365 dni/rok i jednej pełnej wiadomości na sekundę trzy lata to
+**94 608 000 wiadomości na węzeł**, a dla trzech węzłów 283 824 000. Liczba
+zdarzeń nie jest liczbą niezależnych przykładów. Potrzebujemy generatora
+zdarzeń i strumieniowego zapisu porcjami, bez renderowania każdego kroku Qt
+i bez czekania lat w czasie rzeczywistym. Szybkie próbki ruchu i wolniejsze
+podsumowania dnia muszą zachować jednostki, kolejność, braki i granice sesji.
+Zmniejszanie częstotliwości nie może ukryć krótkich awarii mechanizmu.
+
+Obecny model ma limit 10 000 kroków, 1000 akcji i bufor 3000 wiadomości,
+a odbiornik poleceń 256 wyników na węzeł. **Nie obsługuje jeszcze wieloletniej
+generacji.** Potrzebny będzie runner sesji z trwałym zapisem, zarządzaniem
+stanem i identyfikatorami przebiegów oraz wznowieniem. Nie wystarczy zwiększyć
+limitów ani skleić niezależnych restartów, udając ciągłe życie domu.
+Architektura dalej wspiera 1–3 fizyczne ESP32 i dodatkowe węzły symulowane.
+
+Podział na trening, walidację i test robimy przed tworzeniem okien, całymi
+sesjami/blokami czasu, z rozłącznymi wariantami zachowania i parametrami.
+Okna i ich kontekst historyczny nie przekraczają granic podziału. Osobno badamy
+przyszłość znanej rodziny oraz nieznany profil; sama zmiana seeda to zbyt słaby
+test uogólnienia. Trening detektora normalności korzysta z dopuszczonych
+normalnych przebiegów, walidacja służy doborowi progu, a test obejmuje legalne
+odstępstwa, awarie i kontrolowane scenariusze cybernetyczne. Porównujemy GRU,
+Isolation Forest i metody odniesienia na tych samych dostępnych obserwacjach.
+Trzy lata syntetyczne nadal nie zastępują fizycznej walidacji i pomiarów na Pi.
+
+Do sprawdzenia założeń aktywności można rozważyć [zbiory CASAS, Washington
+State University](https://casas.wsu.edu/datasets/), zawierające m.in. codzienne
+życie i aktywności wielu mieszkańców. To kandydat do przeglądu, nie pobrany
+zbiór ani gotowe dane naszych aktuatorów; przed użyciem sprawdzimy warunki
+dostępu, licencję, czujniki i zgodność znaczenia danych.
+
+### Opcjonalny moduł: tablica kartonowego samochodzika
+
+**Preferowany dodatek demonstracyjny po pilocie głównego ML:** obraz → lokalizacja
+tablicy → OCR znaków → ocena jakości/odmowa → lista dopuszczonych oznaczeń →
+żądanie otwarcia bramy przez istniejącą ścieżkę poleceń. Wkład ML to rozpoznawanie
+obrazu i tekstu; sprawdzenie listy uprawnień pozostaje zwykłą regułą. Użycie
+gotowego modelu opisujemy jako integrację, nie własny trening od zera.
+
+Pracę można zacząć bez elektroniki od sztucznych tablic, plików obrazów i nagrań;
+później dodać zdjęcia samochodzika i kamerę. Badamy różne kąty, odległości,
+oświetlenie, rozmycie i częściowe zasłonięcia. Dzielimy dane całymi sesjami
+fotografowania/nagrywania, nie sąsiednimi klatkami; sprawdzamy także niewidziane
+oznaczenia. Mierzymy poprawność całego odczytu, błędne dopuszczenia i odmowy,
+opóźnienie oraz zasoby na docelowym sprzęcie. Nie zakładamy, że Pi 3 obsłuży
+równocześnie OCR i główny detektor bez pomiaru.
+
+Niski wynik jakości lub brak odczytu nie otwierają bramy. W makiecie można
+pokazać rozpoznanie własnej sztucznej tablicy; sam napis można skopiować, więc
+OCR nie potwierdza tożsamości samochodu i nie jest samodzielnym zabezpieczeniem
+rzeczywistych drzwi. Kontrolowany pokaz kopii tablicy pozwala omówić tę granicę
+zaufania. Wynik rozpoznawania i żądanie sterowania wymagają jawnego kontraktu
+zdarzeń; nie dopisujemy ich do pól czujnika gazu. ML anomalii nadal obserwuje
+komendy i odpowiedź bramy, ale nie obiecujemy, że wykryje poprawnie skopiowaną tablicę.
+
+### Alternatywa: sterowanie dźwiękiem / głosem
+
+Zapisujemy dwa warianty: rozpoznawanie krótkich poleceń mówionych (np. „włącz
+światło w garażu”) oraz klasyfikację umówionego dźwięku. Proste wykrywanie
+głośności/klaskania progiem nie jest samo w sobie ML. Dla wersji głosowej:
+przycisk nagrywania → rozpoznanie mowy → ograniczony zestaw intencji → walidacja
+urządzenia/nastawy → dotychczasowy kontrakt polecenia. Transkrypcja nie daje
+uprawnień; głos/nagranie nie uwierzytelniają osoby. Otwarcie wejścia wymagałoby
+osobnego uprawnienia/potwierdzenia, nie swobodnego wykonania tekstu przez LLM.
+Ocenialibyśmy pomyłki intencji, fałszywe aktywacje, odmowy i opóźnienia dla
+różnych głosów i hałasu. To alternatywa dla kamery, nie równoległy obowiązek.
+
+### Rekomendowana kolejność
+
+1. Dokończyć trwały zapis poleceń/odpowiedzi i profil ruchu mechanizmu.
+2. Zbudować generator różnych dni rodziny i pilot danych; pokazać rzeczywiste
+   predykcje i błędy modelu w obecnej konsoli. To najbliższe głównemu tematowi AI.
+3. Porównać metody, sprawdzić fałszywe alarmy i transfer na dostępny sprzęt.
+4. Dopiero przy zapasie czasu wybrać **jeden** dodatek: preferencyjnie tablice
+   samochodzika, alternatywnie głos. Większa ilość danych i nowe moduły mają
+   uzasadnienie dopiero po ocenie pilota, nie służą samej liczbie funkcji.
+
 ## Interfejs jako część laboratorium ML
 
 Docelowo w istniejącym czarnym pulpicie:
