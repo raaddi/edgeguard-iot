@@ -1,4 +1,4 @@
-"""Receive local MQTT telemetry, validate it, and commit before acknowledging."""
+"""Persist local MQTT telemetry and command observations before acknowledging."""
 
 import argparse
 from collections import Counter
@@ -8,8 +8,12 @@ import sqlite3
 import time
 
 from contracts.telemetry import TelemetryError
+from contracts.commands import CommandError
 from edge.mqtt import Connection, port_number
 from edge.storage import TelemetryStore
+
+TOPICS = ["edgeguard/devices/+/telemetry", "edgeguard/devices/+/commands",
+          "edgeguard/devices/+/command-results"]
 
 
 class Collector:
@@ -21,19 +25,22 @@ class Collector:
         self.connection.client.on_message = self._message
         self.ready = False
         self.subscription_error = False
+        self.subscription_mid = None
         self.counts = Counter(stored=0, duplicate=0, conflict=0, invalid=0, retained=0,
-                              storage_errors=0, connections=0, disconnects=0)
+                              storage_errors=0, connections=0, disconnects=0, control_stored=0)
 
     def _subscribe(self):
         self.ready = False
         self.subscription_error = False
         self.counts["connections"] += 1
-        result, _ = self.connection.client.subscribe("edgeguard/devices/+/telemetry", qos=1)
+        result, self.subscription_mid = self.connection.client.subscribe([(topic, 1) for topic in TOPICS])
         if result != 0:
             raise ConnectionError("MQTT subscribe failed")
 
     def _subscribed(self, client, userdata, mid, reasons, properties):
-        self.subscription_error = not reasons or any(reason.is_failure for reason in reasons)
+        if mid != self.subscription_mid:
+            return
+        self.subscription_error = len(reasons) != len(TOPICS) or any(reason.is_failure for reason in reasons)
         self.ready = not self.subscription_error
 
     def _message(self, client, userdata, message):
@@ -44,11 +51,17 @@ class Collector:
             self.counts["retained"] += 1
         else:
             try:
-                outcome = self.store.ingest(message.topic, message.payload,
-                                            received_at=received_at,
-                                            received_monotonic_ns=received_ns)
-                self.counts[outcome] += 1
-            except TelemetryError:
+                if message.topic.endswith("/telemetry"):
+                    outcome = self.store.ingest(message.topic, message.payload,
+                                                received_at=received_at,
+                                                received_monotonic_ns=received_ns)
+                    self.counts[outcome] += 1
+                else:
+                    self.store.ingest_control(message.topic, message.payload,
+                                              received_at=received_at, received_monotonic_ns=received_ns,
+                                              mqtt_qos=message.qos, mqtt_duplicate=message.dup)
+                    self.counts["control_stored"] += 1
+            except (TelemetryError, CommandError):
                 self.counts["invalid"] += 1
             except sqlite3.Error:
                 self.counts["storage_errors"] += 1

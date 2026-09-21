@@ -1,4 +1,4 @@
-"""Local read-only HTTP API over telemetry persisted by the MQTT collector."""
+"""Local read-only HTTP API over telemetry and MQTT control observations."""
 
 import argparse
 import logging
@@ -12,6 +12,8 @@ from pydantic import BaseModel
 import uvicorn
 
 from contracts.telemetry import TelemetryError
+from contracts.commands import CommandError
+from edge.observations import control_history
 from edge.readings import check_history, device_details, device_history, device_summaries, open_history, recent_history
 
 DeviceId = Annotated[str, ApiPath(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
@@ -56,17 +58,35 @@ class RecentPage(BaseModel):
     older_available: bool
 
 
+class ControlRecord(BaseModel):
+    id: int
+    kind: str
+    received_at: str
+    received_monotonic_ns: int
+    collector_session_id: str
+    mqtt_qos: int
+    mqtt_duplicate: bool
+    topic: str
+    message: dict[str, Any]
+
+
+class ControlPage(BaseModel):
+    items: list[ControlRecord]
+    has_more: bool
+    next_after_id: int
+
+
 def create_app(database="data/telemetry.sqlite3"):
     database = Path(database).resolve()
-    app = FastAPI(title="EdgeGuard — odczyt telemetrii", version="0.1.0",
+    app = FastAPI(title="EdgeGuard — historia kolektora", version="0.2.0",
                   description="Lokalna historia kolektora. Wpis w bazie nie potwierdza, że węzeł jest online.",
                   redoc_url=None)
 
     async def unavailable(request: Request, error: Exception):
-        logger.error("Telemetry history unavailable: %s", error)
-        return JSONResponse(status_code=503, content={"detail": "Historia telemetrii jest niedostępna. Sprawdź bazę kolektora."})
+        logger.error("Collector history unavailable: %s", error)
+        return JSONResponse(status_code=503, content={"detail": "Historia kolektora jest niedostępna. Sprawdź bazę i wersję kolektora."})
 
-    for error_type in (sqlite3.Error, OSError, TelemetryError):
+    for error_type in (sqlite3.Error, OSError, TelemetryError, CommandError):
         app.add_exception_handler(error_type, unavailable)
 
     @app.get("/health", summary="Dostępność odczytu bazy; nie stan brokera ani węzłów")
@@ -107,6 +127,15 @@ def create_app(database="data/telemetry.sqlite3"):
         if result is None:
             raise HTTPException(404, "Brak zapisanej telemetrii tego węzła.")
         return result
+
+    @app.get("/devices/{device_id}/control-history", response_model=ControlPage,
+             summary="Odebrane polecenia i wyniki; powtórzenia pozostają osobnymi obserwacjami")
+    def control(device_id: DeviceId, limit: PageLimit = 100,
+                after_id: Annotated[int, Query(ge=0, le=9223372036854775807)] = 0,
+                command_id: Annotated[str | None, Query(
+                    pattern=r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")] = None):
+        with open_history(database) as db:
+            return control_history(db, device_id, after_id=after_id, limit=limit, command_id=command_id)
 
     return app
 

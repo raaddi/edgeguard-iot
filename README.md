@@ -14,7 +14,8 @@ through Mosquitto to a validating collector. A [read-only HTTP API](docs/step-06
 now exposes stored devices and telemetry. The [Qt collector view](docs/step-07-collector-view.md)
 reads this history over HTTP. A [terminal command exercise](docs/step-09-mqtt-control.md)
 now controls simulated nodes through MQTT with application results and duplicate
-protection. Qt command integration and ML remain pending.
+protection. The collector now persists [command/result receipts](docs/step-10-control-history.md)
+and exposes their bounded HTTP history. Qt command integration and ML remain pending.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -34,6 +35,9 @@ The system must support 1-3 physical ESP32 boards plus configurable simulated
 nodes without a fixed architectural node limit.
 
 ## First simulation exercise
+
+**Start here to understand the project:** [Polish project guide](docs/project-guide.md)
+with verified scope, the message path, source map and a short learning exercise.
 
 **Desktop laboratory:** [Python + Qt walkthrough](docs/desktop-laboratory.md).
 The native workspace now covers the whole house, device navigation and controls,

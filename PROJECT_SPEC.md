@@ -1143,3 +1143,20 @@ voice is an alternative. Neither recognition result establishes identity or
 authorization. Preserve shared device contracts, hardware independence and the
 1–3 physical ESP32 plus simulated-node architecture. This update changes planning
 documentation only; it does not introduce a camera, microphone or new model.
+
+## Durable control observations increment (2026-09-21)
+
+The collector now subscribes to commands and results as well as telemetry. It
+validates and commits each control receipt to an additive SQLite table before
+acknowledgement. Repeated and conflicting valid messages remain separate
+observations; actuator execution deduplication remains the node's responsibility.
+Receipt UTC, monotonic time, collector session and MQTT metadata are separate
+from the claimed device boot/uptime. A bounded, read-only control-history API
+supports cursors and filtering by command ID, including orphan results.
+
+Real-broker tests cover duplicate/conflicting commands, results, SQLite/HTTP and
+resubscription after broker restart. The log is neither authenticated identity
+nor tamper-proof audit, and clean MQTT sessions can lose messages. Feature
+engineering, labeling, ML, Qt command publication and hardware remain pending.
+See [step 10](docs/step-10-control-history.md) and the
+[Polish project learning guide](docs/project-guide.md).

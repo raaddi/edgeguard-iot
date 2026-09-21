@@ -245,13 +245,70 @@ def test_mqtt_control_changes_telemetry_stored_by_collector(receiver, sender, br
             return bool(replies)
         wait_until(responded)
         assert replies[0]["status"] == "accepted"
+        sender.publish(command_topic(node), json.dumps(command).encode())
+        def received_repeat():
+            control.service()
+            sender.pump()
+            return len(replies) == 2
+        wait_until(received_repeat)
+        sender.publish(command_topic(node), json.dumps({**command, "value": 0}).encode())
+        def received_conflict():
+            control.service()
+            sender.pump()
+            return len(replies) == 3
+        wait_until(received_conflict)
+        assert replies[0] == replies[1]
+        assert replies[2]["reason"] == "duplicate_conflict"
+        assert len(sim.actions) == 1
         sim.step()
         control.publish_telemetry()
         wait_until(lambda: receiver.count() == 4)
+        wait_until(lambda: receiver.collector.counts["control_stored"] == 6)
         with sqlite3.connect(receiver.database) as db:
             reports = [json.loads(row[0]) for row in db.execute(
                 "SELECT payload FROM telemetry WHERE device_id=? ORDER BY sequence_number", (node,))]
         assert [r["actuators"]["led_01"]["commanded"] for r in reports] == [0, 1]
         assert receiver.collector.counts["conflict"] == 0
+        from fastapi.testclient import TestClient
+        from edge.api import create_app
+        with TestClient(create_app(receiver.database)) as api:
+            page = api.get(f"/devices/{node}/control-history",
+                           params={"command_id": command["command_id"]}).json()
+        commands = [r for r in page["items"] if r["kind"] == "command"]
+        results = [r for r in page["items"] if r["kind"] == "result"]
+        assert [r["message"]["value"] for r in commands] == [1, 1, 0]
+        assert [r["message"]["status"] for r in results] == ["accepted", "accepted", "rejected"]
+        assert len({r["id"] for r in page["items"]}) == 6
     finally:
         connection.close()
+
+
+def test_control_collector_resubscribes_and_preserves_receipts_after_restart(receiver, sender, broker):
+    from uuid import uuid4
+    from contracts.commands import command_topic, result_topic
+    report = HouseSimulation(node_count=1).history[0]
+    node = report["device_id"]
+    command = {"schema_version": "1.0", "command_id": str(uuid4()), "device_id": node,
+               "target_boot_id": report["boot_id"], "component_id": "led_01", "operation": "set",
+               "value": 1, "observed_uptime_ms": 0, "expires_uptime_ms": 5000}
+    result = {"schema_version": "1.0", "command_id": command["command_id"], "device_id": node,
+              "boot_id": report["boot_id"], "component_id": "led_01", "status": "accepted",
+              "reason": None, "handled_uptime_ms": 0}
+    sender.publish(command_topic(node), json.dumps(command).encode())
+    wait_until(lambda: receiver.collector.counts["control_stored"] == 1)
+    broker.stop()
+    wait_until(lambda: receiver.collector.counts["disconnects"] > 0)
+    broker.start()
+    wait_until(lambda: receiver.collector.counts["connections"] >= 2 and receiver.collector.ready)
+    replacement = Connection(broker.port)
+    try:
+        replacement.connect()
+        replacement.publish(command_topic(node), json.dumps(command).encode())
+        replacement.publish(result_topic(node), json.dumps(result).encode())
+        wait_until(lambda: receiver.collector.counts["control_stored"] == 3)
+        with sqlite3.connect(receiver.database) as db:
+            receipts = db.execute("SELECT kind, collector_session_id FROM control_observations ORDER BY id").fetchall()
+        assert [r[0] for r in receipts] == ["command", "command", "result"]
+        assert len({r[1] for r in receipts}) == 1  # Broker restart does not restart the collector clock.
+    finally:
+        replacement.close()
