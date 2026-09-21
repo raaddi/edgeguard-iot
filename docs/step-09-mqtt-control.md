@@ -107,7 +107,8 @@ wpisy diagnostyczne. Bufor telemetrii także pozostaje ograniczony do 3000 wiado
 `broker_acked` obejmuje telemetrię i wyniki; osobne liczniki są w `control`.
 
 To archiwum diagnostyczne symulatora, nie trwały audyt gatewaya ani kompletny
-zbiór treningowy. SQLite zapisuje na razie telemetrię, nie polecenia i wyniki.
+zbiór treningowy. Aktualizacja z 21.09: [krok 10](step-10-control-history.md)
+dodaje oddzielny zapis obserwacji poleceń i wyników w SQLite kolektora.
 Rozszerzonego archiwum MQTT nie importujemy przez przycisk odtwarzania Qt.
 Normalne zakończenie/Ctrl+C zapisuje archiwum; wymuszone zabicie procesu może
 przerwać zapis. Plików wygenerowanych nie dodajemy do Git.
@@ -123,7 +124,7 @@ powtórzenia, konflikty, wygaśnięcie, retained, CLI i utratę brokera. Testy m
 obejmują limity, błędy wykonania, AUTO, topologię i różnicę nastawa–odpowiedź.
 Pełne testy przeciążenia i odzyskiwania po awarii pozostają do wykonania.
 
-Następny przyrost: trwałe obserwacje poleceń i wyników na gatewayu, z osobnymi
-czasami odbioru. To dane do planowanego badania ML: relacja między wydanym
-poleceniem a odpowiedzią mechanizmu. Potem podłączymy sterowanie z konsoli Qt.
+Trwałe obserwacje poleceń i wyników na gatewayu, z osobnymi czasami odbioru,
+są teraz dostępne w kroku 10. To dane do planowanego badania ML: relacja między
+wydanym poleceniem a odpowiedzią mechanizmu. Sterowanie z konsoli Qt pozostaje planem.
 Firmware ESP32, niezależne pomiary ruchu i trening modeli pozostają planem.

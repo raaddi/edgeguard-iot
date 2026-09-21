@@ -1,16 +1,19 @@
-"""Validated telemetry in SQLite; duplicate identities cannot overwrite history."""
+"""SQLite telemetry deduplication and append-only control receipts."""
 
 from datetime import datetime, timezone
 import json
 from pathlib import Path
 import sqlite3
 import time
+from uuid import uuid4
 
 from contracts.telemetry import decode_telemetry
+from edge.observations import append_observation, initialize_observations
 
 
 class TelemetryStore:
     def __init__(self, path):
+        self.collector_session_id = str(uuid4())
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(path, timeout=2)
         self.db.execute("PRAGMA journal_mode=WAL")
@@ -19,6 +22,7 @@ class TelemetryStore:
             device_timestamp TEXT, received_at TEXT NOT NULL, received_monotonic_ns INTEGER NOT NULL,
             topic TEXT NOT NULL, payload TEXT NOT NULL,
             PRIMARY KEY(device_id, boot_id, sequence_number))""")
+        initialize_observations(self.db)
         self.db.commit()
 
     def ingest(self, topic, payload, *, received_at=None, received_monotonic_ns=None):
@@ -41,6 +45,14 @@ class TelemetryStore:
                 identity,
             ).fetchone()[0]
             return "duplicate" if previous == canonical else "conflict"
+
+    def ingest_control(self, topic, payload, *, mqtt_qos, mqtt_duplicate,
+                       received_at=None, received_monotonic_ns=None):
+        return append_observation(
+            self.db, topic, payload, collector_session_id=self.collector_session_id,
+            received_at=received_at or datetime.now(timezone.utc).isoformat(),
+            received_monotonic_ns=time.monotonic_ns() if received_monotonic_ns is None else received_monotonic_ns,
+            mqtt_qos=mqtt_qos, mqtt_duplicate=mqtt_duplicate)
 
     def close(self):
         self.db.close()
