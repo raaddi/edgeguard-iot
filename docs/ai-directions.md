@@ -75,6 +75,12 @@ i nie zastępują walidacji fizycznej oraz pomiarów inferencji na Raspberry Pi.
 Każdy gotowy przyrost: przegląd zmian, właściwe testy, commit i push na gałąź
 funkcjonalną. Lista nie oznacza ukończenia tych etapów.
 
+Zweryfikowany przyrost: `simulator/gate.py` modeluje ruch w czasie, dwa kontakty,
+opcjonalny syntetyczny prąd, zatrzymanie przy otwieraniu i kontakt otwarcia stuck-low.
+Testy sprawdzają ruch, odwrócenie kierunku, granice, powtarzalność i obserwowalność.
+Opóźnienie komunikacji należy do runnera, nie do fizyki mechanizmu.
+Ten model nie jest jeszcze podłączony do MQTT ani Qt i nie zawiera ML.
+
 ## Inspiracje do dalszego przeglądu
 
 - [psy-taliro](https://github.com/cpslab-asu/psy-taliro): wyszukiwanie testów systemów cyberfizycznych.
