@@ -16,6 +16,12 @@ reads this history over HTTP. A [terminal command exercise](docs/step-09-mqtt-co
 now controls simulated nodes through MQTT with application results and duplicate
 protection. The collector now persists [command/result receipts](docs/step-10-control-history.md)
 and exposes their bounded HTTP history. Qt command integration and ML remain pending.
+An [offline gate observability pilot](docs/step-11-gate-pilot.md) models timed
+motion, contacts and optional synthetic current across normal operation and three
+fault cases. Observations and ground truth are separate; it is not yet connected
+to MQTT/Qt and does not train a model. Run `python -m simulator.gate_pilot` in the
+project environment. [AI directions](docs/ai-directions.md) records the research
+alternatives and staged hardware plan.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
