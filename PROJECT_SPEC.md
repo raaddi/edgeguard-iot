@@ -1160,3 +1160,12 @@ nor tamper-proof audit, and clean MQTT sessions can lose messages. Feature
 engineering, labeling, ML, Qt command publication and hardware remain pending.
 See [step 10](docs/step-10-control-history.md) and the
 [Polish project learning guide](docs/project-guide.md).
+
+## AI directions and small increments (2026-09-23)
+
+[AI directions](docs/ai-directions.md) records five candidate extensions,
+with active diagnosis as the research direction and automated difficult-test
+search as an optional extension. These are plans, not implemented ML results.
+The next bounded step is a hardware-independent gate observability pilot.
+Purchases follow evidence from the pilot; existing MQTT, SQLite and Qt remain.
+Deliver independently checked, smaller commits and push each completed increment.

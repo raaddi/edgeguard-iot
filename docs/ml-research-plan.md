@@ -316,6 +316,13 @@ różnych głosów i hałasu. To alternatywa dla kamery, nie równoległy obowi�
    samochodzika, alternatywnie głos. Większa ilość danych i nowe moduły mają
    uzasadnienie dopiero po ocenie pilota, nie służą samej liczbie funkcji.
 
+## Dalsze kierunki AI — 23.09.2026
+
+[Pięć kierunków AI i etapy rozbudowy makiety](ai-directions.md) zapisują
+aktywną diagnozę jako rozwinięcie oraz opcjonalne szukanie trudnych testów.
+Najbliższy krok to pilot obserwowalności bramy. Pozostałe pomysły są alternatywami,
+nie równoległymi obowiązkami. Protokół oceny i wymagania interfejsu pozostają aktualne.
+
 ## Interfejs jako część laboratorium ML
 
 Docelowo w istniejącym czarnym pulpicie:
