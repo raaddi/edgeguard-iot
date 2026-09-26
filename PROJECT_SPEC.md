@@ -1180,3 +1180,13 @@ has time-dependent motion and optional current, not calibrated servo physics.
 The local gate-pilot-0.1 dataset is intentionally separate from MQTT telemetry 1.0;
 sensor-contract evolution, Qt integration, trained ML and hardware remain pending.
 See [step 11](docs/step-11-gate-pilot.md) for launch, semantics and limitations.
+
+## Gate usage profiles and grouped splits (2026-09-26)
+
+The offline pilot now includes standard, repeated-open, early-return and idle
+usage profiles. Metadata uses gate-pilot-0.2; observations remain outside MQTT.
+A split planner keeps related seeds together across profiles and suites before
+window creation, with normal-only training and excluded training-group faults.
+This is a small data-preparation increment, not trained ML or a held-out-profile
+generalization study. Feature extraction, richer parameter families and learning
+remain the next research steps. See step 11 for the runnable exercise.

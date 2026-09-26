@@ -57,8 +57,9 @@ def test_artifacts_are_complete_and_never_overwritten(tmp_path):
         truth = json.loads((folder / "ground_truth.json").read_text())
         obs = [json.loads(s) for s in (folder / "observations.jsonl").read_text().splitlines()]
         events = [json.loads(s) for s in (folder / "events.jsonl").read_text().splitlines()]
-        assert (obs, events, truth) == pilot.simulate_session(
+        expected = pilot.simulate_session(
             seed=truth["seed"], case=truth["case"], run_id=session["run_id"])
+        assert [obs, events, truth] == json.loads(json.dumps(expected))
         assert json.loads((folder / "summary.json").read_text()) == pilot.summarize(obs, events)
     with pytest.raises(FileExistsError):
         pilot.run_suite(output=tmp_path, suite_id="one", sessions_per_case=1)
@@ -82,3 +83,35 @@ def test_invalid_suite_config_creates_no_files(tmp_path, kwargs):
     with pytest.raises((ValueError, pilot.argparse.ArgumentTypeError)):
         pilot.run_suite(output=tmp_path, **kwargs)
     assert not list(tmp_path.iterdir())
+
+
+@pytest.mark.parametrize("profile", pilot.PROFILES)
+def test_legal_profiles_are_repeatable_and_separate_from_features(profile):
+    args = dict(seed=42, case="normal", run_id="profile-test", profile=profile)
+    obs, events, truth = pilot.simulate_session(**args)
+    assert (obs, events, truth) == pilot.simulate_session(**args)
+    commands = [e for e in events if e["kind"] == "command_sent"]
+    assert [(e["logical_ms"], e["message"]["value"]) for e in commands] == list(pilot.PROFILES[profile])
+    assert all("profile" not in o for o in obs)
+    assert obs[-1]["closed_contact"]
+    summary = pilot.summarize(obs, events)
+    assert summary["open_contact_seen_before_close"] == {
+        "standard": True, "repeat_open": True, "early_return": False, "idle": None,
+    }[profile]
+    if profile == "idle":
+        assert not events and all(o["closed_contact"] for o in obs)
+    if profile == "early_return":
+        assert any(o["open_contact"] for o in obs if o["logical_ms"] > 3000)
+
+
+def test_profile_is_persisted_and_unknown_profile_rejected(tmp_path):
+    root = pilot.run_suite(output=tmp_path, sessions_per_case=1, profile="repeat_open")
+    manifest = json.loads((root / "manifest.json").read_text())
+    assert manifest["profile"] == "repeat_open"
+    assert manifest["schedule_ms_degrees"] == [[1000, 110], [1500, 110], [5000, 0]]
+    for entry in manifest["sessions"]:
+        truth = json.loads((root / entry["run_id"] / "ground_truth.json").read_text())
+        assert truth["profile"] == "repeat_open"
+    with pytest.raises(ValueError):
+        pilot.run_suite(output=tmp_path, suite_id="invalid", profile="unknown")
+    assert not (tmp_path / "invalid").exists()
