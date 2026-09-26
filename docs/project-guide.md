@@ -1,6 +1,6 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 23.09.2026, po dodaniu pilota obserwowalności bramy. Ten przewodnik opisuje
+Stan na 27.09.2026, po dodaniu cech dla pilota bramy. Ten przewodnik opisuje
 stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
@@ -33,6 +33,8 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | Plan | Główne badanie ML | Dane eksperymentalne, cechy, trening GRU/Isolation Forest, porównanie, analiza błędów |
 | Plan | Generator życia rodziny | Zróżnicowane dni, długie sesje i eksperymenty; obecny model ma limity krótkiego przebiegu |
 | ✓ | Pilot ruchu i feedbacku | Osobny model bramy, kontakty, opcjonalny syntetyczny prąd i runner czterech przypadków; [krok 11](step-11-gate-pilot.md) |
+| ✓ | Profile i podział sesji | Cztery legalne profile; wspólne grupy między wariantami, trening tylko na sesjach normalnych |
+| ✓ | Cechy do ML offline | 20 cech z przeszłych/bieżących obserwacji, eksport według podziału; [krok 12](step-12-gate-features.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |

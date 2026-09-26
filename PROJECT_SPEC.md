@@ -1190,3 +1190,14 @@ window creation, with normal-only training and excluded training-group faults.
 This is a small data-preparation increment, not trained ML or a held-out-profile
 generalization study. Feature extraction, richer parameter families and learning
 remain the next research steps. See step 11 for the runnable exercise.
+
+## Causal gate features (2026-09-27)
+
+The offline adapter now extracts 20 versioned, unscaled features using only
+observations and command events available by each logical timestamp. Missing
+measurements remain null, gaps are explicit and state resets per session.
+The exporter respects the grouped split, excludes training-group faults and
+records input hashes, code version and completion status. Prefix-invariance,
+session boundaries, validation and export failure tests cover this increment.
+This pilot-specific adapter does not yet handle live MQTT history, train a model
+or integrate results into Qt. See [step 12](docs/step-12-gate-features.md).

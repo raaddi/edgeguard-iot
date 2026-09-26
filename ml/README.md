@@ -15,3 +15,7 @@ from one pilot session's observations and command events. It never reads ground
 truth. Missing values remain null; no imputation or preprocessing is fitted.
 Every call resets history, and prefix tests guard against future-data leakage.
 This is an offline pilot adapter, not yet a live MQTT or Qt integration.
+
+`python -m ml.gate_feature_export <split.json> --output <new-directory>` exports
+the features per session into train/validation/test directories, preserving nulls
+and provenance hashes. Follow [step 12](../docs/step-12-gate-features.md).

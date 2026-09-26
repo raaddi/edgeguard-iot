@@ -22,6 +22,9 @@ fault cases. Observations and ground truth are separate; it is not yet connected
 to MQTT/Qt and does not train a model. Run `python -m simulator.gate_pilot` in the
 project environment. [AI directions](docs/ai-directions.md) records the research
 alternatives and staged hardware plan.
+The pilot now has legal usage profiles, grouped splits and a
+[causal feature exporter](docs/step-12-gate-features.md) for future ML training.
+No trained detector or live feature integration is claimed.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
