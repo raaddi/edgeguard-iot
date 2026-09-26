@@ -13,18 +13,27 @@ from simulator.__main__ import code_version, identifier
 from simulator.gate import Gate, GateConfig, MODEL_VERSION
 
 CASES = ("normal", "command_delay", "motion_stall", "open_contact_stuck_low")
-DATASET_VERSION = "gate-pilot-0.1"
+DATASET_VERSION = "gate-pilot-0.2"
 SAMPLE_MS = 50
 DURATION_MS = 8000
 SCHEDULE = ((1000, 110), (5000, 0))
+PROFILES = {
+    "standard": SCHEDULE,
+    "repeat_open": ((1000, 110), (1500, 110), (5000, 0)),
+    "early_return": ((1000, 110), (1400, 0), (3000, 110), (5500, 0)),
+    "idle": (),
+}
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "experiments" / "runs"
 
 
 def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
-                     feedback_device_id="virtual_gate_01", measure_current=True):
+                     feedback_device_id="virtual_gate_01", measure_current=True,
+                     profile="standard"):
     """Paired seeds share nominal parameters. Returned truth is never a feature."""
     if case not in CASES:
         raise ValueError("Unknown gate case.")
+    if profile not in PROFILES:
+        raise ValueError("Unknown gate usage profile.")
     if type(seed) is not int or not 0 <= seed <= 2**32 - 1:
         raise ValueError("Seed must be in 0..2**32-1.")
     for value in (run_id, device_id, feedback_device_id):
@@ -45,7 +54,7 @@ def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
     for now in range(0, DURATION_MS + 1, SAMPLE_MS):
         if now:
             gate.advance(SAMPLE_MS)
-        for sent_ms, target in SCHEDULE:
+        for sent_ms, target in PROFILES[profile]:
             if now != sent_ms:
                 continue
             command = {
@@ -82,6 +91,7 @@ def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
         })
     truth = {
         "case": case, "seed": seed, "paired_group": f"gate-v1-seed-{seed}",
+        "profile": profile, "schedule_ms_degrees": PROFILES[profile],
         "config": asdict(config), "delivery_delay_ms": delay,
         "label_scope": "configured session condition; not event onset intervals",
     }
@@ -95,10 +105,18 @@ def summarize(observations, events):
     delays = [e["logical_ms"] - sent[e["message"]["command_id"]]
               for e in events if e["kind"] == "command_result"]
     currents = [o["current_a"] for o in observations if o["current_a"] is not None]
+    commands = [e for e in events if e["kind"] == "command_sent"]
+    first_open = next((e["logical_ms"] for e in commands if e["message"]["value"] == 110), None)
+    first_close = next((e["logical_ms"] for e in commands
+                        if first_open is not None and e["logical_ms"] > first_open
+                        and e["message"]["value"] == 0), None)
     return {
         "result_delays_ms": delays,
-        "open_contact_seen_before_close": any(o["open_contact"] for o in observations
-                                              if 1000 <= o["logical_ms"] < 5000),
+        "open_contact_seen_before_close": (
+            any(o["open_contact"] for o in observations
+                if first_open <= o["logical_ms"] < first_close)
+            if first_open is not None and first_close is not None else None
+        ),
         "peak_current_a": max(currents) if currents else None,
         "final_closed_contact": observations[-1]["closed_contact"],
     }
@@ -116,7 +134,9 @@ def _jsonl(path, rows):
 
 def run_suite(*, output=DEFAULT_OUTPUT, suite_id=None, seed=42, sessions_per_case=3,
               device_id="virtual_gate_01", feedback_device_id="virtual_gate_01",
-              measure_current=True):
+              measure_current=True, profile="standard"):
+    if profile not in PROFILES:
+        raise ValueError("Unknown gate usage profile.")
     if type(sessions_per_case) is not int or not 1 <= sessions_per_case <= 25:
         raise ValueError("sessions_per_case must be in 1..25.")
     if type(seed) is not int or not 0 <= seed <= 2**32 - sessions_per_case:
@@ -135,18 +155,20 @@ def run_suite(*, output=DEFAULT_OUTPUT, suite_id=None, seed=42, sessions_per_cas
         "seed": seed, "sessions_per_case": sessions_per_case,
         "device_id": device_id, "feedback_device_id": feedback_device_id,
         "measure_current": measure_current, "sample_ms": SAMPLE_MS,
-        "duration_ms": DURATION_MS, "schedule_ms_degrees": SCHEDULE, "sessions": [],
+        "duration_ms": DURATION_MS, "profile": profile,
+        "schedule_ms_degrees": PROFILES[profile], "sessions": [],
     }
     _json(root / "manifest.json", manifest)
     try:
         for index in range(sessions_per_case):
             for case in CASES:
-                run_id = str(uuid5(NAMESPACE_URL, f"{suite_id}/{index}/{case}"))
+                run_id = str(uuid5(NAMESPACE_URL, f"{suite_id}/{profile}/{index}/{case}"))
                 folder = root / run_id
                 folder.mkdir()
                 observations, events, truth = simulate_session(
                     seed=seed + index, case=case, run_id=run_id, device_id=device_id,
                     feedback_device_id=feedback_device_id, measure_current=measure_current,
+                    profile=profile,
                 )
                 _jsonl(folder / "observations.jsonl", observations)
                 _jsonl(folder / "events.jsonl", events)
@@ -171,12 +193,13 @@ def main():
     parser.add_argument("--device-id", type=identifier, default="virtual_gate_01")
     parser.add_argument("--feedback-device-id", type=identifier, default="virtual_gate_01")
     parser.add_argument("--without-current", action="store_true")
+    parser.add_argument("--profile", choices=PROFILES, default="standard")
     args = parser.parse_args()
     try:
         root = run_suite(suite_id=args.suite_id, seed=args.seed,
                          sessions_per_case=args.sessions_per_case, device_id=args.device_id,
                          feedback_device_id=args.feedback_device_id,
-                         measure_current=not args.without_current)
+                         measure_current=not args.without_current, profile=args.profile)
     except (OSError, ValueError) as error:
         parser.exit(1, f"Pilot failed: {error}\n")
     print(f"Synthetic pilot completed: {root}")

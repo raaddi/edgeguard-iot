@@ -54,7 +54,7 @@ W ignorowanym przez Git `experiments/runs/<suite_id>/`:
 | `<run_id>/ground_truth.json` | Przypadek, seed, parametry i grupa parowania; poza wejściem ML |
 | `<run_id>/summary.json` | Podsumowanie obserwacji; nie predykcja ani diagnoza ML |
 
-Format lokalny **`gate-pilot-0.1`**: `run_id`, `device_id`, `boot_id`, `mechanism_id`
+Format lokalny **`gate-pilot-0.2`**: `run_id`, `device_id`, `boot_id`, `mechanism_id`
 identyfikują źródło; `sequence_number` liczy próbki od zera, `logical_ms` to wspólny
 zegar symulacji od zera. `closed_contact` i `open_contact` to bool; `current_a`
 to skończona liczba amperów albo null przy wyłączonym kanale. Wszystko jest
@@ -84,3 +84,24 @@ reguły i pierwszy ML. Aktywna diagnoza i wybór testów pozostają planem z
 
 Do samodzielnego sprawdzenia: dlaczego `accepted` nie oznacza `open_contact=True`?
 Co stracisz po wyłączeniu prądu? Dlaczego `case` nie może być cechą ML?
+
+## Prawidłowe profile używania — 26.09.2026
+
+Opcja `--profile` wybiera `standard` (domyślny cykl), `repeat_open` (legalne
+ponowienie nastawy), `early_return` (zamknięcie w trakcie otwierania, potem pełny
+cykl) lub `idle` (bez poleceń). Każdy profil można połączyć z czterema przypadkami.
+Harmonogram i profil są w metadanych, nie w rekordach obserwacji. Wersja 0.2
+dodaje te metadane oraz oblicza `open seen` między pierwszym poleceniem otwarcia
+a następującym po nim zamknięciem, zamiast stałego przedziału czasu.
+
+```powershell
+.\.venv\Scripts\python.exe -m simulator.gate_pilot --profile early_return
+```
+
+`open seen=False` jest tu prawidłowe dla pierwszej, anulowanej operacji.
+Dla `idle` wynik jest null — nie było cyklu do oceny. Skonfigurowana usterka
+w bezczynnej sesji może się wcale nie ujawnić. Nie traktujemy etykiety całej
+sesji jako etykiety wykrywalnej anomalii w każdej próbce. To cztery krótkie,
+ustalone harmonogramy; losowanie wielu dni i test nowych rodzin parametrów
+pozostają kolejnymi etapami. Wszystkie warianty tego samego seeda nadal mają
+wspólny `paired_group`, także między profilami i zestawami danych.
