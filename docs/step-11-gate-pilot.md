@@ -105,3 +105,33 @@ sesji jako etykiety wykrywalnej anomalii w każdej próbce. To cztery krótkie,
 ustalone harmonogramy; losowanie wielu dni i test nowych rodzin parametrów
 pozostają kolejnymi etapami. Wszystkie warianty tego samego seeda nadal mają
 wspólny `paired_group`, także między profilami i zestawami danych.
+
+## Podział sesji przed ML — 26.09.2026
+
+Po wygenerowaniu zestawu użyj jego katalogu w obu miejscach poniżej:
+
+```powershell
+.\.venv\Scripts\python.exe -m ml.gate_split experiments/runs/ID_ZESTAWU --output experiments/runs/ID_ZESTAWU/split.json
+```
+
+Można przekazać kilka katalogów zestawów przed `--output`: wszystkie, które
+chcesz później wspólnie analizować, trzeba dzielić razem. Wymagane są co najmniej
+trzy różne `paired_group` (domyślny pilot je ma). Powiązane sesje tego samego
+seeda zostają razem, także między profilami. Kolejność katalogów nie zmienia
+podziału. `--seed` określa deterministyczną kolejność grup. Walidacja i test
+dostają po max(1, floor(liczba_grup/5)) grup, reszta przypada treningowi.
+Przy trzech grupach to po jednej na część, nie dokładny podział 60/20/20.
+
+Do `train` trafiają wyłącznie normalne sesje. Warianty usterek z tych samych
+grup są w `excluded_train_faults`; nie przenosimy ich do walidacji ani testu.
+Walidacja/test zawierają normalne i skonfigurowane usterki. Nazwy profili,
+etykiety, ścieżki i grupy są metadanymi podziału, nie wejściami ML.
+
+Plik jest planem, bez kopiowania danych i bez okien czy treningu. Nie nadpisuje
+istniejącego wyniku. Czyta wersje pilota 0.1/0.2, odrzuca nieukończone zestawy,
+powtórzone sesje oraz brak plików obserwacji/zdarzeń; nie waliduje ich wszystkich
+rekordów. Ścieżki są lokalne i bezwzględne. Zamrażamy plan wraz z danymi przed
+badaniem: dodanie nowych grup i ponowne dzielenie może zmienić przypisania.
+Nie łączymy niezależnie przygotowanych planów, bo mogłyby rozdzielić te same grupy.
+Zmiana seeda ani rozdzielenie sesji nie stanowią testu nieznanego profilu:
+osobny eksperyment z odłożonymi rodzinami parametrów nadal pozostaje do zrobienia.

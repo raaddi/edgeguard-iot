@@ -2,6 +2,7 @@ name: Python tests
 on:
   push:
     paths:
+      - 'ml/**'
       - 'contracts/**'
       - 'edge/**'
       - 'mqtt/**'
@@ -20,6 +21,7 @@ on:
       - '.github/workflows/python.yml'
   pull_request:
     paths:
+      - 'ml/**'
       - 'contracts/**'
       - 'edge/**'
       - 'mqtt/**'
