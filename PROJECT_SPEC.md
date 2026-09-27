@@ -1201,3 +1201,16 @@ records input hashes, code version and completion status. Prefix-invariance,
 session boundaries, validation and export failure tests cover this increment.
 This pilot-specific adapter does not yet handle live MQTT history, train a model
 or integrate results into Qt. See [step 12](docs/step-12-gate-features.md).
+
+## First offline ML experiment (2026-09-28)
+
+A bounded runner now generates four gate usage profiles across paired seed groups,
+fits train-only median imputation and Isolation Forest, and compares it with
+temporal/current rules on identical observations. Thresholds are fixed from
+normal validation scores before reading test sessions. Synthetic counterfactual
+labels describe divergence from paired fault-free runs, not physical fault onset.
+The event protocol records misses, unmatched alarms and delays without point
+adjustment. Model, predictions, labels and provenance remain local artifacts.
+Negative ML results must be reported. This is a same-family synthetic pilot,
+not a demonstrated ML advantage, attack benchmark, GRU or live/hardware deployment.
+See [step 13](docs/step-13-first-ml.md) for the reproducible command and protocol.

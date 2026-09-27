@@ -1,6 +1,6 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 27.09.2026, po dodaniu cech dla pilota bramy. Ten przewodnik opisuje
+Stan na 28.09.2026, po pierwszym eksperymencie ML bramy. Ten przewodnik opisuje
 stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
@@ -35,13 +35,15 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Pilot ruchu i feedbacku | Osobny model bramy, kontakty, opcjonalny syntetyczny prąd i runner czterech przypadków; [krok 11](step-11-gate-pilot.md) |
 | ✓ | Profile i podział sesji | Cztery legalne profile; wspólne grupy między wariantami, trening tylko na sesjach normalnych |
 | ✓ | Cechy do ML offline | 20 cech z przeszłych/bieżących obserwacji, eksport według podziału; [krok 12](step-12-gate-features.md) |
+| ✓ | Pierwszy trening i porównanie offline | Isolation Forest vs reguły, normalny trening/walidacja, raport zdarzeń na syntetycznym teście; [krok 13](step-13-first-ml.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |
 | Opcja | Tablice samochodzika albo głos | Jeden dodatek po pilocie głównego ML; nie gotowa funkcja |
 
 „✓” oznacza działający zakres opisany w wierszu, nie produkcyjną gotowość.
-Obecne alarmy progowe są regułami; **wytrenowany detektor ML jeszcze nie działa**.
+Alarmy w Qt nadal są regułami. **Wytrenowany Isolation Forest działa w osobnym
+eksperymencie offline**, bez połączenia z Qt, MQTT i sprzętem.
 Milestone 1 nie jest formalnie zamknięty: pozostają m.in. dopracowanie kompletnego
 demo, obsługi awarii/przeciążenia i docelowej dokumentacji architektury.
 

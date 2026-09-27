@@ -15,7 +15,7 @@ now exposes stored devices and telemetry. The [Qt collector view](docs/step-07-c
 reads this history over HTTP. A [terminal command exercise](docs/step-09-mqtt-control.md)
 now controls simulated nodes through MQTT with application results and duplicate
 protection. The collector now persists [command/result receipts](docs/step-10-control-history.md)
-and exposes their bounded HTTP history. Qt command integration and ML remain pending.
+and exposes their bounded HTTP history. Qt command integration and live ML remain pending.
 An [offline gate observability pilot](docs/step-11-gate-pilot.md) models timed
 motion, contacts and optional synthetic current across normal operation and three
 fault cases. Observations and ground truth are separate; it is not yet connected
@@ -23,8 +23,12 @@ to MQTT/Qt and does not train a model. Run `python -m simulator.gate_pilot` in t
 project environment. [AI directions](docs/ai-directions.md) records the research
 alternatives and staged hardware plan.
 The pilot now has legal usage profiles, grouped splits and a
-[causal feature exporter](docs/step-12-gate-features.md) for future ML training.
-No trained detector or live feature integration is claimed.
+[causal feature exporter](docs/step-12-gate-features.md) for offline ML training.
+An [offline ML experiment](docs/step-13-first-ml.md) now trains Isolation Forest
+and compares it with temporal/current rules on paired synthetic gate sessions.
+It saves a model, predictions and an event report; live feature/model integration
+and physical validation remain pending. Run `python -m ml.gate_experiment` after
+installing `requirements-ml.txt` in the project environment.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -35,7 +39,7 @@ tests and a thesis GitHub Actions workflow.
 The original single-node CLI exercise remains available for learning the generator.
 Both simulator entry points now emit validated telemetry **1.0** using the shared
 [contract and Polish exercise](docs/step-03-telemetry-contract.md).
-The remaining API endpoints, ESP32 firmware and ML detectors remain to be implemented
+The remaining API endpoints, ESP32 firmware and live detector integration remain to be implemented
 according to [PROJECT_SPEC.md](PROJECT_SPEC.md).
 The [ML research and instrumentation plan (Polish)](docs/ml-research-plan.md)
 records the core temporal-model study, proposed physical feedback, evaluation

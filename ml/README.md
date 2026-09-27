@@ -1,8 +1,10 @@
 # Machine learning
 
-No training or inference code exists yet. This area is reserved for workstation
-preprocessing, training, evaluation and model export. Model binaries in models/
-are ignored by Git. Compare simple rules with 2-3 selected ML methods first.
+Offline workstation training and evaluation now compare Isolation Forest with
+temporal/current rules on the synthetic gate pilot. Live inference in Qt or on
+Raspberry Pi is not implemented. Generated datasets and model binaries stay out
+of Git. Run `python -m ml.gate_experiment` after installing requirements-ml.txt;
+see [step 13](../docs/step-13-first-ml.md) for the protocol and limitations.
 
 The implemented `python -m ml.gate_split` utility creates a reproducible session
 split plan for the offline gate pilot. It groups all variants sharing a simulation
@@ -25,12 +27,14 @@ and provenance hashes. Follow [step 12](../docs/step-12-gate-features.md).
 - [x] Generate bounded gate sessions with legal usage profiles and controlled faults.
 - [x] Keep related sessions together when splitting train/validation/test data.
 - [x] Extract causal features, preserve missing values and record export provenance.
-- [ ] Expand normal training data beyond the small observability pilot.
-- [ ] Define observable fault intervals; configured session faults are not per-sample labels.
-- [ ] Fit missing-value handling and any scaling on training data only.
-- [ ] Compare temporal rules with Isolation Forest on the same held-out sessions.
-- [ ] Choose thresholds on validation data; reserve the final test for reporting.
-- [ ] Report false alarms, missed events and detection delays, including failures.
+- [x] Expand the pilot to four profiles and 20 seed groups (still not representative real data).
+- [x] Define synthetic observable-divergence intervals using paired fault-free runs.
+- [x] Fit missing-value handling on training data only; no scaling needed for this baseline.
+- [x] Compare temporal rules with Isolation Forest on the same held-out sessions.
+- [x] Choose thresholds on normal validation data before reading the pilot test.
+- [x] Report false alarms, missed events and detection delays, including failures.
+- [ ] Expand parameter families and hold out unseen usage conditions.
+- [ ] Study sequential prediction and compare under a predefined alarm budget.
 
 This checklist tracks the next offline experiment. Live Qt integration, physical
 validation and Raspberry Pi measurements remain separate required steps in the
