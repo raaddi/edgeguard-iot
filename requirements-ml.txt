@@ -1,0 +1,3 @@
+-r requirements.txt
+scikit-learn==1.8.0
+joblib==1.6.0

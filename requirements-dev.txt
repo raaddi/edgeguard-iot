@@ -1,4 +1,5 @@
 -r requirements-mqtt.txt
 -r requirements-api.txt
+-r requirements-ml.txt
 httpx==0.28.1
 pytest==9.0.2

@@ -2,6 +2,7 @@ name: Python tests
 on:
   push:
     paths:
+      - 'requirements-ml.txt'
       - 'ml/**'
       - 'contracts/**'
       - 'edge/**'
@@ -21,6 +22,7 @@ on:
       - '.github/workflows/python.yml'
   pull_request:
     paths:
+      - 'requirements-ml.txt'
       - 'ml/**'
       - 'contracts/**'
       - 'edge/**'
