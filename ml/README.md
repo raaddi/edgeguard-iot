@@ -25,7 +25,9 @@ and provenance hashes. Follow [step 12](../docs/step-12-gate-features.md).
 `ml.gate_sequences.iter_sequences` prepares per-session forecast examples with
 20 history samples and a separate future sensor target. It preserves nulls and
 excludes windows spanning missing samples. See [step 14](../docs/step-14-gate-sequences.md)
-for timing, leakage protections and the planned persistence/GRU comparison.
+for timing and leakage protections. `python -m ml.gate_sequence_export <split.json>
+--output <new-directory>` exports the grouped sequences and per-channel errors
+of the fixed last-observation reference. GRU training remains pending.
 
 ## Checklist before the first model comparison
 

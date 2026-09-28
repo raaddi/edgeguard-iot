@@ -1214,6 +1214,7 @@ adjustment. Model, predictions, labels and provenance remain local artifacts.
 Negative ML results must be reported. This is a same-family synthetic pilot,
 not a demonstrated ML advantage, attack benchmark, GRU or live/hardware deployment.
 See [step 13](docs/step-13-first-ml.md) for the reproducible command and protocol.
+
 ## Causal forecast sequence increment (2026-09-28)
 
 The offline gate pilot can now construct bounded per-session histories and
@@ -1223,3 +1224,10 @@ remains null. Tests cover future-data isolation, session boundaries and timing.
 See [step 14](docs/step-14-gate-sequences.md). This prepares data for persistence
 and GRU comparisons; it does not implement GRU, live predictions or hardware
 validation. Whole-session/group splitting remains mandatory before windowing.
+
+The sequence exporter preserves the frozen partitions, excludes training faults,
+records raw/output hashes and evaluates an untrained last-observation reference.
+Forecast errors are reported per channel with missing-value denominators and
+contact-change counts. No anomaly threshold is inferred from forecast accuracy.
+The previously inspected pilot test is development data for subsequent decisions;
+new final evaluation data remain necessary. Generated outputs stay outside Git.

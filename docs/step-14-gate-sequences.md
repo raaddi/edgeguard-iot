@@ -60,14 +60,55 @@ print(examples[0]["target_ms"])      # 1000
 print(examples[0]["y"])
 ```
 
+## Eksport i prosta prognoza odniesienia
+
+Eksporter działa na zapisanym `split.json`, zachowując istniejący podział.
+Jeżeli masz lokalny wynik pierwszego eksperymentu, w PowerShell uruchom:
+
+```powershell
+.\.venv\Scripts\python.exe -m ml.gate_sequence_export experiments/runs/ml-first-20260928-verified/split.json --output experiments/runs/gate-sequences-01
+```
+
+Na innym komputerze najpierw wygeneruj własny pilot według [kroku 13](step-13-first-ml.md)
+i podaj jego `split.json`. Plan zawiera lokalne ścieżki do surowych sesji.
+Katalog docelowy musi być nowy; eksport nie nadpisuje wcześniejszych wyników.
+Parametry `--history-samples 20 --horizon-samples 5` pozwalają jawnie zmienić
+konfigurację. Nie dobieramy jej na podstawie końcowego testu.
+
+Wynik obejmuje:
+
+- `train/`, `validation/`, `test/`: JSONL osobno dla każdej sesji; pola wejściowe
+  `x`, przyszłe cele `y`, czasy i osobne pole `persistence` z prognozą referencji;
+- `manifest.json`: wersje, konfiguracja, status, liczby przykładów, commit i sumy
+  SHA-256 źródeł/wyjść; `completed` oznacza ukończony eksport, `failed` nie;
+- `source-split.json`: dokładną kopię podziału; scenariusze awarii z grup
+  treningowych pozostają wykluczone;
+- `persistence-report.json`: wyniki osobno dla każdego podziału i rodzaju przypadku.
+
+Eksport ma limit 100 000 przykładów. Powtarza nakładające się okna w czytelnym
+JSONL, więc zajmuje więcej miejsca niż surowe sesje. To format małego pilota,
+nie magazyn wieloletniej telemetrii. Dane i raporty pozostają w ignorowanym
+`experiments/runs/`, a na GitHub trafiają kod, testy i instrukcje.
+
+Dla pierwszego pilota z 20 grupami seedów eksport domyślny daje 24 816 przykładów
+ze 176 sesji: 6768 treningowych, 9024 walidacyjnych i 9024 testowych. To okna
+nakładające się, nie 24 816 niezależnych eksperymentów. JSONL zajmuje około 256 MiB.
+
+Referencja kopiuje ostatni odczyt każdego kanału, bez treningu i imputacji.
+Raport podaje **MAE/RMSE prądu w amperach** oraz **odsetek błędów krańcówek**.
+Brak celu lub brak przewidywania wyklucza parę z metryki danego kanału;
+oba rodzaje braków są jawnie policzone. Brak par daje `null`, nigdy zero błędu.
+Nie sumujemy błędów o różnych jednostkach w jeden wynik.
+
+Przy prognozie o 50 ms taka referencja może być bardzo mocna, bo większość
+próbek nie zawiera zmiany stanu. Raport pokazuje więc `target_changes` i
+`unchanged_pairs` krańcówek. Dla tej konkretnej referencji każda zmiana względem
+ostatniego wejścia jest błędem; duży udział bezruchu może dawać pozornie świetną
+średnią. Te liczniki nie mierzą wykrytych usterek, ataków ani alarmów.
+
 ## Następny etap
 
-Eksport sekwencji zgodny z zamrożonym podziałem oraz referencja „następny odczyt
-jak ostatni”. Przy prognozie o 50 ms taka referencja może być bardzo mocna,
-bo większość próbek nie zawiera zmiany stanu. Raport musi oddzielać błędy
-krańcówek od błędu prądu i pokazywać także chwile zmiany krańcówek.
-
-Dopiero później trening GRU, dobór progu na walidacji, ocena zdarzeń i pokazanie
+Następnie trening GRU, dobór progu na walidacji, ocena zdarzeń i pokazanie
 wyników w Qt. Mniejsze błędy prognozy nie gwarantują lepszej detekcji anomalii.
 Pilotażowe seedy i cztery znane profile nie zastępują nowych warunków testowych
 ani pomiarów na sprzęcie. Wcześniej obejrzany test pierwszego eksperymentu jest
