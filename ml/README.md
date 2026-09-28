@@ -22,6 +22,11 @@ This is an offline pilot adapter, not yet a live MQTT or Qt integration.
 the features per session into train/validation/test directories, preserving nulls
 and provenance hashes. Follow [step 12](../docs/step-12-gate-features.md).
 
+`ml.gate_sequences.iter_sequences` prepares per-session forecast examples with
+20 history samples and a separate future sensor target. It preserves nulls and
+excludes windows spanning missing samples. See [step 14](../docs/step-14-gate-sequences.md)
+for timing, leakage protections and the planned persistence/GRU comparison.
+
 ## Checklist before the first model comparison
 
 - [x] Generate bounded gate sessions with legal usage profiles and controlled faults.
