@@ -27,7 +27,13 @@ and provenance hashes. Follow [step 12](../docs/step-12-gate-features.md).
 excludes windows spanning missing samples. See [step 14](../docs/step-14-gate-sequences.md)
 for timing and leakage protections. `python -m ml.gate_sequence_export <split.json>
 --output <new-directory>` exports the grouped sequences and per-channel errors
-of the fixed last-observation reference. GRU training remains pending.
+of the fixed last-observation reference.
+
+`python -m ml.gate_gru_experiment <sequence-directory> --output <new-directory>`
+fits a small CPU GRU on normal training sessions, selects weights on normal
+validation and compares sensor forecasts with persistence. Install the optional
+`requirements-gru.txt` first. See [step 15](../docs/step-15-first-gru.md).
+This is forecast evaluation, not a calibrated anomaly detector or live integration.
 
 ## Checklist before the first model comparison
 

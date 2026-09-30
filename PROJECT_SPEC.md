@@ -1231,3 +1231,20 @@ Forecast errors are reported per channel with missing-value denominators and
 contact-change counts. No anomaly threshold is inferred from forecast accuracy.
 The previously inspected pilot test is development data for subsequent decisions;
 new final evaluation data remain necessary. Generated outputs stay outside Git.
+
+## First GRU forecast increment (2026-09-30)
+
+A small CPU GRU now learns three future gate sensor outputs from normal training
+sessions. Input imputation/scaling and current-target normalization are fitted
+only on training windows; masks distinguish missing measurements. We select the
+checkpoint using normal validation loss and freeze it before reading test data.
+Per-channel forecast metrics compare GRU with last-observation persistence,
+including contact transitions, missing-pair counts and probability errors.
+
+Model weights, preprocessing, predictions and provenance are saved locally.
+Tests cover dataset integrity, timing, train-only preprocessing, masked current
+loss, repeatability, reload equivalence and the order of test access. Optional
+PyTorch CPU dependencies serve workstation training, not a demonstrated Pi runtime.
+See [step 15](docs/step-15-first-gru.md). This increment does not implement GRU
+alarm calibration, event detection, Qt inference or physical validation. The
+previously inspected synthetic test remains development data, not a final benchmark.

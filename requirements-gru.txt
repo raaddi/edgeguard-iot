@@ -1,0 +1,4 @@
+# CPU workstation training on Windows/Linux; not a Raspberry Pi runtime promise.
+-r requirements-ml.txt
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1+cpu

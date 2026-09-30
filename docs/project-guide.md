@@ -1,6 +1,6 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 28.09.2026, po przygotowaniu sekwencji do prognozowania. Ten przewodnik opisuje
+Stan na 30.09.2026, po dodaniu treningu GRU offline. Ten przewodnik opisuje
 stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
@@ -30,13 +30,14 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Historia sterowania | Trwałe obserwacje poleceń/wyników, powtórzenia, czasy odbioru, stronicowany odczyt API |
 | ✓ | GitHub i testy | Testy lokalne oraz CI; wersjonowane źródła i dokumentacja |
 | ✓ | Rusztowanie LaTeX | Rozdziały, bibliografia, budowanie i eksport do Overleaf; nie kompletna treść pracy |
-| W toku | Główne badanie ML | Pierwszy pilot Isolation Forest wykonany; pozostają GRU, szersze warunki, analiza błędów i walidacja fizyczna |
+| W toku | Główne badanie ML | Pilot Isolation Forest i prognozowanie GRU; pozostają alarmy GRU, szersze warunki i walidacja fizyczna |
 | Plan | Generator życia rodziny | Zróżnicowane dni, długie sesje i eksperymenty; obecny model ma limity krótkiego przebiegu |
 | ✓ | Pilot ruchu i feedbacku | Osobny model bramy, kontakty, opcjonalny syntetyczny prąd i runner czterech przypadków; [krok 11](step-11-gate-pilot.md) |
 | ✓ | Profile i podział sesji | Cztery legalne profile; wspólne grupy między wariantami, trening tylko na sesjach normalnych |
 | ✓ | Cechy do ML offline | 20 cech z przeszłych/bieżących obserwacji, eksport według podziału; [krok 12](step-12-gate-features.md) |
 | ✓ | Pierwszy trening i porównanie offline | Isolation Forest vs reguły, normalny trening/walidacja, raport zdarzeń na syntetycznym teście; [krok 13](step-13-first-ml.md) |
 | ✓ | Dane do prognozowania | Sekwencje bez podglądania przyszłości, eksport z podziałem sesji i błędy referencji „jak ostatni odczyt”; [krok 14](step-14-gate-sequences.md) |
+| ✓ | Trening GRU offline | Preprocessing tylko z treningu, wybór wag na normalnej walidacji, prognozy i porównanie z referencją; [krok 15](step-15-first-gru.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |
