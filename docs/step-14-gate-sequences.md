@@ -108,8 +108,9 @@ ostatniego wejścia jest błędem; duży udział bezruchu może dawać pozornie 
 
 ## Następny etap
 
-Następnie trening GRU, dobór progu na walidacji, ocena zdarzeń i pokazanie
-wyników w Qt. Mniejsze błędy prognozy nie gwarantują lepszej detekcji anomalii.
+Trening GRU i porównanie prognoz opisuje [krok 15](step-15-first-gru.md).
+Dobór progu alarmowego na walidacji, ocena zdarzeń i pokazanie wyników w Qt
+pozostają kolejnymi etapami. Mniejsze błędy prognozy nie gwarantują lepszej detekcji anomalii.
 Pilotażowe seedy i cztery znane profile nie zastępują nowych warunków testowych
 ani pomiarów na sprzęcie. Wcześniej obejrzany test pierwszego eksperymentu jest
 zbiorem rozwojowym dla kolejnych decyzji; potrzebny będzie świeży test końcowy.

@@ -64,6 +64,9 @@ wieloletniej historii. Katalog wyjściowy musi być nowy.
 
 ## Co odczytać z wyniku
 
+[Zapis pierwszego zweryfikowanego wyniku](results/gru-pilot-20260930.md) zawiera
+metryki, identyfikator kodu, warunki pomiaru i ograniczenia wnioskowania.
+
 - `manifest.json`: `completed`/`failed`, commit, wersje, konfiguracja i ograniczenia.
 - `model.json` + `weights.pt`: preprocessing, kolejność cech, konfiguracja okna,
   suma kontrolna i wybrane wagi. Wczytujemy własne lokalne artefakty przez
