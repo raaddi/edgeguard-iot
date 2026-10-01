@@ -1,6 +1,6 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 30.09.2026, po dodaniu treningu GRU offline. Ten przewodnik opisuje
+Stan na 01.10.2026, po dodaniu porównania alarmów offline. Ten przewodnik opisuje
 stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
@@ -30,7 +30,7 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Historia sterowania | Trwałe obserwacje poleceń/wyników, powtórzenia, czasy odbioru, stronicowany odczyt API |
 | ✓ | GitHub i testy | Testy lokalne oraz CI; wersjonowane źródła i dokumentacja |
 | ✓ | Rusztowanie LaTeX | Rozdziały, bibliografia, budowanie i eksport do Overleaf; nie kompletna treść pracy |
-| W toku | Główne badanie ML | Pilot Isolation Forest i prognozowanie GRU; pozostają alarmy GRU, szersze warunki i walidacja fizyczna |
+| W toku | Główne badanie ML | Pilot prognoz i alarmów GRU/IF; pozostają nowe warunki, końcowy test i walidacja fizyczna |
 | Plan | Generator życia rodziny | Zróżnicowane dni, długie sesje i eksperymenty; obecny model ma limity krótkiego przebiegu |
 | ✓ | Pilot ruchu i feedbacku | Osobny model bramy, kontakty, opcjonalny syntetyczny prąd i runner czterech przypadków; [krok 11](step-11-gate-pilot.md) |
 | ✓ | Profile i podział sesji | Cztery legalne profile; wspólne grupy między wariantami, trening tylko na sesjach normalnych |
@@ -38,14 +38,15 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Pierwszy trening i porównanie offline | Isolation Forest vs reguły, normalny trening/walidacja, raport zdarzeń na syntetycznym teście; [krok 13](step-13-first-ml.md) |
 | ✓ | Dane do prognozowania | Sekwencje bez podglądania przyszłości, eksport z podziałem sesji i błędy referencji „jak ostatni odczyt”; [krok 14](step-14-gate-sequences.md) |
 | ✓ | Trening GRU offline | Preprocessing tylko z treningu, wybór wag na normalnej walidacji, prognozy i porównanie z referencją; [krok 15](step-15-first-gru.md) |
+| ✓ | Porównanie alarmów offline | GRU, prognoza ostatniego odczytu, IF i reguły na wspólnej osi czasu; kalibracja, pominięcia i opóźnienia; [krok 16](step-16-gru-alarms.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |
 | Opcja | Tablice samochodzika albo głos | Jeden dodatek po pilocie głównego ML; nie gotowa funkcja |
 
 „✓” oznacza działający zakres opisany w wierszu, nie produkcyjną gotowość.
-Alarmy w Qt nadal są regułami. **Wytrenowany Isolation Forest działa w osobnym
-eksperymencie offline**, bez połączenia z Qt, MQTT i sprzętem.
+Alarmy w Qt nadal są regułami. **Wytrenowane modele Isolation Forest i GRU działają
+w eksperymentach offline**, bez połączenia z Qt, MQTT i sprzętem.
 Milestone 1 nie jest formalnie zamknięty: pozostają m.in. dopracowanie kompletnego
 demo, obsługi awarii/przeciążenia i docelowej dokumentacji architektury.
 

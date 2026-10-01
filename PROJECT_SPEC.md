@@ -1248,3 +1248,20 @@ PyTorch CPU dependencies serve workstation training, not a demonstrated Pi runti
 See [step 15](docs/step-15-first-gru.md). This increment does not implement GRU
 alarm calibration, event detection, Qt inference or physical validation. The
 previously inspected synthetic test remains development data, not a final benchmark.
+
+## Common alarm comparison (2026-10-01)
+
+The offline alarm runner now compares frozen GRU forecasts, persistence, Isolation
+Forest and temporal rules on a common 1000–8000 ms interval. Forecast residuals
+are divided by per-channel RMS errors fitted on normal training windows; each
+method's threshold is the maximum normal-validation score. Three consecutive
+strict exceedances trigger an alarm at the third sample. Missing values are not
+zero: this bounded runner requires complete three-channel pilot measurements.
+
+Raw data, sequence alignment and model provenance are checked. Counterfactual
+labels stay outside detector inputs, and events in excluded warmup are rejected
+rather than silently truncated. Models/scales/thresholds are frozen before this
+runner reads fault/test sessions. Normal validation was already used for GRU
+checkpoint selection, so this is a development protocol, not independent final
+calibration evidence. See [step 16](docs/step-16-gru-alarms.md). Qt integration,
+new held-out conditions, physical validation and an attack benchmark remain pending.

@@ -53,7 +53,7 @@ Nie jest wymagany do samego uruchamiania symulatora. Pobranie zależności wymag
 Internetu; później trening i prognozowanie działają lokalnie. Zgodność i zasoby
 Raspberry Pi trzeba dopiero sprawdzić. Nie zmieniamy obecnego programu EXE.
 CI instaluje zależności GRU i wykonuje testy na Pythonie 3.11 i 3.14; przy lokalnym
-uruchomieniu testów bez PyTorch dwa moduły testowe GRU są jawnie pomijane.
+uruchomieniu testów bez PyTorch moduły testowe wymagające GRU są jawnie pomijane.
 
 Katalog sekwencji musi mieć status `completed`. Świeży komputer wymaga wykonania
 [eksportu z kroku 14](step-14-gate-sequences.md), a następnie wskazania jego katalogu.
@@ -102,9 +102,9 @@ Ustalenie seeda i algorytmów deterministycznych nie gwarantuje identycznych lic
 między różnymi systemami, wersjami bibliotek i procesorami. Zapis/wczytanie oraz
 powtórzenie treningu są sprawdzane w jednym środowisku.
 
-Kolejny etap: ustalenie wyniku anomalii z błędów kanałów, kalibracja na normalnej
-walidacji i porównanie alarmów z regułami oraz Isolation Forest. Dopiero potem
-wyniki w Qt. Model nie przejmuje sterowania urządzeniami. Całość nadal działa
+Ustalenie wyniku anomalii z błędów kanałów, kalibrację na normalnej walidacji
+i porównanie alarmów z regułami oraz Isolation Forest realizuje [krok 16](step-16-gru-alarms.md).
+Integracja wyników z Qt pozostaje kolejnym etapem. Model nie przejmuje sterowania urządzeniami. Całość nadal działa
 bez elektroniki i pozostawia architekturę dla 1–3 ESP32 oraz symulowanych węzłów.
 
 Dokumentacja użytej biblioteki: [GRU](https://docs.pytorch.org/docs/2.14/generated/torch.nn.GRU.html),
