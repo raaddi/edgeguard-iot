@@ -89,6 +89,9 @@ dowolny zewnętrzny plik.
 
 ## Jak interpretować rezultat
 
+[Zapis zweryfikowanego porównania](results/gate-alarms-20261001.md) zawiera
+pochodzenie wyniku, liczby zdarzeń, podział przypadków i ograniczenia.
+
 Porównuj metody w tym samym nowym raporcie. Poprzednie raporty IF/reguł obejmowały
 pełne osiem sekund i inne próbki kalibracyjne, więc liczb nie należy mieszać.
 Wcześniej oglądany test pozostaje **zbiorem rozwojowym**. To jeden mały pilot,
