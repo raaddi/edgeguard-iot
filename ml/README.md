@@ -35,6 +35,13 @@ validation and compares sensor forecasts with persistence. Install the optional
 `requirements-gru.txt` first. See [step 15](../docs/step-15-first-gru.md).
 This is forecast evaluation, not a calibrated anomaly detector or live integration.
 
+`python -m ml.gate_alarm_experiment <sequence-directory> <gru-directory> --output
+<new-directory>` calibrates offline GRU/persistence residual alarms and compares
+them with freshly fitted IF/rules on the same evaluation interval. Normal training
+sets residual scales; normal validation sets all thresholds before test access.
+See [step 16](../docs/step-16-gru-alarms.md). This remains a synthetic development
+comparison, not live Qt or physical deployment.
+
 ## Checklist before the first model comparison
 
 - [x] Generate bounded gate sessions with legal usage profiles and controlled faults.
