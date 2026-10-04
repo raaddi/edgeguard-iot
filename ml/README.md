@@ -59,3 +59,9 @@ comparison, not live Qt or physical deployment.
 This checklist tracks the next offline experiment. Live Qt integration, physical
 validation and Raspberry Pi measurements remain separate required steps in the
 [research plan](../docs/ml-research-plan.md).
+
+`python -m ml.gate_validation_diagnostics <sequences> <gru> <alarms> --output
+<new-directory>` explains frozen GRU misses on validation only. Optional plots
+use `requirements-diagnostics.txt` and `ml.gate_validation_plots`. See
+[step 17](../docs/step-17-validation-diagnostics.md) and the
+[verified findings](../docs/results/gru-validation-20261004.md).

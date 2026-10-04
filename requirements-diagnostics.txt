@@ -1,0 +1,3 @@
+-r requirements-gru.txt
+# Optional headless plots for validation diagnostics.
+matplotlib==3.11.2

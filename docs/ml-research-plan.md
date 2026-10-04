@@ -370,3 +370,11 @@ Nie zmieniamy teraz fizycznej makiety ani nie zamawiamy komponentów.
 
 Źródła wspierają metodykę i możliwości pomiarów, nie potwierdzają skuteczności
 proponowanego modelu ani gotowości naszej instalacji.
+
+## Zweryfikowana diagnostyka walidacji — 04.10.2026
+
+[Raport diagnostyczny](results/gru-validation-20261004.md) opisuje 29 pominiętych
+opóźnień poniżej progu oraz wpływ granic etykiet na ocenę początku alarmu.
+To wynik syntetycznego pilota; kolejny proponowany eksperyment rozdziela
+kalibrację utrzymującego się błędu od celu prognozy. Osobna kalibracja i nowe
+warunki pozostają planem, bez zmiany aktualnego detektora.
