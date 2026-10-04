@@ -11,6 +11,7 @@ from uuid import NAMESPACE_URL, uuid4, uuid5
 from contracts.commands import target_rejection, validate_command, validate_result
 from simulator.__main__ import code_version, identifier
 from simulator.gate import Gate, GateConfig, MODEL_VERSION
+from simulator.gate_session import GateSessionSettings
 
 CASES = ("normal", "command_delay", "motion_stall", "open_contact_stuck_low")
 DATASET_VERSION = "gate-pilot-0.2"
@@ -28,7 +29,7 @@ DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "experiments" / "runs"
 
 def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
                      feedback_device_id="virtual_gate_01", measure_current=True,
-                     profile="standard"):
+                     profile="standard", settings=None):
     """Paired seeds share nominal parameters. Returned truth is never a feature."""
     if case not in CASES:
         raise ValueError("Unknown gate case.")
@@ -38,23 +39,27 @@ def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
         raise ValueError("Seed must be in 0..2**32-1.")
     for value in (run_id, device_id, feedback_device_id):
         identifier(value)
+    if settings is not None and not isinstance(settings, GateSessionSettings):
+        raise ValueError("Expected validated gate session settings.")
+    supplied = settings is not None
+    settings = settings or GateSessionSettings(schedule=PROFILES[profile])
     rng = random.Random(seed)
     config = GateConfig(
-        stroke_ms=rng.randrange(900, 1301, 50),
+        stroke_ms=rng.randrange(settings.stroke_bounds_ms[0], settings.stroke_bounds_ms[1] + 1, 50),
         motion_stall=case == "motion_stall",
         open_contact_stuck_low=case == "open_contact_stuck_low",
         measure_current=measure_current,
     )
-    nominal_delay = rng.choice((50, 100, 150))
-    delay = 1200 if case == "command_delay" else nominal_delay
+    nominal_delay = rng.choice(settings.nominal_delays_ms)
+    delay = settings.fault_delay_ms if case == "command_delay" else nominal_delay
     gate = Gate(config, seed=seed)
     boot = str(uuid5(NAMESPACE_URL, f"{run_id}/{device_id}"))
     feedback_boot = str(uuid5(NAMESPACE_URL, f"{run_id}/{feedback_device_id}"))
     pending, events, observations = [], [], []
-    for now in range(0, DURATION_MS + 1, SAMPLE_MS):
+    for now in range(0, settings.duration_ms + 1, SAMPLE_MS):
         if now:
             gate.advance(SAMPLE_MS)
-        for sent_ms, target in PROFILES[profile]:
+        for sent_ms, target in settings.schedule:
             if now != sent_ms:
                 continue
             command = {
@@ -91,10 +96,13 @@ def simulate_session(*, seed, case, run_id, device_id="virtual_gate_01",
         })
     truth = {
         "case": case, "seed": seed, "paired_group": f"gate-v1-seed-{seed}",
-        "profile": profile, "schedule_ms_degrees": PROFILES[profile],
+        "profile": profile, "schedule_ms_degrees": settings.schedule,
         "config": asdict(config), "delivery_delay_ms": delay,
         "label_scope": "configured session condition; not event onset intervals",
     }
+    if supplied:
+        truth["session_settings_version"] = "gate-session-settings-1"
+        truth["session_settings"] = asdict(settings)
     return observations, events, truth
 
 
