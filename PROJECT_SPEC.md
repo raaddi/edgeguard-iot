@@ -1265,3 +1265,17 @@ runner reads fault/test sessions. Normal validation was already used for GRU
 checkpoint selection, so this is a development protocol, not independent final
 calibration evidence. See [step 16](docs/step-16-gru-alarms.md). Qt integration,
 new held-out conditions, physical validation and an attack benchmark remain pending.
+
+## Validation alarm diagnostics (2026-10-04)
+
+A validation-only runner now recomputes frozen GRU forecasts, verifies their
+provenance and agreement with the alarm comparison, and explains missed events
+at the existing threshold. It records persistence sensitivity at 1/3/5 samples
+without selecting a new policy. Optional headless plots align commands, sensor
+forecasts, scaled residuals, labels and alarm starts. See
+[step 17](docs/step-17-validation-diagnostics.md) and the
+[verified diagnostic findings](docs/results/gru-validation-20261004.md).
+All 29 missed command-delay validation events stayed below the frozen threshold
+in the rebuilt pilot. This is development evidence, not final calibration or
+physical validation. Independent calibration, unseen conditions and Qt integration
+remain pending; the detector and hardware-independent architecture are unchanged.
