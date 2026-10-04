@@ -145,3 +145,33 @@ zmiany konfiguracji, scenariusze, braki telemetrii, CSV, zgodność archiwów,
 odtwarzanie w tle oraz ochronę sesji. CI na Linuksie instaluje `libegl1` i `libopengl0`,
 wymagane przez Qt również przy testach offscreen. Testy nie potwierdzają jeszcze
 zgodności fizycznej ani zużycia zasobów na Raspberry Pi.
+
+## Zapisane wyniki ML — 05.10.2026
+
+Na górze wybierz **Laboratorium ML — zapisane wyniki**, następnie **Otwórz wyniki…**.
+Wskaż pojedynczy JSON z `timelines` diagnostyki kroku 17 lub
+`timelines/sample_max` / `timelines/sustained_max` nowego eksperymentu.
+[Instrukcja eksperymentu i wyniki](results/independent-calibration-20261005.md)
+podają komendę generowania i przykład zablokowanego ruchu.
+
+- Turkus: pomiar, bursztyn: rzeczywista zapisana prognoza GRU +50 ms.
+- Drugi wykres: wynik wybranej metody, różowy próg i pas aktywnego alarmu.
+- Lista metod: GRU, ostatni odczyt, IF i reguły, jeśli plik zawiera ich wyniki.
+  Wykres pomiaru/prognozy pozostaje wykresem GRU przy zmianie metody.
+- Suwak albo kliknięcie wykresu ustawia wspólny kursor. Panel szczegółów
+  pokazuje wartości, oczekujące polecenia i kanał z największą resztą GRU.
+- Kliknięcie wysłanego polecenia ustawia czas. Lista sesji otwiera inne JSON
+  w tym samym katalogu. Inną politykę wybierzesz, otwierając jej katalog.
+- **Pokaż etykiety eksperymentu** ujawnia osobny bursztynowy pas. Etykiety nie
+  są wejściem detektora. Wskazanie kanału z błędem nie dowodzi przyczyny awarii.
+
+Przy braku danych jest pusty wykres i jawny opis. Import pracuje w osobnym
+wątku, ma limit 4 MiB i sprawdza długości, kolejność czasu oraz skończone
+liczby. Brak wartości lub luka czasowa przerywa linię. Błędny plik zachowuje
+ostatni poprawny wynik i pokazuje błąd. Układ przewija się w małym oknie,
+a suwak pozostaje dostępny. Przełączenie obszaru zatrzymuje symulację lokalną.
+
+To przegląd **zapisanych wyników offline**. Nie ładuje modelu ani joblib,
+nie wymaga PyTorch do oglądania plików i nie uruchamia inferencji na żywo.
+Źródło/model/cechy opisuje metadanymi pliku; nie potwierdza pochodzenia
+fizycznego pomiaru. Dane i obrazy podglądu pozostają poza Git.

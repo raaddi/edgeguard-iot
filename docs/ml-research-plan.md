@@ -378,3 +378,13 @@ opóźnień poniżej progu oraz wpływ granic etykiet na ocenę początku alarmu
 To wynik syntetycznego pilota; kolejny proponowany eksperyment rozdziela
 kalibrację utrzymującego się błędu od celu prognozy. Osobna kalibracja i nowe
 warunki pozostają planem, bez zmiany aktualnego detektora.
+
+## Osobna kalibracja i adapter Qt — 05.10.2026
+
+[Nowy raport](results/independent-calibration-20261005.md) porównuje dwie uprzednio
+zdefiniowane polityki na niezależnych normalnych sesjach i wydzielonych nowych
+warunkach. GRU nadal nie wykrył opóźnionych odpowiedzi; niewielki wzrost wykryć
+wiązał się ze wzrostem fałszywych alarmów. To wynik rozwojowy bez wyboru modelu
+do wdrożenia. Istniejący Qt pokazuje rzeczywiste zapisane prognozy, wyniki
+czterech metod, polecenia i osobne etykiety. Inferencja na żywo, ablacja celu
+prognozy, transfer na sprzęt i pomiary Pi pozostają do wykonania.

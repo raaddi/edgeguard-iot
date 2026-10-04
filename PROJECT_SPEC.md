@@ -1279,3 +1279,18 @@ All 29 missed command-delay validation events stayed below the frozen threshold
 in the rebuilt pilot. This is development evidence, not final calibration or
 physical validation. Independent calibration, unseen conditions and Qt integration
 remain pending; the detector and hardware-independent architecture are unchanged.
+
+## Independent alarm calibration and saved ML interface (2026-10-05)
+
+The predefined step-18 experiment now freezes step-16 models and calibrates
+both sample-maximum and sustained-error thresholds on 48 new normal sessions.
+All four methods share 320 development evaluation sessions, including slower
+legal motion and denser reversals. The verified report in
+docs/results/independent-calibration-20261005.md records misses, false alarms
+and the limited improvement; no final-test or hardware effectiveness is claimed.
+
+The existing Qt laboratory has a styled, read-only saved ML workspace with
+actual/forecast curves, per-method scores, thresholds, alarms, command times,
+a shared cursor and separately enabled labels. It loads bounded JSON without
+loading models or coupling detection logic to Qt. Live inference, physical
+validation and Raspberry Pi costs remain unverified requirements.

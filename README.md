@@ -29,6 +29,10 @@ and compares it with temporal/current rules on paired synthetic gate sessions.
 It saves a model, predictions and an event report; live feature/model integration
 and physical validation remain pending. Run `python -m ml.gate_experiment` after
 installing `requirements-ml.txt` in the project environment.
+A frozen GRU now joins the offline comparison. An [independent calibration experiment](docs/step-18-independent-calibration.md)
+records [verified development results](docs/results/independent-calibration-20261005.md)
+on new normal and fault sessions. The styled Qt workspace reads saved forecasts,
+scores and alarms with an interactive time cursor; live inference remains pending.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
@@ -56,8 +60,9 @@ with verified scope, the message path, source map and a short learning exercise.
 The native workspace now covers the whole house, device navigation and controls,
 fault scenarios, telemetry, JSON/CSV exports and verified experiment replay.
 It uses the same simulation model and has a black console theme. Connecting this
-window's controls to MQTT, ML and physical validation remains pending. Select
-**Kolektor — dane z API** in the desktop workspace to read persisted telemetry.
+window's controls to MQTT, live ML and physical validation remains pending. Select
+**Kolektor — dane z API** to read persisted telemetry, or **Laboratorium ML — zapisane wyniki**
+to inspect saved predictions, method thresholds, alarms and separate experiment labels.
 With the existing virtual environment:
 
 ~~~powershell

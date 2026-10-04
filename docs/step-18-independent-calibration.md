@@ -52,3 +52,16 @@ Rozwijamy istniejący czarny pulpit Qt: wyraźniejsza nawigacja, spójne karty o
 osobny widok zapisanego eksperymentu ML z pomiarem/prognozą, progiem i alarmem.
 To odczyt rzeczywistych wyników offline, bez sugerowania działającej inferencji
 na żywo. Logika eksperymentu nadal działa bez Qt i elektroniki.
+
+## Wykonanie — 05.10.2026
+
+Runner `ml.gate_independent_calibration` zrealizował powyższy protokół bez
+ponownego treningu. [Zweryfikowane wyniki](results/independent-calibration-20261005.md)
+pokazują niewielką zmianę wykryć GRU i wzrost fałszywych alarmów w nowych
+poprawnych warunkach. Protokół pozostaje zapisem założeń sprzed wyników.
+Wyniki są rozwojowe; nie wybrano polityki do wdrożenia.
+
+Widok **Laboratorium ML — zapisane wyniki** w istniejącym Qt odczytuje te osie
+czasu oraz diagnostykę kroku 17. Obsługuje wybór kanału i metody, suwak czasu,
+kliknięcie polecenia, osobne etykiety oraz braki danych. Regresja i ogląd
+podglądów potwierdzają ten adapter offline; inferencja na żywo pozostaje planem.
