@@ -388,3 +388,14 @@ wiązał się ze wzrostem fałszywych alarmów. To wynik rozwojowy bez wyboru mo
 do wdrożenia. Istniejący Qt pokazuje rzeczywiste zapisane prognozy, wyniki
 czterech metod, polecenia i osobne etykiety. Inferencja na żywo, ablacja celu
 prognozy, transfer na sprzęt i pomiary Pi pozostają do wykonania.
+
+## Dane odpowiedzi na polecenie — 06.10.2026
+
+[Krok 19](step-19-command-response-targets.md) przygotował 440 sesji i 1872
+przyczynowe przykłady dwóch celów: ACK oraz potwierdzenia krańcówką.
+[Audyt eksportu](results/command-response-examples-20261006.md) potwierdza
+role seedów, brak usterek w przyszłym treningu i integralność danych.
+Cenzurowanie nie oznacza awarii: także legalne odwrócenie może przerwać ruch.
+Nie trenowano nowego modelu ani nie zmierzono jego skuteczności.
+Ablacja celu nadal wymaga protokołu treningu i przyczynowej oceny alarmów;
+obecny widok Qt pokazuje zapisane wyniki wcześniejszych modeli.
