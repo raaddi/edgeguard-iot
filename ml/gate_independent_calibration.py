@@ -25,23 +25,11 @@ from ml.gate_sequence_export import _save
 from ml.gate_sequences import TARGET_NAMES
 from simulator.__main__ import code_version
 from simulator.gate_pilot import CASES, simulate_session
-from simulator.gate_session import GateSessionSettings
+from simulator.gate_research_suite import CYCLES, CONDITIONS, CALIBRATION_CONDITIONS
 
 CALIBRATION_SEEDS = tuple(range(1000, 1016))
 EVALUATION_SEEDS = tuple(range(2000, 2016))
 POLICIES = ("sample_max", "sustained_max")
-CYCLES = ((2000, 110), (7000, 0), (14000, 110), (20000, 0))
-CONDITIONS = {
-    "cycles": GateSessionSettings(30000, CYCLES, (900, 1500), (50, 100, 150, 200)),
-    "repeats": GateSessionSettings(30000, ((2000, 110), (2400, 110), (7000, 0),
-        (14000, 110), (14400, 110), (20000, 0)), (900, 1500), (50, 100, 150, 200)),
-    "idle": GateSessionSettings(30000, (), (900, 1500), (50, 100, 150, 200)),
-    "slow": GateSessionSettings(30000, CYCLES, (1600, 2000), (250, 300, 350)),
-    "reversals": GateSessionSettings(30000, ((2000, 110), (2400, 0), (5000, 110),
-        (5400, 110), (9000, 0), (14000, 110), (14500, 0), (19000, 110), (24000, 0)),
-        (900, 1500), (50, 100, 150, 200)),
-}
-CALIBRATION_CONDITIONS = ("cycles", "repeats", "idle")
 
 
 def digest(path):
