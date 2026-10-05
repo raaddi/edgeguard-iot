@@ -1,7 +1,7 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 01.10.2026, po dodaniu porównania alarmów offline. Ten przewodnik opisuje
-stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
+Stan na 06.10.2026, po kalibracji, przeglądzie ML w Qt i eksporcie celów odpowiedzi.
+Ten przewodnik opisuje stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
 
@@ -39,14 +39,18 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Dane do prognozowania | Sekwencje bez podglądania przyszłości, eksport z podziałem sesji i błędy referencji „jak ostatni odczyt”; [krok 14](step-14-gate-sequences.md) |
 | ✓ | Trening GRU offline | Preprocessing tylko z treningu, wybór wag na normalnej walidacji, prognozy i porównanie z referencją; [krok 15](step-15-first-gru.md) |
 | ✓ | Porównanie alarmów offline | GRU, prognoza ostatniego odczytu, IF i reguły na wspólnej osi czasu; kalibracja, pominięcia i opóźnienia; [krok 16](step-16-gru-alarms.md) |
+| ✓ | Osobna kalibracja i widok ML | Nowe normalne sesje, wspólna ocena czterech metod i interaktywny przegląd zapisanych prognoz/alarmów w Qt; [krok 18](step-18-independent-calibration.md) |
+| ✓ | Przykłady odpowiedzi na polecenie | Oddzielne czasy ACK/krańcówki, cenzurowanie i eksport 440 sesji; bez nowego treningu; [krok 19](step-19-command-response-targets.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |
 | Opcja | Tablice samochodzika albo głos | Jeden dodatek po pilocie głównego ML; nie gotowa funkcja |
 
 „✓” oznacza działający zakres opisany w wierszu, nie produkcyjną gotowość.
-Alarmy w Qt nadal są regułami. **Wytrenowane modele Isolation Forest i GRU działają
-w eksperymentach offline**, bez połączenia z Qt, MQTT i sprzętem.
+Alarmy lokalnej makiety w Qt nadal są regułami. **Wytrenowane modele Isolation
+Forest i GRU działają w eksperymentach offline**; „Laboratorium ML” pokazuje
+ich rzeczywiste zapisane wyniki. Inferencja na żywo przez MQTT i na sprzęcie
+pozostaje do wykonania.
 Milestone 1 nie jest formalnie zamknięty: pozostają m.in. dopracowanie kompletnego
 demo, obsługi awarii/przeciążenia i docelowej dokumentacji architektury.
 
@@ -70,10 +74,11 @@ według adresów zwanych topicami. **Kolektor** odbiera je, sprawdza i zapisuje.
 **SQLite** przechowuje historię w pliku. **FastAPI** udostępnia odczyt historii
 przez HTTP. **Qt** jest interfejsem. Żaden z tych elementów sam nie „uczy się domu”.
 
-Są dziś dwa tryby pracy. **Makieta lokalna w Qt** ma własny model w pamięci
-i nie publikuje jego stanu do brokera. **Symulator MQTT z terminala** jest
-oddzielnym procesem modelu, a widok „Kolektor — dane z API” odczytuje jego historię.
-Przełączenie widoku Qt nie łączy obu modeli. To istotna granica obecnej integracji.
+**Makieta lokalna w Qt** ma własny model w pamięci i nie publikuje jego stanu
+do brokera. **Symulator MQTT z terminala** jest oddzielnym procesem modelu,
+a widok „Kolektor — dane z API” odczytuje jego historię. **Laboratorium ML**
+wczytuje zapisane osie prognoz, wyników i alarmów z eksperymentów offline.
+Przełączenie widoku Qt nie uruchamia modelu ML ani nie łączy tych źródeł danych.
 
 ## 4. Prześledź jedną lampę
 

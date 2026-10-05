@@ -65,3 +65,19 @@ validation and Raspberry Pi measurements remain separate required steps in the
 use `requirements-diagnostics.txt` and `ml.gate_validation_plots`. See
 [step 17](../docs/step-17-validation-diagnostics.md) and the
 [verified findings](../docs/results/gru-validation-20261004.md).
+
+## Command-response data
+
+`python -m ml.gate_response_export --output <new-directory>` creates 440 bounded
+synthetic sessions and causal histories ending at each command send. ACK latency
+and physical contact confirmation are separate observed/censored targets. Related
+seed variants stay in one of `train/selection/calibration/evaluation`; only evaluation
+contains faults. Base `requirements.txt` dependencies suffice, without ML or Qt libraries.
+
+The exporter saves raw observations/events, separate ground truth, per-session
+examples, protocol snapshot, manifest and report with hashes. It refuses overwrite
+and records failed runs. Read [step 19](../docs/step-19-command-response-targets.md)
+and the [audited results](../docs/results/command-response-examples-20261006.md).
+These examples contain no fitted model, predictions or alarms, and cannot be opened
+as a saved ML timeline in Qt. A future response-model training comparison requires
+a separate protocol before fitting; live inference and hardware validation remain pending.

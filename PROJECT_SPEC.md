@@ -1294,3 +1294,20 @@ actual/forecast curves, per-method scores, thresholds, alarms, command times,
 a shared cursor and separately enabled labels. It loads bounded JSON without
 loading models or coupling detection logic to Qt. Live inference, physical
 validation and Raspberry Pi costs remain unverified requirements.
+
+## Causal command-response examples (2026-10-06)
+
+A predefined hardware-free exporter now separates ACK latency from physical contact
+confirmation. Twenty causal feature samples end at command send; future results and
+readings only determine supervised targets. Gaps, rejection, session end and accepted
+opposite commands have explicit censoring semantics; unfinished targets remain null.
+The first format requires a jointly closed observation/event session.
+
+The verified step-19 run from clean code contains 440 sessions and 1872 examples,
+with 1872 observed ACK and 1392 observed / 480 censored contact targets. Four seed
+roles are disjoint from each other and previous development groups; faults appear
+only in evaluation. All raw/example hashes and examples were audited. See
+[the report](docs/results/command-response-examples-20261006.md) and
+[protocol](docs/step-19-command-response-targets.md). This is data preparation:
+response-model fitting, causal alarm comparison, final evaluation, live Qt inference,
+physical validation and Raspberry Pi measurements remain unverified requirements.
