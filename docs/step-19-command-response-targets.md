@@ -87,3 +87,11 @@ z prognozą wystawioną przy wysłaniu. Nie może czekać na przyszły końcowy 
 żeby dopiero wtedy ogłosić wykrycie opóźnienia. Margines ustala tylko oddzielna
 normalna kalibracja; ocena używa wspólnej ekspozycji i niezmienionych etykiet.
 Transfer na ESP32, live Qt i koszty Raspberry Pi pozostają osobnymi wymaganiami.
+
+## Wykonanie — 06.10.2026
+
+Pełny eksport z czystego `28233a5…` zakończył się 440 sesjami i 1872 przykładami.
+[Raport wyników i audytu](results/command-response-examples-20261006.md) podaje
+liczby celów, hashe i komendę odtworzenia. Jest to przygotowanie danych;
+trening oraz porównanie skuteczności pozostają planem. Kopia `protocol.md`
+w lokalnym przebiegu zachowuje treść protokołu sprzed tej sekcji.
