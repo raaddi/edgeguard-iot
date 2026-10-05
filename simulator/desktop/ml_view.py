@@ -290,6 +290,9 @@ class MLResultsView(QWidget):
     @Slot(object, str)
     def loaded(self, data, error):
         if error:
+            if self.path is not None:
+                with QSignalBlocker(self.sessions):
+                    self.sessions.setCurrentIndex(self.sessions.findData(str(self.path)))
             self.status.setText(f"Nie wczytano wyników: {error}")
             return
         self.data, self.path = data, self.worker.path

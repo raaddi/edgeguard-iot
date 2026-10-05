@@ -76,6 +76,8 @@ def test_real_series_method_selection_cursor_and_bad_file_preserve_state(timelin
             QFontDatabase.addApplicationFont("C:/Windows/Fonts/" + font)
     path = tmp_path / "valid.json"
     path.write_text(json.dumps(timeline))
+    bad = tmp_path / "invalid.json"
+    bad.write_text(invalid_json)
     window = LaboratoryWindow()
     window.show()
     window.toggle()
@@ -106,11 +108,12 @@ def test_real_series_method_selection_cursor_and_bad_file_preserve_state(timelin
         assert view.slider.value() == 1
         assert not view.grab().isNull()
         prior = view.data
-        bad = tmp_path / "invalid.json"
-        bad.write_text(invalid_json)
-        view.load_timeline(bad)
+        bad_index = view.sessions.findData(str(bad))
+        assert bad_index >= 0
+        view.sessions.setCurrentIndex(bad_index)
         wait_load(view)
         assert view.data is prior
+        assert view.sessions.currentData() == str(path)
         assert "Nie wczytano" in view.status.text()
     finally:
         window.dirty = False
