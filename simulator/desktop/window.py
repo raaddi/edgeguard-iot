@@ -14,6 +14,7 @@ from simulator.desktop.canvas import SignalGrid, SignalPlot
 from simulator.desktop.house_canvas import HouseCanvas, COLORS
 from simulator.desktop.panels import RunDialog, table, fill_table
 from simulator.desktop.collector_view import CollectorView
+from simulator.desktop.ml_view import MLResultsView
 
 RULES = {"gas_threshold": "Przekroczony próg", "actuator_mismatch": "Rozbieżność aktuatora", "simulated_link_loss": "Brak łączności w modelu"}
 
@@ -57,11 +58,15 @@ class LaboratoryWindow(QMainWindow):
         local = self.takeCentralWidget()
         host = QWidget()
         layout = QVBoxLayout(host)
-        layout.setContentsMargins(4, 4, 4, 0)
+        layout.setContentsMargins(10, 8, 10, 0)
         bar = QHBoxLayout()
-        bar.addWidget(QLabel("Obszar pracy:"))
+        brand = QLabel("EDGEGUARD")
+        brand.setObjectName("workspaceBrand")
+        bar.addWidget(brand)
+        bar.addSpacing(18)
+        bar.addWidget(QLabel("Obszar pracy"))
         self.source = QComboBox()
-        self.source.addItems(["Makieta lokalna — symulacja", "Kolektor — dane z API"])
+        self.source.addItems(["Makieta lokalna — symulacja", "Kolektor — dane z API", "Laboratorium ML — zapisane wyniki"])
         self.source.setAccessibleName("Źródło danych obszaru pracy")
         bar.addWidget(self.source)
         bar.addStretch()
@@ -70,6 +75,8 @@ class LaboratoryWindow(QMainWindow):
         self.workspaces.addWidget(local)
         self.collector_view = CollectorView()
         self.workspaces.addWidget(self.collector_view)
+        self.ml_view = MLResultsView()
+        self.workspaces.addWidget(self.ml_view)
         layout.addWidget(self.workspaces)
         self.setCentralWidget(host)
         self.source.currentIndexChanged.connect(self.change_source)
@@ -81,7 +88,9 @@ class LaboratoryWindow(QMainWindow):
         self.experiment_menu.setEnabled(index == 0)
         for action in self.experiment_menu.actions():
             action.setEnabled(index == 0)
-        if index:
+        if index == 2:
+            self.statusBar().showMessage("Laboratorium ML · zapisane wyniki · tylko odczyt · inferencja offline")
+        elif index == 1:
             self.statusBar().showMessage("Kolektor / API · tylko odczyt · brak sterowania MQTT i detektora ML")
         else:
             self.refresh()
@@ -128,8 +137,9 @@ class LaboratoryWindow(QMainWindow):
         self.summary.setObjectName("status")
         root.addWidget(self.summary)
         navigation = QWidget()
+        navigation.setObjectName("panel")
         nav = QVBoxLayout(navigation)
-        nav.setContentsMargins(0, 0, 0, 0)
+        nav.setContentsMargins(10, 8, 10, 10)
         nav.addWidget(self.section("INSTALACJA"))
         self.search = QLineEdit()
         self.search.setPlaceholderText("Szukaj urządzenia / węzła…")
@@ -142,8 +152,9 @@ class LaboratoryWindow(QMainWindow):
         nav.addWidget(self.tree)
         nav.addWidget(QLabel("G czujnik  •  F wentylator\nL światło  •  S serwo"))
         map_panel = QWidget()
+        map_panel.setObjectName("panel")
         map_layout = QVBoxLayout(map_panel)
-        map_layout.setContentsMargins(0, 0, 0, 0)
+        map_layout.setContentsMargins(10, 10, 10, 10)
         map_toolbar = QHBoxLayout()
         self.room_view = QComboBox()
         self.room_view.setAccessibleName("Widok makiety")
@@ -162,8 +173,9 @@ class LaboratoryWindow(QMainWindow):
         caption.setObjectName("muted")
         map_layout.addWidget(caption)
         inspector = QWidget()
+        inspector.setObjectName("panel")
         side = QVBoxLayout(inspector)
-        side.setContentsMargins(8, 0, 8, 8)
+        side.setContentsMargins(12, 8, 12, 12)
         side.addWidget(self.section("URZĄDZENIE / STEROWANIE"))
         self.devices = QComboBox()
         self.devices.setAccessibleName("Wybrane urządzenie")
@@ -220,7 +232,7 @@ class LaboratoryWindow(QMainWindow):
         self.tabs.currentChanged.connect(self.refresh_data)
         chart = QWidget()
         chart_layout = QVBoxLayout(chart)
-        chart_layout.setContentsMargins(4, 4, 4, 0)
+        chart_layout.setContentsMargins(10, 8, 10, 0)
         chart_toolbar = QHBoxLayout()
         self.chart_mode = QComboBox()
         self.chart_mode.setAccessibleName("Układ wykresów")
@@ -454,6 +466,8 @@ class LaboratoryWindow(QMainWindow):
         self.refresh()
 
     def toggle(self):
+        if hasattr(self, "source") and self.source.currentIndex() != 0:
+            return
         if self.timer.isActive():
             self.pause()
         else:
@@ -497,7 +511,9 @@ class LaboratoryWindow(QMainWindow):
             value = f"{self.sim.sensors[cid]['value']:.3f}" if c['kind'] == 'gas' else str(self.sim.actuators[cid]['simulated'])
             tree_item.setText(0, f"{cid}  ·  {value}")
             tree_item.setForeground(0, QColor(COLORS[c['kind']] if self.sim.nodes[c['node']] else '#ff657a'))
-        if hasattr(self, "source") and self.source.currentIndex() == 1:
+        if hasattr(self, "source") and self.source.currentIndex() == 2:
+            self.statusBar().showMessage("Laboratorium ML · zapisane wyniki · tylko odczyt · inferencja offline")
+        elif hasattr(self, "source") and self.source.currentIndex() == 1:
             self.statusBar().showMessage("Kolektor / API · tylko odczyt · brak sterowania MQTT i detektora ML")
         else:
             self.statusBar().showMessage(f"Bufor {len(self.sim.history)}/3000 · pominięte offline {self.sim.suppressed_messages} · usunięte z bufora {self.sim.evicted_messages}    |    Reguły ≠ ML · Qt: symulacja lokalna, bez połączenia z kolektorem")
@@ -635,7 +651,7 @@ class LaboratoryWindow(QMainWindow):
         self.refresh()
 
     def closeEvent(self, event):
-        if self.worker is not None:
+        if self.worker is not None or self.ml_view.worker is not None:
             event.ignore()
             return
         if self.confirm_replace():
