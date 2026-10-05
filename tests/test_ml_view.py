@@ -68,7 +68,8 @@ def wait_load(view):
     pytest.fail("Timeline worker did not complete")
 
 
-def test_real_series_method_selection_cursor_and_bad_file_preserve_state(timeline, tmp_path):
+@pytest.mark.parametrize("invalid_json", ["{}", "[" * 2000 + "0" + "]" * 2000])
+def test_real_series_method_selection_cursor_and_bad_file_preserve_state(timeline, tmp_path, invalid_json):
     app = QApplication.instance() or QApplication([])
     if not QFontDatabase.families() and os.name == "nt":
         for font in ("segoeui.ttf", "seguisb.ttf", "consola.ttf"):
@@ -106,7 +107,7 @@ def test_real_series_method_selection_cursor_and_bad_file_preserve_state(timelin
         assert not view.grab().isNull()
         prior = view.data
         bad = tmp_path / "invalid.json"
-        bad.write_text('{}')
+        bad.write_text(invalid_json)
         view.load_timeline(bad)
         wait_load(view)
         assert view.data is prior

@@ -82,4 +82,8 @@ def read_timeline(path):
         raw = stream.read(MAX_BYTES + 1)
     if len(raw) > MAX_BYTES:
         raise ValueError("Plik przekracza limit 4 MiB dla jednej osi czasu.")
-    return validate_timeline(json.loads(raw.decode("utf-8-sig")))
+    try:
+        data = json.loads(raw.decode("utf-8-sig"))
+    except RecursionError as error:
+        raise ValueError("Plik JSON ma zbyt głębokie zagnieżdżenie.") from error
+    return validate_timeline(data)
