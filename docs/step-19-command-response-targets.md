@@ -51,6 +51,10 @@ szacowaną długością ruchu. `follow_up_ms` jest długością dostępnej obser
 Powtórzenia mogą współdzielić fizyczne potwierdzenie. Liczba przykładów nie jest
 liczbą niezależnych cykli. Przedłużenie zapisu może zakończyć wcześniej cenzurowany
 cel; zachowuje wejścia i już zakończone cele, nie musi zachować etykiety cenzury.
+Wersja 1 wymaga wspólnie zamkniętej sesji: żadne zdarzenie nie może wystąpić
+po ostatniej próbce pomiarowej. Wewnętrzna luka pomiarów nie kasuje ACK, ale
+urwana końcówka pomiarów z późniejszym logiem zdarzeń jest jawnie odrzucana.
+Osobne końce obserwacji kanałów wymagają kolejnej wersji kontraktu.
 To semantyka ograniczonego pilota offline, nie protokół czasu gatewaya na sprzęcie.
 
 ## Z góry ustalony eksport rozwojowy
