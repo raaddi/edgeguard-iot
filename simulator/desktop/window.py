@@ -5,7 +5,7 @@ from pathlib import Path
 from PySide6.QtCore import Qt, QThread, QTimer, Signal, Slot, QSaveFile, QIODevice
 from PySide6.QtGui import QAction, QColor, QKeySequence
 from PySide6.QtWidgets import (QComboBox, QDialog, QFileDialog, QFormLayout, QHBoxLayout,
-    QLabel, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QPushButton, QScrollArea,
+    QFrame, QLabel, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy,
     QSpinBox, QSplitter, QStackedWidget, QTabWidget, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 from simulator.__main__ import code_version
 from simulator.house import HouseSimulation, SCENARIOS
@@ -59,18 +59,32 @@ class LaboratoryWindow(QMainWindow):
         host = QWidget()
         layout = QVBoxLayout(host)
         layout.setContentsMargins(10, 8, 10, 0)
-        bar = QHBoxLayout()
+        header = QFrame()
+        header.setObjectName("cockpitHeader")
+        bar = QHBoxLayout(header)
+        bar.setContentsMargins(12, 8, 12, 8)
+        mark = QLabel("EG")
+        mark.setObjectName("brandMark")
+        mark.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mark.setMinimumSize(50, 46)
+        bar.addWidget(mark)
+        identity = QVBoxLayout()
+        identity.setSpacing(0)
         brand = QLabel("EDGEGUARD")
         brand.setObjectName("workspaceBrand")
-        bar.addWidget(brand)
-        bar.addSpacing(18)
+        identity.addWidget(brand)
+        subtitle = QLabel("SMARTHOME LABORATORY")
+        subtitle.setObjectName("headerSubtitle")
+        identity.addWidget(subtitle)
+        bar.addLayout(identity)
+        bar.addStretch()
         bar.addWidget(QLabel("Obszar pracy"))
         self.source = QComboBox()
         self.source.addItems(["Makieta lokalna — symulacja", "Kolektor — dane z API", "Laboratorium ML — zapisane wyniki"])
         self.source.setAccessibleName("Źródło danych obszaru pracy")
         bar.addWidget(self.source)
         bar.addStretch()
-        layout.addLayout(bar)
+        layout.addWidget(header)
         self.workspaces = QStackedWidget()
         self.workspaces.addWidget(local)
         self.collector_view = CollectorView()
@@ -100,15 +114,24 @@ class LaboratoryWindow(QMainWindow):
         self.setCentralWidget(central)
         root = QVBoxLayout(central)
         root.setContentsMargins(14, 10, 14, 6)
-        header = QHBoxLayout()
-        brand = QLabel("EDGEGUARD  /  SmartHome Laboratory")
-        brand.setObjectName("brand")
-        header.addWidget(brand)
+        self.local_heading = QWidget()
+        header = QHBoxLayout(self.local_heading)
+        header.setContentsMargins(0, 0, 0, 0)
+        title = QVBoxLayout()
+        title.setSpacing(2)
+        heading = QLabel("Makieta SmartHome")
+        heading.setObjectName("headerTitle")
+        title.addWidget(heading)
+        subtitle = QLabel("Urządzenia · telemetria · kontrolowane scenariusze")
+        subtitle.setObjectName("headerSubtitle")
+        title.addWidget(subtitle)
+        header.addLayout(title)
         header.addStretch()
-        mode = QLabel("TRYB LOKALNY  •  WĘZŁY SYMULOWANE")
-        mode.setStyleSheet("color: #5cedab; font: 10pt 'Consolas'")
+        mode = QLabel("SYMULACJA LOKALNA")
+        mode.setObjectName("statusChip")
+        mode.setToolTip("Wszystkie węzły są symulowane. Sterowanie dotyczy lokalnej makiety.")
         header.addWidget(mode)
-        root.addLayout(header)
+        root.addWidget(self.local_heading)
         toolbar = QHBoxLayout()
         self.play, self.single_step, self.save = QPushButton("Start"), QPushButton("Krok +1 s"), QPushButton("Zapisz JSON…")
         self.play.setObjectName("primary")
@@ -133,8 +156,14 @@ class LaboratoryWindow(QMainWindow):
         self.clock = QLabel()
         toolbar.addWidget(self.clock)
         root.addLayout(toolbar)
-        self.summary = QLabel()
-        self.summary.setObjectName("status")
+        self.summary = QWidget()
+        stats = QHBoxLayout(self.summary)
+        stats.setContentsMargins(0, 0, 0, 0)
+        stats.setSpacing(8)
+        self.session_stat, self.session_detail = self.stat_card(stats, "PRZEBIEG", session=True)
+        self.nodes_stat, self.nodes_detail = self.stat_card(stats, "ŁĄCZNOŚĆ MODELU")
+        self.rules_stat, _ = self.stat_card(stats, "WSKAZANIA REGUŁ", "Proste reguły · nie ML")
+        self.messages_stat, _ = self.stat_card(stats, "TELEMETRIA", "Wyemitowane wiadomości")
         root.addWidget(self.summary)
         navigation = QWidget()
         navigation.setObjectName("panel")
@@ -150,7 +179,9 @@ class LaboratoryWindow(QMainWindow):
         self.tree.setMinimumWidth(170)
         self.tree.currentItemChanged.connect(self.tree_selection)
         nav.addWidget(self.tree)
-        nav.addWidget(QLabel("G czujnik  •  F wentylator\nL światło  •  S serwo"))
+        key = QLabel("G czujnik  ·  F wentylator\nL światło  ·  S serwo")
+        key.setObjectName("muted")
+        nav.addWidget(key)
         map_panel = QWidget()
         map_panel.setObjectName("panel")
         map_layout = QVBoxLayout(map_panel)
@@ -182,6 +213,7 @@ class LaboratoryWindow(QMainWindow):
         self.devices.currentIndexChanged.connect(lambda: self.select_device(self.devices.currentData()))
         side.addWidget(self.devices)
         self.identity, self.reading, self.detail = QLabel(), QLabel(), QLabel()
+        self.identity.setObjectName("muted")
         self.reading.setObjectName("reading")
         self.detail.setWordWrap(True)
         for widget in (self.identity, self.reading, self.detail):
@@ -228,6 +260,7 @@ class LaboratoryWindow(QMainWindow):
         top.setSizes([240, 820, 340])
         top.setChildrenCollapsible(False)
         self.top_panel = top
+        top.setMinimumHeight(350)
         self.tabs = QTabWidget()
         self.tabs.currentChanged.connect(self.refresh_data)
         chart = QWidget()
@@ -249,13 +282,12 @@ class LaboratoryWindow(QMainWindow):
         self.expand_charts.setCheckable(True)
         self.expand_charts.toggled.connect(self.expand_chart_area)
         chart_toolbar.addWidget(self.expand_charts)
-        self.chart_note = QLabel("Wspólny czas · gaz 0–1 / stany ON–OFF / serwa ° · przewiń po kolejne grupy")
+        self.chart_note = QLabel("120 s telemetrii z symulacji · gaz: próg ┄ · aktuatory: zadane ┄ / raport ━")
         self.chart_note.setObjectName("muted")
         chart_layout.addLayout(chart_toolbar)
         chart_layout.addWidget(self.chart_note)
-        legend = QLabel("Gaz: przerywana = próg. Aktuatory: przerywana = zadane, ciągła = raport z symulacji.")
-        legend.setObjectName("muted")
-        chart_layout.addWidget(legend)
+        self.chart_note.setToolTip("Gaz: przerywana = próg. Aktuatory: przerywana = zadane, ciągła = raport z symulacji.\n"
+                                   "Wspólny czas; gaz 0–1, stany ON/OFF, serwa w stopniach.")
         self.plot = SignalPlot(self.sim)
         self.all_plots = SignalGrid(self.sim)
         self.chart_group.currentIndexChanged.connect(lambda: self.all_plots.set_kind(self.chart_group.currentData()))
@@ -285,10 +317,39 @@ class LaboratoryWindow(QMainWindow):
         vertical = QSplitter(Qt.Orientation.Vertical)
         vertical.addWidget(top)
         vertical.addWidget(self.tabs)
-        vertical.setSizes([500, 315])
+        vertical.setSizes([470, 260])
         vertical.setChildrenCollapsible(False)
         self.vertical_splitter = vertical
         root.addWidget(vertical, 1)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if hasattr(self, "summary"):
+            compact = self.height() < 840
+            self.summary.setVisible(not compact)
+            self.local_heading.setVisible(not compact)
+            self.canvas.setMinimumHeight(180 if compact else 270)
+            self.top_panel.setMinimumHeight(270 if compact else 350)
+            QTimer.singleShot(0, self.refresh)
+
+    @staticmethod
+    def stat_card(layout, title, detail="", session=False):
+        card = QFrame()
+        card.setObjectName("statCard")
+        body = QVBoxLayout(card)
+        body.setContentsMargins(12, 6, 12, 6)
+        body.setSpacing(1)
+        label = QLabel(title)
+        label.setObjectName("statLabel")
+        value = QLabel()
+        value.setObjectName("statSession" if session else "statValue")
+        value.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        note = QLabel(detail)
+        note.setObjectName("statDetail")
+        for widget in (label, value, note):
+            body.addWidget(widget)
+        layout.addWidget(card, 2 if session else 1)
+        return value, note
 
     @staticmethod
     def section(text):
@@ -409,7 +470,6 @@ class LaboratoryWindow(QMainWindow):
         self.chart_stack.setCurrentIndex(int(single))
         self.channels.setVisible(single)
         self.chart_group.setVisible(not single)
-        self.chart_note.setVisible(not single)
 
     def expand_chart_area(self, expanded):
         if expanded:
@@ -486,11 +546,19 @@ class LaboratoryWindow(QMainWindow):
         self.single_step.setEnabled(not running)
         self.clock.setText(f"{'PRACA' if running else 'PAUZA'}  |  t = {self.sim.time - 1:05d} s")
         online_count = sum(self.sim.nodes.values())
-        self.summary.setText(f"{self.sim.run_id}   /   SEED {self.sim.seed}     |     ONLINE {online_count}/{len(self.sim.nodes)}     |     REGUŁY {len(self.sim.alerts)}     |     WIADOMOŚCI {self.sim.message_count}")
+        self.session_stat.setText(self.session_stat.fontMetrics().elidedText(self.sim.run_id, Qt.TextElideMode.ElideRight, max(60, self.session_stat.width())))
+        self.session_stat.setToolTip(self.sim.run_id)
+        self.session_detail.setText(f"Seed {self.sim.seed} · komponenty: {len(self.sim.components)}")
+        self.nodes_stat.setText(f"{online_count} / {len(self.sim.nodes)}")
+        self.nodes_detail.setText("Węzły symulowane · online")
+        if online_count < len(self.sim.nodes):
+            self.nodes_detail.setText(f"{len(self.sim.nodes) - online_count} offline · brak nowych próbek")
+        self.rules_stat.setText(str(len(self.sim.alerts)))
+        self.messages_stat.setText(str(self.sim.message_count))
         item = self.sim.components[self.current]
         online = self.sim.nodes[item["node"]]
         self.identity.setText(f"{self.current} · {item['node']}\n{'ONLINE / model' if online else 'OFFLINE / brak nowych wiadomości'}")
-        self.identity.setStyleSheet(f"color: {'#8795a7' if online else '#ff657a'}")
+        self.identity.setStyleSheet(f"color: {'#aba69f' if online else '#e39a9a'}")
         gas = item["kind"] == "gas"
         self.command_button.setVisible(not gas)
         self.auto_button.setVisible(item["kind"] == "fan")
@@ -510,7 +578,7 @@ class LaboratoryWindow(QMainWindow):
             c = self.sim.components[cid]
             value = f"{self.sim.sensors[cid]['value']:.3f}" if c['kind'] == 'gas' else str(self.sim.actuators[cid]['simulated'])
             tree_item.setText(0, f"{cid}  ·  {value}")
-            tree_item.setForeground(0, QColor(COLORS[c['kind']] if self.sim.nodes[c['node']] else '#ff657a'))
+            tree_item.setForeground(0, QColor(COLORS[c['kind']] if self.sim.nodes[c['node']] else '#e39a9a'))
         if hasattr(self, "source") and self.source.currentIndex() == 2:
             self.statusBar().showMessage("Laboratorium ML · zapisane wyniki · tylko odczyt · inferencja offline")
         elif hasattr(self, "source") and self.source.currentIndex() == 1:
