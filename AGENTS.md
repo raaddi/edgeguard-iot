@@ -10,6 +10,8 @@
 - Every completed project increment must be committed and pushed to GitHub.
   The user has explicitly requested this as the default; do not ask again for
   routine commits and pushes of authorized work.
+- Write concise commit and merge messages describing the change; omit assistant
+  or tool branding from these messages.
 - Before pushing, inspect the diff and run checks appropriate to the change.
   After pushing, verify the remote commit and report the branch and commit link.
 - Work on feature branches. Do not claim changes are on main unless merged.
