@@ -93,3 +93,10 @@ Nie porównujemy bezpośrednio MAE sekund z amperami lub Brier krańcówek.
 Nie uczymy klasyfikacji przyjęcia ACK: eksport nie zawiera odrzuconych ACK.
 Live Qt/MQTT, końcowy test pracy, transfer na ESP32 i koszty Pi pozostają
 osobnymi wymaganiami. Wagi, surowe dane i prognozy pozostają poza Git.
+
+## Wykonanie — 06.10.2026
+
+Wykonano wszystkie trzy inicjalizacje po 30 epok z czystego `387cfa2…`.
+[Raport wyników](results/response-models-20261006.md) zachowuje zarówno poprawę
+łącznego MAE odpowiedzi, jak i pogorszenia na legalnych nowych warunkach.
+Pakiet sześciu modeli zapisano przed odczytem oceny. Nadal nie oceniano alarmów.
