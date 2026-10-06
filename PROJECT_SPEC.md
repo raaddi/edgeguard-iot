@@ -1311,3 +1311,18 @@ only in evaluation. All raw/example hashes and examples were audited. See
 [protocol](docs/step-19-command-response-targets.md). This is data preparation:
 response-model fitting, causal alarm comparison, final evaluation, live Qt inference,
 physical validation and Raspberry Pi measurements remain unverified requirements.
+
+## Command-response forecast study (2026-10-06)
+
+The step-20 protocol now trains three fixed GRU initializations for two response
+durations and compares them with contextual train-only medians. A retrained sensor
+GRU shares the encoder size and train-fitted input preprocessing, with different
+heads, losses and sample counts. All models are selected on normal selection,
+saved and reloaded before calibration/evaluation access. Censoring stays masked.
+
+The audited clean-code experiment improves aggregate normal response MAE, while
+revealing degraded predictions on legal slow/reversal conditions and systematic
+underestimation. Sensor probabilities have separate units and limitations. See
+[the report](docs/results/response-models-20261006.md). This is forecast evidence:
+causal response alarm calibration, event detection comparison, live Qt/MQTT inference,
+final evaluation, physical transfer and Raspberry Pi costs remain unverified.

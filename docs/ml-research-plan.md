@@ -399,3 +399,14 @@ Cenzurowanie nie oznacza awarii: także legalne odwrócenie może przerwać ruch
 Nie trenowano nowego modelu ani nie zmierzono jego skuteczności.
 Ablacja celu nadal wymaga protokołu treningu i przyczynowej oceny alarmów;
 obecny widok Qt pokazuje zapisane wyniki wcześniejszych modeli.
+
+## Zweryfikowane prognozy odpowiedzi — 06.10.2026
+
+[Krok 20](step-20-response-models.md) wykonał zamrożony trening trzech inicjalizacji
+GRU czasów oraz GRU odczytów, przy wspólnym preprocessingu tylko z train.
+[Raport](results/response-models-20261006.md) pokazuje poprawę łącznego MAE
+normalnych odpowiedzi i pogorszenia na legalnych nowych warunkach. Modele
+zaniżają czasy kontaktu dla wolnego ruchu; to istotne dla przyszłych timeoutów.
+Nie wybrano najlepszego seeda na evaluation. Błędy prognoz nie dowodzą poprawy
+recall ani liczby fałszywych alarmów. Następny protokół ma zamrozić przyczynowe
+marginesy i wspólną ocenę zdarzeń; końcowy test, sprzęt i live Qt pozostają otwarte.

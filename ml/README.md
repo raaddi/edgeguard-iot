@@ -79,5 +79,28 @@ examples, protocol snapshot, manifest and report with hashes. It refuses overwri
 and records failed runs. Read [step 19](../docs/step-19-command-response-targets.md)
 and the [audited results](../docs/results/command-response-examples-20261006.md).
 These examples contain no fitted model, predictions or alarms, and cannot be opened
-as a saved ML timeline in Qt. A future response-model training comparison requires
-a separate protocol before fitting; live inference and hardware validation remain pending.
+as a saved ML timeline in Qt. Response-model training now follows the frozen
+[step-20 protocol](../docs/step-20-response-models.md); live inference and hardware
+validation remain pending.
+
+## Response and sensor forecast comparison
+
+After installing `requirements-gru.txt`, run:
+
+~~~powershell
+python -m ml.gate_response_experiment <response-export-directory> --output <new-directory>
+~~~
+
+The default study fits three predetermined initializations (7, 42, 73), each for
+30 epochs. A shared train-only preprocessor serves a two-duration response GRU
+and the existing three-sensor GRU. Checkpoints use only normal selection loss;
+all weights and median baselines are saved/reloaded before later roles are read.
+`--epochs` supports bounded smoke runs; use the default for the documented study.
+
+The new output contains hashed model artifacts, training history, frozen bundle,
+per-session response/sensor predictions and grouped forecast metrics. Read
+[the audited results](../docs/results/response-models-20261006.md): lower aggregate
+normal response MAE coexists with failures on slow/reversal conditions. Censored
+responses have no regression target. Different sensor/response metrics cannot
+establish a detection advantage; causal timeout alarms require the next protocol.
+These files also have a separate format from the existing Qt saved ML timelines.

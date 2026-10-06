@@ -1,6 +1,6 @@
 # EdgeGuard IoT — co budujemy i co powinieneś umieć wyjaśnić
 
-Stan na 06.10.2026, po kalibracji, przeglądzie ML w Qt i eksporcie celów odpowiedzi.
+Stan na 06.10.2026, po kalibracji, przeglądzie ML w Qt i treningu czasów odpowiedzi.
 Ten przewodnik opisuje stan kodu i ścieżkę nauki, nie gotową magisterkę ani wynik skuteczności ML.
 
 ## 1. Cel w kilku zdaniach
@@ -41,6 +41,7 @@ Nie zakładamy odpowiedzi „tak”. Trzeba to zmierzyć i wyjaśnić również 
 | ✓ | Porównanie alarmów offline | GRU, prognoza ostatniego odczytu, IF i reguły na wspólnej osi czasu; kalibracja, pominięcia i opóźnienia; [krok 16](step-16-gru-alarms.md) |
 | ✓ | Osobna kalibracja i widok ML | Nowe normalne sesje, wspólna ocena czterech metod i interaktywny przegląd zapisanych prognoz/alarmów w Qt; [krok 18](step-18-independent-calibration.md) |
 | ✓ | Przykłady odpowiedzi na polecenie | Oddzielne czasy ACK/krańcówki, cenzurowanie i eksport 440 sesji; bez nowego treningu; [krok 19](step-19-command-response-targets.md) |
+| ✓ | Prognozy czasów odpowiedzi | Trzy inicjalizacje GRU, mediany treningu i osobne prognozy odczytów; raport uwzględnia pogorszenia, bez oceny nowych alarmów; [krok 20](step-20-response-models.md) |
 | Plan | Integracja feedbacku | Rozszerzenie telemetrii, MQTT/Qt oraz kalibracja i walidacja fizyczna |
 | Plan | Sterowanie MQTT z przycisków Qt | Obecnie przyciski sterują tylko lokalną symulacją |
 | Plan | Sprzęt i wdrożenie | Firmware ESP32, poświadczenia/ACL, prawdziwe pomiary i koszty inferencji na Pi |
