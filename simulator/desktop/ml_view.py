@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxL
 from simulator.desktop.ml_timeline import read_timeline
 from simulator.desktop.panels import table, fill_table
 
-CYAN, AMBER, RED, MUTED = "#5bd5ed", "#f2c879", "#ff798e", "#9aaabd"
+CYAN, AMBER, RED, MUTED = "#8bb7c9", "#d1a17b", "#d98989", "#a5a4a2"
 METHOD_NAMES = {"gru": "GRU", "persistence": "Ostatni odczyt", "isolation_forest": "Isolation Forest",
                 "temporal_rules": "Reguły czasowe"}
 CASE_NAMES = {"normal": "Praca poprawna", "command_delay": "Opóźniona odpowiedź", "motion_stall": "Zablokowany ruch", "open_contact_stuck_low": "Nieaktywna krańcówka otwarcia"}
@@ -57,9 +57,9 @@ class ResearchPlot(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        p.fillRect(self.rect(), QColor("#0d141e"))
+        p.fillRect(self.rect(), QColor("#15181d"))
         p.setFont(QFont("Segoe UI", 10))
-        p.setPen(QColor("#e8eff7"))
+        p.setPen(QColor("#e6e2dc"))
         title = f"Wynik · {METHOD_NAMES[self.method]}" if self.is_score else f"Pomiar i prognoza GRU · {CHANNEL_NAMES[self.channel]}"
         p.drawText(18, 24, title)
         p.setFont(QFont("Segoe UI", 9))
@@ -73,6 +73,7 @@ class ResearchPlot(QWidget):
             p.end()
             return
         box, times = self.box(), self.data["logical_ms"]
+        p.fillRect(box, QColor("#20242b"))
         first, last = times[0], times[-1]
         threshold = self.data["thresholds"][self.method] if self.is_score else None
         values = [v for series, _, _ in self.series() for v in series if v is not None]
@@ -83,8 +84,8 @@ class ResearchPlot(QWidget):
         def py(v):
             return box.bottom() - (v - low) / (high - low) * box.height()
         # Merge contiguous support, never shade across a missing sample.
-        for flags, color, height in ((self.data["method_alarms"][self.method], "#472733", box.height()),
-                                    (self.data["labels"] if self.truth else [], "#655332", 12)):
+        for flags, color, height in ((self.data["method_alarms"][self.method], "#482e34", box.height()),
+                                    (self.data["labels"] if self.truth else [], "#756343", 12)):
             runs = []
             for now, flag in zip(times, flags):
                 if flag:
@@ -99,7 +100,7 @@ class ResearchPlot(QWidget):
         for i in range(5):
             value = low + (high - low) * i / 4
             y = py(value)
-            p.setPen(QPen(QColor("#223042"), 1))
+            p.setPen(QPen(QColor("#30353c"), 1))
             p.drawLine(QPointF(box.left(), y), QPointF(box.right(), y))
             p.setPen(QColor(MUTED))
             p.drawText(QPointF(8, y + 4), f"{value:.2f}")
@@ -122,7 +123,7 @@ class ResearchPlot(QWidget):
                 previous, prior_ms = point, now
             p.setPen(QPen(QColor(color), 1.7))
             p.drawPath(path)
-        p.setPen(QPen(QColor("#c1cfdf"), 1, Qt.PenStyle.DotLine))
+        p.setPen(QPen(QColor("#c2beb8"), 1, Qt.PenStyle.DotLine))
         p.drawLine(QPointF(px(times[self.cursor]), box.top()), QPointF(px(times[self.cursor]), box.bottom()))
         p.setPen(QColor(MUTED))
         for i in range(6):

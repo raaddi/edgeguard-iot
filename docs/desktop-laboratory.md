@@ -77,11 +77,29 @@ i lukę na wykresie, nawet jeśli wewnętrzny stan modelu nadal się zmienia.
 Start nie włącza wszystkich lamp ani nie otwiera bram — te urządzenia zachowują
 ustawiony stan, a lokalna automatyka wentylatorów reaguje na sygnały.
 
-Kolory na czarnym tle: turkus — czujnik, zieleń — wentylator, żółty — światło,
+Kolory na grafitowym tle: turkus — czujnik, zieleń — wentylator, żółty — światło,
 fiolet — serwo, czerwony — offline, pomarańczowy — przekroczony próg czujnika.
 Kolor typu nie oznacza włączenia; stan ON/OFF, kąt lub wartość jest podany tekstem.
 Rzut i przypisanie pokoju są orientacyjne, zgodnie z profilem opisanym w
 [laboratorium przeglądarkowym](smarthome-laboratory.md).
+
+## Wygląd i podgląd projektu
+
+Motyw używa grafitowych powierzchni, ciepłych metalicznych linii i miedzianej
+selekcji. Kolory typów urządzeń są spokojniejsze; offline pozostaje czerwone,
+a przekroczenie progu bursztynowe. Nagłówek łączy trzy obszary pracy.
+Karty pokazują rzeczywisty identyfikator/seed sesji, łączność modelu, liczbę
+wskazań prostych reguł i wyemitowanych wiadomości.
+
+W oknie niższym niż 840 px układ chowa duży tytuł i karty podsumowania, zostawiając
+miejsce na sterowanie, rzut i wykresy. Szczegóły węzłów i reguł są dostępne w ich
+zakładkach. Długi identyfikator ma skrót z pełną nazwą w podpowiedzi. Na małym
+rzucie etykiety dopasowują się do komórek; najedź na urządzenie, aby odczytać
+pełne ID, nazwę, węzeł i stan modelu. Dwuklik pomieszczenia otwiera większe karty.
+
+[Galeria README](../README.md#interface-preview) zawiera dwa wybrane zrzuty
+prawdziwego okna Qt: cały dom oraz garaż z kontrolowaną awarią wentylatora.
+[Skrypt odtworzenia](images/README.md) nie wymaga elektroniki ani serwera.
 
 ## Krótki przebieg demonstracyjny
 
@@ -174,4 +192,5 @@ a suwak pozostaje dostępny. Przełączenie obszaru zatrzymuje symulację lokaln
 To przegląd **zapisanych wyników offline**. Nie ładuje modelu ani joblib,
 nie wymaga PyTorch do oglądania plików i nie uruchamia inferencji na żywo.
 Źródło/model/cechy opisuje metadanymi pliku; nie potwierdza pochodzenia
-fizycznego pomiaru. Dane i obrazy podglądu pozostają poza Git.
+fizycznego pomiaru. Dane i robocze obrazy podglądu pozostają poza Git. Wybrane zrzuty interfejsu
+w `docs/images/` są niewielkimi ilustracjami dokumentacji, bez surowych danych.

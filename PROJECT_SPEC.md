@@ -1326,3 +1326,15 @@ underestimation. Sensor probabilities have separate units and limitations. See
 [the report](docs/results/response-models-20261006.md). This is forecast evidence:
 causal response alarm calibration, event detection comparison, live Qt/MQTT inference,
 final evaluation, physical transfer and Raspberry Pi costs remain unverified.
+
+## Desktop presentation increment (2026-10-06)
+
+The Qt adapter now uses a graphite/copper theme, linked session status cards,
+clearer model/telemetry cards and bounded device tooltips. A compact layout at
+shorter window heights preserves room for the controls and plots. The simulation
+engine, device contracts and trained-model logic remain independent of styling.
+
+Two curated README screenshots come from a deterministic hardware-free Qt demo,
+with a source script and explicit simulated-data/rule labels. This supports the
+accessible-demonstration criterion; it is not a demo recording, live ML/MQTT
+integration, physical validation or a Raspberry Pi performance measurement.
