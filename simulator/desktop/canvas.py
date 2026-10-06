@@ -1,10 +1,10 @@
 """Telemetry plot; gaps never interpolate a missing device message."""
 
 from PySide6.QtCore import QPointF, QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
+from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QGridLayout, QLabel, QScrollArea, QVBoxLayout, QWidget
 
-BG, GRID, TEXT, MUTED, BLUE, GREEN, AMBER = "#030507", "#19212c", "#dce3ec", "#8d9bac", "#75b8fa", "#73d4b5", "#e9bd6a"
+BG, GRID, TEXT, MUTED, BLUE, GREEN, AMBER = "#14171c", "#34383f", "#e8e4de", "#aaa49b", "#8bb7c9", "#91b39d", "#d1bc8b"
 
 
 class SignalPlot(QWidget):
@@ -12,7 +12,7 @@ class SignalPlot(QWidget):
         super().__init__()
         self.sim = sim
         self.component, self.compact, self.color = component, compact, color
-        self.setMinimumSize(220 if compact else 400, 180 if compact else 160)
+        self.setMinimumSize(220 if compact else 400, 180 if compact else 140)
         self.setAccessibleName(f"Telemetria {component}")
 
     @property
@@ -68,6 +68,15 @@ class SignalPlot(QWidget):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
         p.fillRect(self.rect(), QColor(BG))
+        surface = QLinearGradient(0, 0, 0, self.height())
+        surface.setColorAt(0, QColor("#22262c"))
+        surface.setColorAt(1, QColor("#15181d"))
+        p.setBrush(surface)
+        p.setPen(QPen(QColor("#45484e"), 1))
+        p.drawRoundedRect(QRectF(self.rect()).adjusted(1, 1, -1, -1), 8, 8)
+        p.setBrush(Qt.BrushStyle.NoBrush)
+        p.setPen(QPen(QColor("#785b48"), 1))
+        p.drawLine(QPointF(11, 43), QPointF(self.width() - 11, 43))
         box = QRectF(40, 54, self.width() - 55, self.height() - 83)
         samples = self.samples()
         first, last = samples[0][0], max(samples[0][0] + 10, samples[-1][0])
@@ -78,8 +87,8 @@ class SignalPlot(QWidget):
         p.drawText(10, 17, p.fontMetrics().elidedText(title, Qt.TextElideMode.ElideRight, self.width() - 20))
         node = self.sim.components[self.component]["node"]
         online = self.sim.nodes[node]
-        p.setPen(QColor(MUTED if online else "#ff657a"))
-        p.drawText(10, 35, self.status_text())
+        p.setPen(QColor(MUTED if online else "#dc8b8b"))
+        p.drawText(10, 35, p.fontMetrics().elidedText(self.status_text(), Qt.TextElideMode.ElideRight, self.width() - 20))
         p.setFont(QFont("Consolas", 9 if self.compact else 10))
         ticks = (0, 90, 180) if self.kind == "servo" else (0, 0.5, 1) if self.kind == "gas" else (0, 1)
         for value in ticks:
@@ -113,13 +122,13 @@ class SignalPlot(QWidget):
 class SignalGrid(QScrollArea):
     """All components, grouped by kind; reported values are never model shortcuts."""
 
-    GROUPS = [("gas", "Czujniki gazu", "#49d7ff"), ("fan", "Wentylatory", "#5cedab"),
-              ("light", "Oświetlenie", "#ffd366"), ("servo", "Serwa / bramy i drzwi", "#b795ff")]
+    GROUPS = [("gas", "Czujniki gazu", "#8bb7c9"), ("fan", "Wentylatory", "#91b39d"),
+              ("light", "Oświetlenie", "#d1bc8b"), ("servo", "Serwa / bramy i drzwi", "#b1a1c7")]
 
     def __init__(self, sim):
         super().__init__()
         self.setWidgetResizable(True)
-        self.setMinimumHeight(190)
+        self.setMinimumHeight(100)
         self.setAccessibleName("Wykresy wszystkich urządzeń całej makiety")
         self.kind_filter = None
         self.set_simulation(sim)
