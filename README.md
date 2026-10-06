@@ -3,6 +3,28 @@
 Master's thesis project: anomaly detection in a distributed Smart Home IoT
 environment, with inference planned on a Raspberry Pi gateway.
 
+## Interface preview
+
+A hardware-free Qt laboratory with a graphite and copper theme, linked device
+controls, model status and telemetry. These screenshots show **local simulation**.
+
+![Garage inspector and telemetry during a controlled fan failure](docs/images/desktop-garage.png)
+
+The garage demo shows requested ON versus simulated OFF during a controlled fan
+failure. The two findings come from simple model rules, not live ML inference.
+
+<details>
+<summary>Whole-house overview and sensor telemetry</summary>
+
+![Whole-house model with device navigation and four sensor charts](docs/images/desktop-house.png)
+
+Normal operation, seed 42, three simulated nodes and 24 components.
+
+</details>
+
+[Launch the desktop laboratory](docs/desktop-laboratory.md) ·
+[Recreate these screenshots](docs/images/README.md)
+
 ## Status
 
 The current branch includes a [SmartHome laboratory](docs/smarthome-laboratory.md)
@@ -66,7 +88,7 @@ with verified scope, the message path, source map and a short learning exercise.
 **Desktop laboratory:** [Python + Qt walkthrough](docs/desktop-laboratory.md).
 The native workspace now covers the whole house, device navigation and controls,
 fault scenarios, telemetry, JSON/CSV exports and verified experiment replay.
-It uses the same simulation model and has a black console theme. Connecting this
+It uses the same simulation model and has a graphite and copper theme. Connecting this
 window's controls to MQTT, live ML and physical validation remains pending. Select
 **Kolektor — dane z API** to read persisted telemetry, or **Laboratorium ML — zapisane wyniki**
 to inspect saved predictions, method thresholds, alarms and separate experiment labels.
