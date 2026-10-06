@@ -35,8 +35,11 @@ on new normal and fault sessions. The styled Qt workspace reads saved forecasts,
 scores and alarms with an interactive time cursor; live inference remains pending.
 A [command-response exporter](docs/step-19-command-response-targets.md) now prepares
 causal ACK/contact targets with separate seed roles. The [audited run](docs/results/command-response-examples-20261006.md)
-contains 440 sessions and 1872 examples; a new response model and its alarm evaluation
-remain future work.
+contains 440 sessions and 1872 examples. A [response forecast study](docs/step-20-response-models.md)
+now trains three GRU initializations and compares durations with train-only medians,
+alongside separately retrained sensor forecasts. The [verified results](docs/results/response-models-20261006.md)
+include improvements and failures on legal new conditions; response alarm evaluation
+remains future work.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
