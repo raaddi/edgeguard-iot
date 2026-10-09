@@ -47,3 +47,17 @@ węzłów i modelu. Testy sprawdzą granicę terminu, opóźnienie, brak odpowie
 przerwanie, pojedynczą emisję i monotoniczność zegara. Adapter zdarzeń,
 wykonanie kalibracji, pełna ocena alarmów, live ML i sprzęt pozostają osobnymi
 pracami. Ten protokół nie stanowi wyniku eksperymentu ani wdrożenia modelu.
+
+## Zweryfikowany monitor — 09.10.2026
+
+`ml.gate_response_timeout.ResponseTimeout` realizuje powyższą semantykę jednego
+oczekiwania. `advance(now_ms, completed=..., censored=...)` zwraca prawdę tylko
+przy pierwszym timeoutcie, a `alarm_ms` zachowuje czas obserwacji. Testy jednostkowe
+obejmują oba rodzaje zakończenia, niezależność celów i walidację zegara/parametrów.
+Monitor nie jest jeszcze podłączony do adaptera zdarzeń ani inferencji Qt/MQTT.
+
+Sprawdzenie bez sprzętu:
+
+~~~powershell
+python -m pytest tests/test_gate_response_timeout.py tests/test_gate_response_targets.py -q
+~~~
