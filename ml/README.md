@@ -104,3 +104,7 @@ normal response MAE coexists with failures on slow/reversal conditions. Censored
 responses have no regression target. Different sensor/response metrics cannot
 establish a detection advantage; causal timeout alarms require the next protocol.
 These files also have a separate format from the existing Qt saved ML timelines.
+
+The next [response-timeout protocol](../docs/step-21-response-timeouts.md) freezes
+deadline semantics and a normal-only calibration policy before alarm evaluation.
+Calibration execution and event-level detection results remain pending.
