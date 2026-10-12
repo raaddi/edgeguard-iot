@@ -72,3 +72,9 @@ Wyniki syntetyczne nie zastępują nowych warunków, osobnej kalibracji i testu
 końcowego ani walidacji fizycznej. Integracja z Qt pozostaje dalszym krokiem.
 
 Wynik wykonanej analizy: [diagnostyka walidacji z 04.10.2026](results/gru-validation-20261004.md).
+
+Szybkie testy klasyfikacji zdarzeń, bez treningu modelu:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_gate_alarm_diagnostics.py -q
+```
