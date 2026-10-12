@@ -65,3 +65,5 @@ validation and Raspberry Pi measurements remain separate required steps in the
 use `requirements-diagnostics.txt` and `ml.gate_validation_plots`. See
 [step 17](../docs/step-17-validation-diagnostics.md) and the
 [verified findings](../docs/results/gru-validation-20261004.md).
+The diagnostic checks model and calibration provenance; it does not retune the
+threshold or read test sessions.
