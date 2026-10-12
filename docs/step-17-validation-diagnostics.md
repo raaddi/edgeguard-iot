@@ -1,4 +1,4 @@
-# Krok 17: dlaczego GRU pomija zdarzenie?
+# Krok 17: dlaczego GRU pomija zdarzenia?
 
 Diagnostyka korzysta z zamrożonych wag, skal błędu i progu z kroku 16.
 Czyta wyłącznie sesje walidacyjne; nie trenuje modelu ani nie wybiera nowego
