@@ -14,6 +14,10 @@ Równość nie uruchamia alarmu. Nie cofamy czasu alarmu do teoretycznego termin
 Odpowiedź dokładnie w terminie jest poprawna; późniejsza kończy oczekiwanie,
 ale zachowuje timeout. Jedno oczekiwanie emituje najwyżej jeden alarm.
 
+Przykład: polecenie wysłane w chwili `1000`, prognoza `100` i margines `50`
+ustalają termin `1150`. Obserwacja w `1150` jeszcze nie alarmuje; jeśli
+najbliższa obserwacja zegara to `1200`, alarm zapisuje `alarm_ms = 1200`.
+
 ACK to wynik polecenia, nie dowód wykonania fizycznego. Kontakt potwierdzamy
 po zaakceptowanym ACK, zgodnie z krokiem 19. Odrzucenie, zaakceptowane przeciwne
 polecenie lub luka pomiarowa kończą oczekiwanie na kontakt. Powtórzenie tego
