@@ -29,6 +29,9 @@ and compares it with temporal/current rules on paired synthetic gate sessions.
 It saves a model, predictions and an event report; live feature/model integration
 and physical validation remain pending. Run `python -m ml.gate_experiment` after
 installing `requirements-ml.txt` in the project environment.
+The offline gate study now also includes a [validation-only diagnostic](docs/step-17-validation-diagnostics.md)
+that explains frozen GRU misses without tuning its threshold. Its findings are
+development evidence, not a final test or physical validation.
 The reference-code profile has 10 LEDs, 6 servos, 4 gas
 sensors and 4 fans; physical counts and detailed placement still need confirmation.
 
