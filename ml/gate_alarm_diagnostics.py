@@ -9,6 +9,8 @@ from ml.gate_residuals import timed_alarms
 
 def diagnose_events(times, scores, labels, threshold):
     """Explain misses without resetting alarm state at truth boundaries."""
+    if type(threshold) not in (int, float) or not math.isfinite(threshold):
+        raise ValueError("Diagnostics require a finite numeric threshold.")
     if (not times or len(times) != len(labels) or len(times) != len(scores)
             or any(type(v) is not bool for v in labels)
             or any(v is None or not math.isfinite(v) for v in scores)
