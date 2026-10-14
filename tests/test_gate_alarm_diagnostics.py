@@ -33,6 +33,8 @@ def test_alarm_after_event_is_not_a_detection():
     ([0, 100], [2, 2], [True, True]),
     ([0, 50], [2, None], [True, True]),
     ([0, 50], [2, float('nan')], [True, True]),
+    ([0, 50], [2, True], [True, True]),
+    ([0, 50], [2, "2"], [True, True]),
     ([0, 50], [2, 2], [True]),
 ])
 def test_incomplete_inputs_are_rejected(times, scores, labels):
