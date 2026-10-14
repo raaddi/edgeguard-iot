@@ -46,3 +46,9 @@ def test_incomplete_inputs_are_rejected(times, scores, labels):
 def test_invalid_threshold_is_rejected(threshold):
     with pytest.raises(ValueError, match="threshold"):
         diagnose_events([0], [0.5], [False], threshold)
+
+
+@pytest.mark.parametrize("times", [[0, "50"], [False, 50], [0, 50.0], []])
+def test_invalid_timestamp_types_are_rejected(times):
+    with pytest.raises(ValueError, match="timestamps"):
+        diagnose_events(times, [0.5] * len(times), [False] * len(times), 1)
