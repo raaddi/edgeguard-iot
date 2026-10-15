@@ -42,7 +42,7 @@ def test_incomplete_inputs_are_rejected(times, scores, labels):
         diagnose_events(times, scores, labels, 1)
 
 
-@pytest.mark.parametrize("threshold", [float("nan"), float("inf"), True, "1", None])
+@pytest.mark.parametrize("threshold", [-0.1, float("nan"), float("inf"), True, "1", None])
 def test_invalid_threshold_is_rejected(threshold):
     with pytest.raises(ValueError, match="threshold"):
         diagnose_events([0], [0.5], [False], threshold)

@@ -11,8 +11,9 @@ def diagnose_events(times, scores, labels, threshold):
     """Explain misses without resetting alarm state at truth boundaries."""
     if not times or any(type(value) is not int for value in times):
         raise ValueError("Diagnostics require integer timestamps.")
-    if type(threshold) not in (int, float) or not math.isfinite(threshold):
-        raise ValueError("Diagnostics require a finite numeric threshold.")
+    if (type(threshold) not in (int, float) or not math.isfinite(threshold)
+            or threshold < 0):
+        raise ValueError("Diagnostics require a finite nonnegative numeric threshold.")
     if (len(times) != len(labels) or len(times) != len(scores)
             or any(type(v) is not bool for v in labels)
             or any(type(v) not in (int, float) or not math.isfinite(v) for v in scores)
