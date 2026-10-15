@@ -53,3 +53,8 @@ def test_invalid_threshold_is_rejected(threshold):
 def test_invalid_timestamp_types_are_rejected(times):
     with pytest.raises(ValueError, match="timestamps"):
         diagnose_events(times, [0.5] * len(times), [False] * len(times), 1)
+
+
+def test_large_timestamp_gap_is_rejected_without_expanding_a_range():
+    with pytest.raises(ValueError, match="aligned"):
+        diagnose_events([0, 10**12], [0.5, 0.5], [False, False], 1)
