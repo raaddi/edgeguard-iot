@@ -7,12 +7,20 @@ from ml.gate_features import SAMPLE_MS
 from ml.gate_residuals import timed_alarms
 
 
+def _is_finite_number(value):
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
+
+
 def diagnose_events(times, scores, labels, threshold):
     """Explain misses without resetting alarm state at truth boundaries."""
     if not times or any(type(value) is not int for value in times):
         raise ValueError("Diagnostics require integer timestamps.")
-    if (type(threshold) not in (int, float) or not math.isfinite(threshold)
-            or threshold < 0):
+    if not _is_finite_number(threshold) or threshold < 0:
         raise ValueError("Diagnostics require a finite nonnegative numeric threshold.")
     if (len(times) != len(labels) or len(times) != len(scores)
             or any(type(v) is not bool for v in labels)
