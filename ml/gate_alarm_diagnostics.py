@@ -22,11 +22,14 @@ def diagnose_events(times, scores, labels, threshold):
         raise ValueError("Diagnostics require integer timestamps.")
     if not _is_finite_number(threshold) or threshold < 0:
         raise ValueError("Diagnostics require a finite nonnegative numeric threshold.")
-    if (len(times) != len(labels) or len(times) != len(scores)
-            or any(type(v) is not bool for v in labels)
-            or any(not _is_finite_number(v) or v < 0 for v in scores)
-            or any(now != times[0] + index * SAMPLE_MS for index, now in enumerate(times))):
-        raise ValueError("Diagnostics require complete aligned labels and finite scores.")
+    if len(times) != len(labels) or len(times) != len(scores):
+        raise ValueError("Diagnostics require equal numbers of timestamps, scores, and labels.")
+    if any(type(value) is not bool for value in labels):
+        raise ValueError("Diagnostic labels must be boolean.")
+    if any(not _is_finite_number(value) or value < 0 for value in scores):
+        raise ValueError("Diagnostic scores must be finite nonnegative numbers.")
+    if any(now != times[0] + index * SAMPLE_MS for index, now in enumerate(times)):
+        raise ValueError("Diagnostic timestamps must be contiguous on the sample grid.")
     flags = timed_alarms(times, scores, threshold)
     starts = {a for a, _ in intervals(flags)}
     sensitivity = {str(p): {a for a, _ in intervals(alarms(scores, threshold, persistence=p))}

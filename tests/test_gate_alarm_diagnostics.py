@@ -57,5 +57,12 @@ def test_invalid_timestamp_types_are_rejected(times):
 
 
 def test_large_timestamp_gap_is_rejected_without_expanding_a_range():
-    with pytest.raises(ValueError, match="aligned"):
+    with pytest.raises(ValueError, match="contiguous"):
         diagnose_events([0, 10**12], [0.5, 0.5], [False, False], 1)
+
+
+def test_invalid_score_and_label_errors_are_specific():
+    with pytest.raises(ValueError, match="scores"):
+        diagnose_events([0], [-1], [False], 1)
+    with pytest.raises(ValueError, match="labels"):
+        diagnose_events([0], [0.5], [0], 1)
