@@ -31,6 +31,7 @@ def test_alarm_after_event_is_not_a_detection():
 
 @pytest.mark.parametrize("times,scores,labels", [
     ([0, 100], [2, 2], [True, True]),
+    ([0, 50], [2, 10**1000], [True, True]),
     ([0, 50], [2, -0.1], [True, True]),
     ([0, 50], [2, None], [True, True]),
     ([0, 50], [2, float('nan')], [True, True]),

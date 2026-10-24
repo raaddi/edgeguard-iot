@@ -24,7 +24,7 @@ def diagnose_events(times, scores, labels, threshold):
         raise ValueError("Diagnostics require a finite nonnegative numeric threshold.")
     if (len(times) != len(labels) or len(times) != len(scores)
             or any(type(v) is not bool for v in labels)
-            or any(type(v) not in (int, float) or not math.isfinite(v) or v < 0 for v in scores)
+            or any(not _is_finite_number(v) or v < 0 for v in scores)
             or any(now != times[0] + index * SAMPLE_MS for index, now in enumerate(times))):
         raise ValueError("Diagnostics require complete aligned labels and finite scores.")
     flags = timed_alarms(times, scores, threshold)
